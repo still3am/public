@@ -1,10 +1,10 @@
 import { useLongPressMenu } from '@/hooks/useLongPressMenu';
 import { createPortal } from "react-dom";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useCoverUrl } from "@/hooks/useCoverUrl";
 import {
   X, Trash2, Play, Pause, Plus, Music2, GripVertical, GitMerge, Search,
-  SkipBack, SkipForward, Undo2, ListMusic, Shuffle, Repeat, Repeat1, Infinity as InfinityIcon } from
+  SkipBack, SkipForward, ListMusic, Shuffle, Repeat, Repeat1, Infinity as InfinityIcon } from
 "lucide-react";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { useNavigate } from "react-router-dom";
@@ -36,13 +36,9 @@ export default function QueuePanel({ open, onClose, embedded = false }) {
   const [showPicker, setShowPicker] = useState(false);
   const [query, setQuery] = useState("");
   const [dragRows, setDragRows] = useState(null);
-  const [undoTracks, setUndoTracks] = useState(null);
-  const undoTimer = useRef(null);
-
   useEffect(() => {
     if (!open) {setShowPicker(false);setQuery("");setDragRows(null);}
   }, [open]);
-  useEffect(() => () => window.clearTimeout(undoTimer.current), []);
 
   const upcoming = useMemo(
     () => p.queue.map((trk, i) => ({ trk, i })).filter(({ i }) => i > p.currentIndex),
@@ -63,22 +59,6 @@ export default function QueuePanel({ open, onClose, embedded = false }) {
   t.isCrossfade ? "Crossfade " + t.crossfadeSeconds + "s" :
   null;
 
-  const clearUpcoming = () => {
-    if (!upcoming.length) return;
-    const removed = p.queue.slice(p.currentIndex + 1);
-    setUndoTracks(removed);
-    p.setQueue(p.queue.slice(0, p.currentIndex + 1));
-    window.clearTimeout(undoTimer.current);
-    undoTimer.current = window.setTimeout(() => setUndoTracks(null), 8000);
-  };
-
-  const undoClear = () => {
-    if (!undoTracks?.length) return;
-    p.setQueue((current) => [...current, ...undoTracks]);
-    setUndoTracks(null);
-    window.clearTimeout(undoTimer.current);
-  };
-
   const panel =
   <div role={embedded ? "region" : "dialog"} aria-modal={embedded ? undefined : "true"} aria-label="Playback queue" data-public-dialog={embedded ? undefined : true} tabIndex={embedded ? undefined : -1}
   onKeyDown={(e) => {if (e.key === "Escape") {e.stopPropagation();if (showPicker) setShowPicker(false);else onClose?.();}}}
@@ -89,10 +69,6 @@ export default function QueuePanel({ open, onClose, embedded = false }) {
           
         </div>
         <div className="queue-header-actions flex items-center gap-1.5">
-          <button type="button" onClick={() => setShowPicker(true)} className="queue-add-button chrome-button" aria-label="Add from library">
-            <Plus size={17} /><span className="text-xs font-semibold">Add</span>
-          </button>
-          {upcoming.length > 0 && <button type="button" onClick={clearUpcoming} className="queue-clear-button" aria-label="Clear upcoming songs" title="Clear upcoming songs">Clear</button>}
           {!embedded && <button type="button" onClick={onClose} className="queue-close-button" aria-label="Close queue" title="Close queue"><X size={20} /></button>}
         </div>
       </header>
@@ -102,11 +78,6 @@ export default function QueuePanel({ open, onClose, embedded = false }) {
         <button type="button" aria-label={p.repeat === "off" ? "Turn repeat on" : p.repeat === "all" ? "Repeat one song" : "Turn repeat off"} title={p.repeat === "off" ? "Repeat off" : p.repeat === "all" ? "Repeat all" : "Repeat one"} aria-pressed={p.repeat !== "off"} onClick={() => p.setRepeat(p.repeat === "off" ? "all" : p.repeat === "all" ? "one" : "off")}>{p.repeat === "one" ? <Repeat1 size={18} /> : <Repeat size={18} />}</button>
         <button type="button" aria-label={p.autoPlayNext ? "Turn autoplay off" : "Turn autoplay on"} title="Autoplay" aria-pressed={p.autoPlayNext} onClick={() => p.setAutoPlayNext(!p.autoPlayNext)}><InfinityIcon size={19} /></button>
       </div>
-
-      {undoTracks?.length > 0 && <div className="queue-undo-banner" role="status" aria-live="polite">
-        <span>Up Next cleared</span>
-        <button type="button" onClick={undoClear}><Undo2 size={15} />Undo</button>
-      </div>}
 
       <div className="queue-body flex-1 min-h-0 overflow-y-auto">
         {!embedded && p.currentTrack && <section className="queue-current-section">
