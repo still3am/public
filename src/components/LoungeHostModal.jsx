@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
-import {copyText} from "@/lib/shareLink";
-import { Users, Check, X, Loader2, Power, Copy, ScanLine, Pencil } from "lucide-react";
+import { usePlayer } from "@/context/PlayerContext";
+import { useCoverUrl } from "@/hooks/useCoverUrl";
+import { useColorPalette } from "@/hooks/useColorPalette";
+import {copyText, shareLink} from "@/lib/shareLink";
+import { Users, Check, X, Loader2, Power, Copy, Share2, ScanLine, Pencil, Music2, RefreshCw } from "lucide-react";
+import MotionGradient from "@/components/MotionGradient";
+import "./profile-qr.css";
+import "./connect-qr.css";
 import { loungeUrl, qrImageUrl } from "@/lib/lounge";
 import QRScannerModal from "@/components/QRScannerModal";
 import { useToast } from "@/components/ui/use-toast";
@@ -9,7 +15,12 @@ import { useToast } from "@/components/ui/use-toast";
 export default function LoungeHostModal({ lounge, onClose }) {
   const { session, members, loading, error, ensureSession, approve, reject, endSession, updateName } = lounge;
   const { toast } = useToast();
+  const p = usePlayer();
+  const songArt = useCoverUrl(p.currentTrack?.cover_art_url);
+  const songColors = useColorPalette(songArt, true, 5);
   const [copied, setCopied] = useState(false);
+  const [qrFailed, setQrFailed] = useState(false);
+  const [qrAttempt, setQrAttempt] = useState(0);
   const [scanning, setScanning] = useState(false);
   const [editingName, setEditingName] = useState(false);
   const [nameDraft, setNameDraft] = useState("");
@@ -67,6 +78,7 @@ export default function LoungeHostModal({ lounge, onClose }) {
   }
 
   const url = loungeUrl(session.code);
+  useEffect(() => { setQrFailed(false); }, [url]);
   const pending = members.filter((m) => m.status === "pending" && m.role !== "host");
   const approvedGuests = members.filter((m) => m.status === "approved" && m.role !== "host");
 
@@ -77,21 +89,26 @@ export default function LoungeHostModal({ lounge, onClose }) {
     } catch {toast({title:"Couldn’t copy the Connect invite. Please try again.",variant:"destructive"});}
   }
 
-  return (
-    <div role="dialog" aria-modal="true" aria-label="Connect invite" data-public-dialog tabIndex={-1} onKeyDown={e=>{if(e.key==="Escape"){e.stopPropagation();onClose?.();}}} className="fixed inset-0 z-[110] bg-black/80 backdrop-blur-md flex items-center justify-center p-4" onClick={onClose}>
-      <div
-        className="bg-card text-foreground rounded-3xl w-full max-w-md max-h-[90vh] overflow-y-auto p-6 relative shadow-2xl"
-        onClick={(e) => e.stopPropagation()}>
-        
-        <button
-          onClick={onClose}
-          className="absolute right-4 top-4 p-2 rounded-full hover:bg-foreground/5"
-          aria-label="Close">
-          
-          <X size={20} />
-        </button>
+  async function share() {
+    try {
+      const result = await shareLink({ title: "Join my Connect session on PUBLIC.", text: "Scan in to add music to our shared queue.", url });
+      if (result === "copied") { setCopied(true); setTimeout(() => setCopied(false), 1500); }
+    } catch {toast({title:"Couldn’t share the Connect invite. Please try again.",variant:"destructive"});}
+  }
 
-        <div className="text-center mb-5">
+  return (
+    <div role="dialog" aria-modal="true" aria-label="Connect invite" data-public-dialog tabIndex={-1} onKeyDown={e=>{if(e.key==="Escape"){e.stopPropagation();onClose?.();}}} className="profile-qr-overlay connect-qr-overlay" onClick={onClose}>
+      <section className="profile-qr-shell connect-qr-shell" onClick={(e) => e.stopPropagation()}>
+        <div className="profile-qr-art" aria-hidden="true">
+          <MotionGradient colors={songColors} motion="flow" speed={0.72} active={!scanning} className="absolute inset-0" />
+          <div className="profile-qr-shade connect-qr-shade" />
+        </div>
+        <header className="profile-qr-header">
+          <span>PUBLIC. / CONNECT</span>
+          <button type="button" onClick={onClose} aria-label="Close Connect" className="profile-qr-close"><X size={20} /></button>
+        </header>
+
+        <div className="profile-qr-identity connect-qr-identity">
           
 
           
@@ -144,40 +161,33 @@ export default function LoungeHostModal({ lounge, onClose }) {
             }
             </div>
           }
-          <p className="text-xs text-foreground/50 mt-1">
-            Scan to join Connect and add songs to the shared queue.
-          </p>
+          {songArt ? <img src={songArt} alt="" className="profile-qr-avatar connect-qr-avatar" /> : <div className="profile-qr-avatar connect-qr-avatar connect-qr-placeholder"><Music2 size={25} /></div>}
+          <h2>{session.name || cacheName(session)}</h2>
+          <p>{p.currentTrack ? <>Now playing · {p.currentTrack.title}{p.currentTrack.artist ? " · " + p.currentTrack.artist : ""}</> : "Scan to join and build the shared queue together."}</p>
         </div>
 
         {/* QR */}
-        <div className="flex flex-col items-center mb-4">
-          <div className="inline-block p-4 rounded-3xl shadow-sm" style={{ backgroundColor: "white" }}>
-            <img src={qrImageUrl(url, 480)} alt="Connect QR code" width="240" height="240" className="rounded-xl" />
-          </div>
-          <div className="mt-3 flex items-center gap-2">
-            <span className="text-sm font-bold tracking-[0.2em]">{session.code}</span>
-            <button
-              onClick={copy}
-              className="p-1.5 rounded-full hover:bg-foreground/5 active:scale-90 transition"
-              aria-label="Copy link">
-              
-              {copied ? <Check size={14} /> : <Copy size={14} />}
-            </button>
-          </div>
+        <div className="profile-qr-code connect-qr-code">
+          {qrFailed ? <div className="profile-qr-retry"><p>QR code couldn’t load</p><button type="button" onClick={() => { setQrFailed(false); setQrAttempt(value => value + 1); }}><RefreshCw size={16} />Retry</button></div> : <img key={qrAttempt} src={qrImageUrl(url, 480)} alt="Scan to join this Connect session" width="280" height="280" onError={() => setQrFailed(true)} />}
+        </div>
+        <p className="profile-qr-caption connect-qr-caption">Scan to join this Connect session<span>Then add songs to the shared queue.</span></p>
+        <div className="profile-qr-actions connect-qr-actions">
+          <button type="button" className="profile-qr-share" onClick={share}><Share2 size={17} />Share invite</button>
+          <button type="button" onClick={copy} aria-label={copied ? "Invite link copied" : "Copy invite link"}>{copied ? <Check size={17} /> : <Copy size={17} />}<span>{copied ? "Copied" : "Copy link"}</span></button>
         </div>
 
         {/* Pending requests */}
-        <div className="mb-3">
+        <div className="connect-qr-members">
           <div className="flex items-center gap-2 text-[11px] uppercase tracking-wider text-foreground/40 mb-2">
             <Users size={12} /> Join requests {pending.length ? `· ${pending.length}` : ""}
           </div>
           {pending.length === 0 ?
-          <p className="text-xs text-foreground/40 px-1">No one waiting. Share your QR to invite friends.</p> :
+          <p className="text-xs text-white/70 px-1">No one waiting. Share your QR to invite friends.</p> :
 
           <div className="space-y-2">
               {pending.map((m) =>
-            <div key={m.id} className="flex items-center gap-2 px-2 py-2 rounded-xl bg-foreground/[0.03]">
-                  <div className="w-8 h-8 rounded-full bg-foreground/10 grid place-items-center text-xs font-bold shrink-0">
+            <div key={m.id} className="connect-qr-member flex items-center gap-2 px-2 py-2 rounded-xl">
+                  <div className="w-8 h-8 rounded-full bg-white/15 grid place-items-center text-xs font-bold shrink-0">
                     {(m.name || "?").charAt(0)}
                   </div>
                   <span className="text-sm truncate flex-1">{m.name || "Someone"}</span>
@@ -204,12 +214,12 @@ export default function LoungeHostModal({ lounge, onClose }) {
         {/* Approved guests */}
         {approvedGuests.length > 0 &&
         <div className="mb-4">
-            <div className="text-[11px] uppercase tracking-wider text-foreground/40 mb-2">In Connect</div>
+            <div className="text-[11px] uppercase tracking-wider text-white/75 mb-2">In Connect</div>
             <div className="flex flex-wrap gap-2">
               {approvedGuests.map((m) =>
             <span
               key={m.id}
-              className="chip">
+              className="connect-qr-chip">
               
                   {m.name || "Guest"}
                 </span>
@@ -220,7 +230,7 @@ export default function LoungeHostModal({ lounge, onClose }) {
 
         <button
           onClick={() => setScanning(true)}
-          className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl border border-border text-sm font-semibold mb-3">
+          className="profile-qr-scan connect-qr-scan">
           
           <ScanLine size={15} /> Scan to join Connect
         </button>
@@ -232,11 +242,11 @@ export default function LoungeHostModal({ lounge, onClose }) {
             try{if(await endSession())onClose();}finally{setEnding(false);}
           }}
           disabled={ending}
-          className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-2xl border border-dashed border-border text-sm font-semibold text-foreground/70 hover:text-red-600 hover:border-red-600/40 transition">
+          className="connect-qr-end">
           
           <Power size={15} /> {ending?"Ending Connect…":"End Connect"}
         </button>
-      </div>
+      </section>
       {scanning && <QRScannerModal onClose={() => setScanning(false)} />}
     </div>);
 
