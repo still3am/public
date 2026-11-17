@@ -300,11 +300,6 @@
  .public-app .profile-page.profile-redesigned .profile-avatar-username{display:none}
  .public-app .profile-page.profile-redesigned .profile-inline-username{display:inline}
 }
-
-@media(max-width:767px){
- .public-app .profile-page.profile-redesigned .profile-avatar-username{display:none}
- .public-app .profile-page.profile-redesigned .profile-inline-username{display:inline}
-}
 @media(prefers-reduced-motion:reduce){
  .public-app .profile-page.profile-redesigned{scroll-behavior:auto}
 }
