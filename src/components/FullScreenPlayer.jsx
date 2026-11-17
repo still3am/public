@@ -114,7 +114,7 @@ export default function FullScreenPlayer({ onClose }) {
   // keyboard shortcuts
   useEffect(() => {
     const onKey = (e) => {
-      if (showQueue || e.metaKey || e.ctrlKey || e.altKey || e.defaultPrevented || e.target?.closest?.("button,a,input,textarea,select,[contenteditable=true],[role=menu],[data-public-menu]")) return;
+      if (e.metaKey || e.ctrlKey || e.altKey || e.defaultPrevented || e.target?.closest?.("button,a,input,textarea,select,[contenteditable=true],[role=menu],[data-public-menu]")) return;
       if (e.repeat && e.code === "Space") return;
       switch (e.code) {
         case "Space":
@@ -152,7 +152,7 @@ export default function FullScreenPlayer({ onClose }) {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [p, onClose, hasLyrics, showQueue]);
+  }, [p, onClose, hasLyrics]);
 
   // Lock the background page while the full-screen player is open so the drag-
   // to-dismiss gesture can't scroll / overscroll the Home feed behind it.
