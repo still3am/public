@@ -39,6 +39,9 @@ export default function LoungeHostModal({ lounge, onClose }) {
     return s && s.host_name ? `${s.host_name}'s Connect` : "Connect";
   }
 
+  const url = session?.code ? loungeUrl(session.code) : "";
+  useEffect(() => { setQrFailed(false); }, [url]);
+
   async function saveName() {
     if (!updateName || savingName || !nameDraft.trim()) return;
     setSavingName(true);
@@ -77,8 +80,6 @@ export default function LoungeHostModal({ lounge, onClose }) {
 
   }
 
-  const url = loungeUrl(session.code);
-  useEffect(() => { setQrFailed(false); }, [url]);
   const pending = members.filter((m) => m.status === "pending" && m.role !== "host");
   const approvedGuests = members.filter((m) => m.status === "approved" && m.role !== "host");
 
