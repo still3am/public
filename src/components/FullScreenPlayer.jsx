@@ -1,7 +1,6 @@
 import { findLyricsCatalog } from '@/lib/lyricsCatalog';
 import PureBadge from "@/components/PureBadge";
 import TrackFavoriteButton from "@/components/track/TrackFavoriteButton";
-import DeviceConnect from "@/components/DeviceConnect";
 import OverflowText from "@/components/OverflowText";
 import { copyText } from '@/lib/shareLink';
 import { useState, useRef, useEffect } from "react";
@@ -390,7 +389,6 @@ export default function FullScreenPlayer({ onClose }) {
                 <MessageSquareText size={22} strokeWidth={1.8} aria-hidden="true" />
               </button>
             </>}
-            <DeviceConnect />
           </div>
         </div>
 
