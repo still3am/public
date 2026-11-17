@@ -154,9 +154,8 @@ export default function LoungeHostModal({ lounge, onClose }) {
           </div>
           {pending.length === 0 ?
           <p className="text-xs text-white/70 px-1">No one waiting. Share your QR to invite friends.</p> :
-          <div className="connect-approve-all-row"><span>{pending.length} waiting for access</span><button type="button" disabled={approvalBusy} onClick={async () => {setApprovalBusy(true);const count=await approveAll();setApprovalBusy(false);toast(count===pending.length?{title:"Approved "+count+" "+(count===1?"person":"people")}:{title:"Some requests couldn’t be approved",variant:"destructive"});}}>Approve all</button></div>
-
           <div className="space-y-2">
+              <div className="connect-approve-all-row"><span>{pending.length} waiting for access</span><button type="button" disabled={approvalBusy} onClick={async () => {setApprovalBusy(true);const count=await approveAll();setApprovalBusy(false);toast(count===pending.length?{title:"Approved "+count+" "+(count===1?"person":"people")}:{title:"Some requests couldn’t be approved",variant:"destructive"});}}>Approve all</button></div>
               {pending.map((m) =>
             <div key={m.id} className="connect-qr-member flex items-center gap-2 px-2 py-2 rounded-xl">
                   <div className="w-8 h-8 rounded-full bg-white/15 grid place-items-center text-xs font-bold shrink-0">
