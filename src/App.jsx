@@ -11,6 +11,7 @@ import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import ProtectedRoute from '@/components/ProtectedRoute';
 import { PlayerProvider } from '@/context/PlayerContext';
+import { LoungeHostProvider } from '@/hooks/useLoungeHost';
 import { LibraryProvider } from '@/context/LibraryContext';
 import { UploadProvider } from '@/context/UploadContext';
 import Layout from '@/components/Layout';
@@ -144,13 +145,13 @@ function App() {
     <AuthProvider>
       <QueryClientProvider client={queryClientInstance}>
         <Router>
-          <ErrorBoundary><GlobalStatus/><DialogFocusManager/><SafetyProvider><PlayerProvider><OfflineSyncManager/><MusicRequestSync/>
+          <ErrorBoundary><GlobalStatus/><DialogFocusManager/><SafetyProvider><PlayerProvider><LoungeHostProvider><OfflineSyncManager/><MusicRequestSync/>
             <LibraryProvider>
               <UploadProvider>
                 <AuthenticatedApp />
               </UploadProvider>
             </LibraryProvider>
-          </PlayerProvider></SafetyProvider></ErrorBoundary>
+          </LoungeHostProvider></PlayerProvider></SafetyProvider></ErrorBoundary>
         </Router>
         <Toaster />
       </QueryClientProvider>
