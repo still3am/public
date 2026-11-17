@@ -17,7 +17,13 @@ export default function QRScannerModal({ onClose }) {
       nav(`/profile/${prof[1]}`);
       return;
     }
-    setErr("That QR code isn't a PUBLIC profile link.");
+    const connect = decoded.match(/\/lounge\/([A-Z2-9]{5})\/?(?:[?#].*)?$/i);
+    if (connect) {
+      onClose();
+      nav(`/lounge/${connect[1].toUpperCase()}`);
+      return;
+    }
+    setErr("That QR code isn't a PUBLIC profile or Connect invite.");
   }
 
   useEffect(() => {
@@ -72,7 +78,7 @@ export default function QRScannerModal({ onClose }) {
         </button>
         <h3 className="font-extrabold text-center mb-1">Scan a PUBLIC QR</h3>
         <p className="text-xs text-foreground/50 text-center mb-3">
-          Point your camera at a PUBLIC profile QR code.
+          Point your camera at a PUBLIC profile or Connect QR code.
         </p>
         <div className="relative rounded-2xl overflow-hidden bg-black aspect-square">
           <div id="qr-reader" className="w-full h-full [&_video]:object-cover [&_video]:w-full [&_video]:h-full" />
@@ -87,7 +93,7 @@ export default function QRScannerModal({ onClose }) {
         </div>
         {err && <p className="text-xs text-red-500 text-center mt-3">{err}</p>}
         <p className="text-[10px] text-foreground/40 text-center mt-3 flex items-center justify-center gap-1">
-          <ScanLine size={10} /> Opens PUBLIC profiles.
+          <ScanLine size={10} /> Opens profiles and Connect invites.
         </p>
       </div>
     </div>
