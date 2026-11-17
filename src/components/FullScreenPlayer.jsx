@@ -3,6 +3,7 @@ import PureBadge from "@/components/PureBadge";
 import TrackFavoriteButton from "@/components/track/TrackFavoriteButton";
 import OverflowText from "@/components/OverflowText";
 import { copyText } from '@/lib/shareLink';
+import { createPortal } from "react-dom";
 import { useState, useRef, useEffect } from "react";
 import { usePlayer } from "@/context/PlayerContext";
 import { useColorPalette } from "@/hooks/useColorPalette";
@@ -12,7 +13,7 @@ import { shareTrack } from "@/lib/shareTrack";
 import { getTrackShareUrl, prepareTrackShare } from "@/lib/trackShareUrl";
 import SyncedLyrics from "@/components/SyncedLyrics";
 import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
-import { ListMusic } from "lucide-react";
+import { ListMusic, UsersRound } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import LyricSharePicker from "@/components/LyricSharePicker";
 import {
@@ -28,6 +29,8 @@ import {
 import MotionGradient from "@/components/MotionGradient";
 import PlayPauseButton from "@/components/PlayPauseButton";
 import QueuePanel from "@/components/QueuePanel";
+import LoungeHostModal from "@/components/LoungeHostModal";
+import { useLoungeHost } from "@/hooks/useLoungeHost";
 import { useLibrary } from "@/context/LibraryContext";
 import { useOfflineCoverUrl } from "@/hooks/useOfflineCoverUrl";
 import { useCoverUrl } from "@/hooks/useCoverUrl";
@@ -51,6 +54,8 @@ export default function FullScreenPlayer({ onClose }) {
   const [showVolHint, setShowVolHint] = useState(false);
   const [copied, setCopied] = useState(false);
   const [showQueue, setShowQueue] = useState(false);
+  const [showConnect, setShowConnect] = useState(false);
+  const lounge = useLoungeHost();
   const [showLyricsPanel, setShowLyricsPanel] = useState(false);
   const t = p.currentTrack;
   useEffect(() => {if (t?.id) prepareTrackShare();}, [t?.id]);
@@ -360,6 +365,9 @@ export default function FullScreenPlayer({ onClose }) {
               <button type="button" onClick={() => { setLyricsMode(false); setShowLyricsPanel(false); setShowQueue((value) => !value); }} aria-label={showQueue ? "Hide queue" : "Show queue"} aria-pressed={showQueue} className="full-player-lyrics-toggle full-player-queue-toggle">
                 <ListMusic size={22} strokeWidth={1.8} aria-hidden="true" />
               </button>
+              <button type="button" onClick={() => { if (!user) { navigate("/login"); return; } setShowQueue(false); setLyricsMode(false); setShowLyricsPanel(false); setShowConnect(true); }} aria-label="Connect with friends" title="Connect" className="full-player-lyrics-toggle full-player-connect-toggle">
+                <UsersRound size={22} strokeWidth={1.8} aria-hidden="true" />
+              </button>
             </>
           </div>
         </div>
@@ -372,6 +380,8 @@ export default function FullScreenPlayer({ onClose }) {
           </div>
         </div>
       </div>
+
+      {showConnect && createPortal(<LoungeHostModal lounge={lounge} onClose={() => setShowConnect(false)} />, document.body)}
 
       {sharingLyrics&&hasLyrics&&<LyricSharePicker key={t.id} track={t} result={lyricsAvailability} initialLine={shareLine} onClose={()=>setSharingLyrics(false)} onSelect={lyrics=>{
         setSharingLyrics(false);
