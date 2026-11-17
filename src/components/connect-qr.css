@@ -1,6 +1,6 @@
-.connect-qr-overlay{z-index:110;background:rgba(5,6,10,.66);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
-.connect-qr-shell{width:min(100%,420px);padding:20px 24px 18px;background:rgba(16,18,24,.38);backdrop-filter:blur(26px);-webkit-backdrop-filter:blur(26px);border-color:rgba(255,255,255,.28);color:#fff}
-.connect-qr-shade{background:linear-gradient(180deg,rgba(8,10,16,.36),rgba(8,10,16,.24) 36%,rgba(8,10,16,.78))}
+.connect-qr-overlay{z-index:110;padding:calc(env(safe-area-inset-top,0px) + 10px) 12px calc(env(safe-area-inset-bottom,0px) + 10px);background:rgba(5,6,10,.2);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+.connect-qr-shell{width:min(100%,420px);max-height:100%;padding:20px 24px 18px;background:rgba(16,18,24,.3);backdrop-filter:blur(26px);-webkit-backdrop-filter:blur(26px);border-color:rgba(255,255,255,.28);color:#fff}
+.connect-qr-shade{background:linear-gradient(180deg,rgba(8,10,16,.2),rgba(8,10,16,.12) 36%,rgba(8,10,16,.36))}
 .connect-qr-identity{margin:12px 0 18px;gap:0}
 .connect-qr-identity h2{margin:0;font-size:24px}
 .connect-qr-identity p{max-width:31ch;line-height:1.45;color:rgba(255,255,255,.76);margin:7px 0 0}
