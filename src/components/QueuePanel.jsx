@@ -133,9 +133,9 @@ export default function QueuePanel({ open, onClose, embedded = false }) {
       className="queue-transition"><GitMerge size={14} /><span>{transitionLabel} active</span><span>Edit</span></button>}
 
         <section className="queue-next-section">
-          <div className="queue-list-heading">
+          <div className="queue-list-heading hidden">
             
-            {upcoming.length > 5 && <div className="queue-search-wrap"><Search size={15} aria-hidden="true" /><input aria-label="Search upcoming songs" placeholder="Search queue" value={query} disabled={!!dragRows} onChange={(e) => setQuery(e.target.value)} />{query && <button type="button" onClick={() => setQuery("")} aria-label="Clear search"><X size={14} /></button>}</div>}
+            {upcoming.length > 5 && <div className="queue-search-wrap hidden"><Search size={15} aria-hidden="true" /><input aria-label="Search upcoming songs" placeholder="Search queue" value={query} disabled={!!dragRows} onChange={(e) => setQuery(e.target.value)} />{query && <button type="button" onClick={() => setQuery("")} aria-label="Clear search"><X size={14} /></button>}</div>}
           </div>
 
           {!displayUpcoming.length ? <div className="queue-empty">
