@@ -86,7 +86,7 @@ export default function QueuePanel({ open, onClose, embedded = false }) {
       <header className="queue-header top-bar-safe flex items-center justify-between px-4 pt-2 pb-3 shrink-0">
         <div className="queue-heading min-w-0">
           
-          <h2 className="text-xl font-semibold tracking-tight hidden">Queue</h2>
+          
         </div>
         <div className="queue-header-actions flex items-center gap-1.5">
           <button type="button" onClick={() => setShowPicker(true)} className="queue-add-button chrome-button" aria-label="Add from library">
