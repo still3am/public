@@ -359,8 +359,8 @@ export default function FullScreenPlayer({ onClose }) {
           </div>
 
           {/* controls */}
-          <div className="full-player-transport flex items-center justify-between gap-2 my-4 shrink-0">
-            <IconButton icon={Shuffle} onClick={() => p.setShuffle(!p.shuffle)} active={p.shuffle} label="Shuffle" size={20} />
+          <div className={`full-player-transport flex items-center ${showQueue ? "justify-center gap-12" : "justify-between gap-2"} my-4 shrink-0`}>
+            {!showQueue && <IconButton icon={Shuffle} onClick={() => p.setShuffle(!p.shuffle)} active={p.shuffle} label="Shuffle" size={20} />
             <button onClick={() => p.prev()} className="p-2 active:scale-90 transition disabled:opacity-25 disabled:cursor-default" aria-label="Previous">
               <SkipBack size={30} fill="white" strokeWidth={1.5} />
             </button>
@@ -368,12 +368,12 @@ export default function FullScreenPlayer({ onClose }) {
             <button onClick={() => p.next()} className="p-2 active:scale-90 transition disabled:opacity-25 disabled:cursor-default" aria-label="Next">
               <SkipForward size={30} fill="white" strokeWidth={1.5} />
             </button>
-            <IconButton
+            {!showQueue && <IconButton
               icon={repeatOff ? Repeat : Repeat1}
               onClick={() => p.setRepeat(p.repeat === "off" ? "all" : p.repeat === "all" ? "one" : "off")}
               active={!repeatOff}
               label="Repeat"
-              size={20} />
+              size={20} />}
 
           </div>
 
