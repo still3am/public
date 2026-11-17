@@ -1,5 +1,4 @@
 import PureBadge from "@/components/PureBadge";
-import DeviceConnect from "@/components/DeviceConnect";
 import OverflowText from "@/components/OverflowText";
 import {useToast} from '@/components/ui/use-toast';
 import { useState, useRef, useEffect } from "react";
@@ -175,7 +174,6 @@ export default function PlayerBar() {
             </button>
             </div>
             <div className="desktop-player-tools">
-            <DeviceConnect />
             <button
               onClick={() => setQueueOpen(true)}
               className={`relative p-2 rounded-full hover:bg-foreground/5 active:scale-90 transition ${
