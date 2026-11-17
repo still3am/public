@@ -53,6 +53,7 @@ import ArtistDashboard from '@/pages/ArtistDashboard';
 import PlaylistDetail from '@/pages/PlaylistDetail';
 import MyUploads from '@/pages/MyUploads';
 import UnfinishedUploads from '@/pages/UnfinishedUploads';
+import Lounge from '@/pages/Lounge';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin, checkAppState } = useAuth();
@@ -130,6 +131,7 @@ const AuthenticatedApp = () => {
           <Route path="/artist-dashboard" element={<ArtistDashboard />} />
           <Route path="/my-uploads" element={<MyUploads />} />
           <Route path="/unfinished-uploads" element={<UnfinishedUploads />} />
+          <Route path="/lounge/:code" element={<Lounge />} />
         </Route>
       </Route>
       <Route element={<ProtectedRoute />}><Route path="/messages" element={<Messages />} /></Route>
