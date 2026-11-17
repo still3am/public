@@ -98,9 +98,9 @@ export default function QueuePanel({ open, onClose, embedded = false }) {
       </header>
 
       <div className="queue-playback-modes" role="group" aria-label="Playback modes">
-        <button type="button" aria-label={p.shuffle ? "Turn shuffle off" : "Turn shuffle on"} title="Shuffle" aria-pressed={p.shuffle} onClick={() => p.setShuffle(!p.shuffle)}><Shuffle size={18} /><span className="hidden">Shuffle</span></button>
-        <button type="button" aria-label={p.repeat === "off" ? "Turn repeat on" : p.repeat === "all" ? "Repeat one song" : "Turn repeat off"} title={p.repeat === "off" ? "Repeat off" : p.repeat === "all" ? "Repeat all" : "Repeat one"} aria-pressed={p.repeat !== "off"} onClick={() => p.setRepeat(p.repeat === "off" ? "all" : p.repeat === "all" ? "one" : "off")}>{p.repeat === "one" ? <Repeat1 size={18} /> : <Repeat size={18} />}<span className="hidden">{p.repeat === "one" ? "Repeat one" : "Repeat"}</span></button>
-        <button type="button" aria-label={p.autoPlayNext ? "Turn autoplay off" : "Turn autoplay on"} title="Autoplay" aria-pressed={p.autoPlayNext} onClick={() => p.setAutoPlayNext(!p.autoPlayNext)}><InfinityIcon size={19} /><span className="hidden">Autoplay</span></button>
+        <button type="button" aria-label={p.shuffle ? "Turn shuffle off" : "Turn shuffle on"} title="Shuffle" aria-pressed={p.shuffle} onClick={() => p.setShuffle(!p.shuffle)}><Shuffle size={18} /></button>
+        <button type="button" aria-label={p.repeat === "off" ? "Turn repeat on" : p.repeat === "all" ? "Repeat one song" : "Turn repeat off"} title={p.repeat === "off" ? "Repeat off" : p.repeat === "all" ? "Repeat all" : "Repeat one"} aria-pressed={p.repeat !== "off"} onClick={() => p.setRepeat(p.repeat === "off" ? "all" : p.repeat === "all" ? "one" : "off")}>{p.repeat === "one" ? <Repeat1 size={18} /> : <Repeat size={18} />}</button>
+        <button type="button" aria-label={p.autoPlayNext ? "Turn autoplay off" : "Turn autoplay on"} title="Autoplay" aria-pressed={p.autoPlayNext} onClick={() => p.setAutoPlayNext(!p.autoPlayNext)}><InfinityIcon size={19} /></button>
       </div>
 
       {undoTracks?.length > 0 && <div className="queue-undo-banner" role="status" aria-live="polite">
