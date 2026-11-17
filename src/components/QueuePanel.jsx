@@ -29,7 +29,7 @@ function QueueMenuRow({provided,dragging,children}){
     className={'queue-upcoming-row song-menu-surface group flex items-center gap-3 px-2 py-2 rounded-xl transition '+(dragging?'bg-accent ring-1 ring-border':'hover:bg-accent')}>{children(lp)}</div>;
 }
 
-export default function QueuePanel({ open, onClose }) {
+export default function QueuePanel({ open, onClose, embedded = false }) {
   const p = usePlayer();
   const t = useTransitions();
   const nav = useNavigate();
@@ -81,10 +81,10 @@ export default function QueuePanel({ open, onClose }) {
     window.clearTimeout(undoTimer.current);
   };
 
-  return createPortal(
-    <div role="dialog" aria-modal="true" aria-label="Playback queue" data-public-dialog tabIndex={-1}
+  const panel = (
+    <div role={embedded ? "region" : "dialog"} aria-modal={embedded ? undefined : "true"} aria-label="Playback queue" data-public-dialog={!embedded || undefined} tabIndex={embedded ? undefined : -1}
       onKeyDown={(e) => { if (e.key === "Escape") { e.stopPropagation(); if (showPicker) setShowPicker(false); else onClose?.(); } }}
-      className="queue-panel fixed inset-0 z-[60] bg-card text-foreground flex flex-col animate-[fadeIn_.22s_ease-out]">
+      className={`queue-panel ${embedded ? "queue-panel-embedded" : "fixed inset-0 z-[60] animate-[fadeIn_.22s_ease-out]"} bg-card text-foreground flex flex-col`}>
       <header className="queue-header top-bar-safe flex items-center justify-between px-4 pt-2 pb-3 shrink-0">
         <div className="queue-heading min-w-0">
           <span className="queue-eyebrow">PUBLIC. / NOW PLAYING</span>
@@ -182,7 +182,7 @@ export default function QueuePanel({ open, onClose }) {
         </details>}
       </div>
 
-      {p.currentTrack && <footer className="queue-transport">
+      {!embedded && p.currentTrack && <footer className="queue-transport">
         <div className="queue-transport-song"><span>{p.currentTrack.title}</span><small>{p.currentTrack.artist || p.currentTrack.uploader_name || "Unknown"}</small></div>
         <div className="queue-transport-controls">
           <button type="button" onClick={p.prev} aria-label="Previous song"><SkipBack size={19} fill="currentColor"/></button>
@@ -192,7 +192,8 @@ export default function QueuePanel({ open, onClose }) {
       </footer>}
 
       <QueueLibraryPicker open={showPicker} onClose={() => setShowPicker(false)} />
-    </div>,
-    document.body
+    </div>
   );
+
+  return embedded ? panel : createPortal(panel, document.body);
 }
