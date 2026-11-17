@@ -253,7 +253,10 @@
 
 /* Final responsive profile layout: one content rhythm across wide, tablet, and phone screens. */
 .public-app .profile-page.profile-redesigned{
- box-sizing:border-box;width:100%;max-width:1320px;min-width:0;margin-inline:auto;padding:20px clamp(18px,3vw,40px) 56px;overflow-x:clip
+ box-sizing:border-box;width:100%;max-width:1320px;min-width:0;margin-inline:auto;overflow-x:clip
+}
+@media(min-width:768px){
+ .public-app .profile-page.profile-redesigned{padding:20px clamp(18px,3vw,40px) 56px}
 }
 .public-app .profile-page.profile-redesigned :is(.profile-overview,.profile-identity,.profile-details,.profile-content,.profile-music,.profile-community-column){min-width:0;box-sizing:border-box}
 .public-app .profile-page.profile-redesigned .profile-overview{width:100%;margin:0 0 clamp(28px,4vw,44px)}
@@ -296,39 +299,7 @@
  .public-app .profile-page.profile-redesigned .profile-community-column>.profile-discover-section,
  .public-app .profile-page.profile-redesigned .profile-community-column>.profile-public-playlists{min-width:0;margin:0}
 }
-@media(max-width:767px){
- .public-app .profile-page.profile-redesigned{padding:0 0 36px}
- .public-app .profile-page.profile-redesigned .profile-overview{width:calc(100% + 2 * var(--app-gutter));max-width:none;margin:0 calc(-1 * var(--app-gutter)) 28px}
- .public-app .profile-page.profile-redesigned .profile-identity{border-radius:0}
- .public-app .profile-page.profile-redesigned .profile-cover-stage{height:clamp(210px,58vw,310px);min-height:0;max-height:none;aspect-ratio:auto}
- .public-app .profile-page.profile-redesigned .profile-details{padding:0 clamp(16px,5vw,24px) 24px!important}
- .public-app .profile-page.profile-redesigned .profile-identity-row{align-items:center;justify-content:center;gap:0}
- .public-app .profile-page.profile-redesigned .profile-avatar-notes{margin-top:-50px!important}
- .public-app .profile-page.profile-redesigned .profile-info{padding-top:16px;text-align:center}
- .public-app .profile-page.profile-redesigned .profile-name-row,
- .public-app .profile-page.profile-redesigned .profile-metadata,
- .public-app .profile-page.profile-redesigned .profile-stats,
- .public-app .profile-page.profile-redesigned .profile-actions{justify-content:center!important}
- .public-app .profile-page.profile-redesigned .profile-stats{grid-template-columns:repeat(3,minmax(0,1fr));width:100%;gap:4px!important;margin:20px 0 16px}
- .public-app .profile-page.profile-redesigned .profile-actions{display:flex;flex-wrap:wrap;gap:10px!important}
- .public-app .profile-page.profile-redesigned .profile-actions>.profile-primary-action{flex:0 0 100%;width:100%;max-width:360px;margin:0 auto 2px}
- .public-app .profile-page.profile-redesigned .profile-content{display:flex;flex-direction:column;gap:24px}
- .public-app .profile-page.profile-redesigned .profile-content>.profile-music,
- .public-app .profile-page.profile-redesigned .profile-content>.profile-community-column{display:contents}
- .public-app .profile-page.profile-redesigned .profile-community-column{display:contents}
- .public-app .profile-page.profile-redesigned .profile-community-column>.profile-discover-section{order:4}
- .public-app .profile-page.profile-redesigned .profile-community-column>.profile-public-playlists{order:5}
- .public-app .profile-page.profile-redesigned .profile-music>.profile-conversation{order:6}
- .public-app .profile-page.profile-redesigned :is(.profile-song-spotlight,.profile-rotation,.profile-discover-section,.profile-public-playlists,.profile-conversation){width:100%;max-width:720px;margin-inline:auto}
- .public-app .profile-page.profile-redesigned :is(.profile-rotation,.profile-people-shelf,.profile-public-playlists,.profile-conversation){border-radius:22px}
- .public-app .profile-page.profile-redesigned .profile-people-shelf{overflow:hidden}
- .public-app .profile-page.profile-redesigned .profile-community-column .profile-people-track{max-width:100%}
-}
-@media(max-width:380px){
- .public-app .profile-page.profile-redesigned .profile-details{padding-inline:14px!important}
- .public-app .profile-page.profile-redesigned .profile-stats .font-bold{font-size:19px}
- .public-app .profile-page.profile-redesigned .profile-actions{gap:8px!important}
-}
+
 @media(prefers-reduced-motion:reduce){
  .public-app .profile-page.profile-redesigned{scroll-behavior:auto}
 }
