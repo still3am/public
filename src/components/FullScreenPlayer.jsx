@@ -385,7 +385,7 @@ export default function FullScreenPlayer({ onClose }) {
               <button type="button" onClick={() => { setShowQueue(false); setShowLyricsPanel((value) => !value); }} aria-label={showLyricsPanel ? "Hide lyrics" : "Show lyrics"} aria-pressed={showLyricsPanel} className="full-player-lyrics-toggle full-player-lyrics-desktop">
                 <MessageSquareText size={22} strokeWidth={1.8} aria-hidden="true" />
               </button>
-              <button type="button" onClick={() => { setLyricsMode(false); setShowLyricsPanel(false); setShowQueue((value) => !value); }} aria-label={showQueue ? "Hide queue" : "Show queue"} aria-pressed={showQueue} className="full-player-lyrics-toggle">
+              <button type="button" onClick={() => { setLyricsMode(false); setShowLyricsPanel(false); setShowQueue((value) => !value); }} aria-label={showQueue ? "Hide queue" : "Show queue"} aria-pressed={showQueue} className="full-player-lyrics-toggle full-player-queue-toggle">
                 <ListMusic size={22} strokeWidth={1.8} aria-hidden="true" />
               </button>
             </>
