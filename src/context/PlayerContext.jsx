@@ -1264,13 +1264,10 @@ export function PlayerProvider({ children }) {
   useEffect(()=>{
     if(!("mediaSession" in navigator))return;
     const invoke=(name,...args)=>{try{const result=mediaControls.current?.[name]?.(...args);result?.catch?.(()=>{});}catch{}};
-    const offset=details=>Number.isFinite(details?.seekOffset)&&details.seekOffset>0?details.seekOffset:10;
-    const actions={
+      const actions={
       play:()=>invoke("resumePlayback"),pause:()=>invoke("pausePlayback"),
       previoustrack:()=>invoke("prev"),nexttrack:()=>invoke("next"),
       seekto:details=>{if(Number.isFinite(details?.seekTime))invoke("seek",details.seekTime);},
-      seekbackward:details=>invoke("skipBy",-offset(details)),
-      seekforward:details=>invoke("skipBy",offset(details)),
       stop:()=>{invoke("pausePlayback");invoke("seek",0);},
     };
     for(const [action,handler] of Object.entries(actions)){try{navigator.mediaSession.setActionHandler(/** @type {MediaSessionAction} */ (action),handler);}catch{}}
