@@ -43,7 +43,7 @@ export default function LoungeHostModal({ lounge, onClose }) {
 
   if (loading && !session) {
     return (
-      <div role="dialog" aria-modal="true" aria-label="Connect"  data-public-dialog tabIndex={-1} onKeyDown={e=>{if(e.key==="Escape"){e.stopPropagation();onClose?.();}}} className="fixed inset-0 z-[110] bg-black/70 backdrop-blur-sm grid place-items-center p-4" onClick={onClose}>
+      <div role="dialog" aria-modal="true" aria-label="Connect" data-public-dialog tabIndex={-1} onKeyDown={e=>{if(e.key==="Escape"){e.stopPropagation();onClose?.();}}} className="fixed inset-0 z-[110] bg-black/70 backdrop-blur-sm grid place-items-center p-4" onClick={onClose}>
         <div className="bg-card rounded-3xl w-full max-w-sm p-8 text-center" onClick={(e) => e.stopPropagation()}>
           <Loader2 className="animate-spin mx-auto mb-3" />
           <p className="text-sm text-foreground/60">Starting Connect…</p>
@@ -54,7 +54,7 @@ export default function LoungeHostModal({ lounge, onClose }) {
 
   if (!session) {
     return (
-      <div role="dialog" aria-modal="true" aria-label="Start Connect"  data-public-dialog tabIndex={-1} onKeyDown={event=>{if(event.key==="Escape"){event.stopPropagation();onClose();}}} className="fixed inset-0 z-[110] bg-black/70 backdrop-blur-sm grid place-items-center p-4" onClick={onClose}>
+      <div role="dialog" aria-modal="true" aria-label="Start Connect" data-public-dialog tabIndex={-1} onKeyDown={event=>{if(event.key==="Escape"){event.stopPropagation();onClose();}}} className="fixed inset-0 z-[110] bg-black/70 backdrop-blur-sm grid place-items-center p-4" onClick={onClose}>
         <div className="bg-card rounded-3xl w-full max-w-sm p-8 text-center" onClick={(e) => e.stopPropagation()}>
           <Users size={28} className="mx-auto mb-4 text-foreground/60" />
           <h2 className="text-xl font-semibold mb-2">Connect</h2>
@@ -78,7 +78,7 @@ export default function LoungeHostModal({ lounge, onClose }) {
   }
 
   return (
-    <div role="dialog" aria-modal="true" aria-label="Connect invite"  data-public-dialog tabIndex={-1} onKeyDown={e=>{if(e.key==="Escape"){e.stopPropagation();onClose?.();}}} className="fixed inset-0 z-[110] bg-black/80 backdrop-blur-md flex items-center justify-center p-4" onClick={onClose}>
+    <div role="dialog" aria-modal="true" aria-label="Connect invite" data-public-dialog tabIndex={-1} onKeyDown={e=>{if(e.key==="Escape"){e.stopPropagation();onClose?.();}}} className="fixed inset-0 z-[110] bg-black/80 backdrop-blur-md flex items-center justify-center p-4" onClick={onClose}>
       <div
         className="bg-card text-foreground rounded-3xl w-full max-w-md max-h-[90vh] overflow-y-auto p-6 relative shadow-2xl"
         onClick={(e) => e.stopPropagation()}>
@@ -145,7 +145,7 @@ export default function LoungeHostModal({ lounge, onClose }) {
             </div>
           }
           <p className="text-xs text-foreground/50 mt-1">
-            Friends scan this to join and add songs straight to your play queue.
+            Scan to join Connect and add songs to the shared queue.
           </p>
         </div>
 
