@@ -1085,7 +1085,9 @@ html:not(.dark) .profile-page .profile-identity,html:not(.dark) .profile-page .p
 .queue-library-picker .queue-library-add-song:hover:not(:disabled){background:rgb(255 255 255/.22)!important;}
 .queue-library-picker .queue-library-add-song:disabled{background:rgb(255 255 255/.24)!important;color:#fff!important;}
 .queue-library-picker>div:first-child>button{background:rgb(255 255 255/.1);color:#fff;}
-.queue-library-picker>div:first-child>button:hover{background:rgb(255 255 255/.2);}
+.queue-library-picker .queue-library-close{display:grid;place-items:center;width:42px;height:42px;min-width:42px;min-height:42px;padding:0;border:1px solid rgb(255 255 255/.3);border-radius:50%!important;background:rgb(255 255 255/.14);color:#fff;box-shadow:inset 0 1px 0 rgb(255 255 255/.22);}
+.queue-library-picker .queue-library-close:hover{background:rgb(255 255 255/.24);}
+.queue-library-picker .queue-library-close svg{width:20px;height:20px;}
 .queue-library-picker .text-muted-foreground{color:rgb(255 255 255/.68)!important;}
 @media(max-width:767px){.queue-library-picker{border-radius:22px;}.queue-library-picker>div:first-child{padding-inline:16px!important;}.queue-library-picker>div:nth-child(2){padding-inline:16px;}.queue-library-picker>.flex-1{padding-inline:10px;}}
 
