@@ -110,61 +110,54 @@ export default function LoungeHostModal({ lounge, onClose }) {
         </header>
 
         <div className="profile-qr-identity connect-qr-identity">
-          
-
-          
-          {editingName ?
-          <div className="flex items-center gap-2 justify-center mt-1">
+          {songArt ? <img src={songArt} alt="" className="profile-qr-avatar connect-qr-avatar" /> : <div className="profile-qr-avatar connect-qr-avatar connect-qr-placeholder"><Music2 size={25} /></div>}
+          {editingName ? (
+            <div className="connect-qr-name-edit">
               <input
-              value={nameDraft}
-              onChange={(e) => setNameDraft(e.target.value)}
-              maxLength={60}
-              autoFocus
-              onKeyDown={(e) => {
-                if (e.key === "Enter") saveName();
-                if (e.key === "Escape") setEditingName(false);
-              }}
-              placeholder="Connect name"
-              className="text-base font-extrabold tracking-tight text-center bg-transparent border-b border-border focus:outline-none focus:border-foreground px-1 py-0.5 max-w-[15rem]" />
-            
-              <button
-              onClick={saveName}
-              disabled={savingName}
-              className="p-1.5 rounded-full hover:bg-foreground/5 active:scale-90 transition"
-              aria-label="Save name">
-              
+                value={nameDraft}
+                onChange={(e) => setNameDraft(e.target.value)}
+                maxLength={60}
+                autoFocus
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") saveName();
+                  if (e.key === "Escape") setEditingName(false);
+                }}
+                placeholder="Connect name"
+                aria-label="Connect name"
+              />
+              <button type="button" onClick={saveName} disabled={savingName} aria-label="Save name">
                 {savingName ? <Loader2 size={15} className="animate-spin" /> : <Check size={15} />}
               </button>
-              <button
-              onClick={() => setEditingName(false)}
-              className="p-1.5 rounded-full hover:bg-foreground/5 active:scale-90 transition"
-              aria-label="Cancel">
-              
+              <button type="button" onClick={() => setEditingName(false)} aria-label="Cancel rename">
                 <X size={15} />
               </button>
-            </div> :
-
-          <div className="flex items-center gap-2 justify-center mt-1">
-              <h2 className="text-xl font-extrabold tracking-tight truncate">
-                {session.name || cacheName(session)}
-              </h2>
-              {updateName &&
-            <button
-              onClick={() => {
-                setNameDraft(session.name || cacheName(session));
-                setEditingName(true);
-              }}
-              className="p-1.5 rounded-full hover:bg-foreground/5 active:scale-90 transition shrink-0"
-              aria-label="Rename Connect">
-              
+            </div>
+          ) : (
+            <div className="connect-qr-name">
+              <h2>{session.name || cacheName(session)}</h2>
+              {updateName && (
+                <button
+                  type="button"
+                  onClick={() => {
+                    setNameDraft(session.name || cacheName(session));
+                    setEditingName(true);
+                  }}
+                  aria-label="Rename Connect"
+                >
                   <Pencil size={14} />
                 </button>
-            }
+              )}
             </div>
-          }
-          {songArt ? <img src={songArt} alt="" className="profile-qr-avatar connect-qr-avatar" /> : <div className="profile-qr-avatar connect-qr-avatar connect-qr-placeholder"><Music2 size={25} /></div>}
-          <h2>{session.name || cacheName(session)}</h2>
-          <p>{p.currentTrack ? <>Now playing · {p.currentTrack.title}{p.currentTrack.artist ? " · " + p.currentTrack.artist : ""}</> : "Scan to join and build the shared queue together."}</p>
+          )}
+          <p className="connect-qr-track">
+            {p.currentTrack ? (
+              <>
+                <span>Now playing</span>
+                {p.currentTrack.title}
+                {p.currentTrack.artist ? ` · ${p.currentTrack.artist}` : ""}
+              </>
+            ) : "Scan to join and build the shared queue together."}
+          </p>
         </div>
 
         {/* QR */}
