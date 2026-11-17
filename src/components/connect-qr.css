@@ -24,5 +24,5 @@
 .connect-qr-name-edit input:focus{border-color:rgba(255,255,255,.8)}
 .connect-qr-track{display:flex;flex-direction:column;align-items:center;gap:3px}
 .connect-qr-track span{font-size:10px;font-weight:750;letter-spacing:.12em;text-transform:uppercase;opacity:.68}
-@media(max-width:420px){.connect-qr-shell{padding:17px 20px calc(14px + env(safe-area-inset-bottom,0px)).connect-qr-identity{margin:7px 0 14px}.connect-qr-code{width:min(100%,240px)}}
+@media(max-width:420px){.connect-qr-shell{padding:17px 20px calc(14px + env(safe-area-inset-bottom,0px))}.connect-qr-identity{margin:7px 0 14px}.connect-qr-code{width:min(100%,240px)}}
 @media(max-height:700px){.connect-qr-identity{margin:4px 0 10px}.connect-qr-avatar{width:48px;height:48px;border-radius:14px;margin-bottom:8px}.connect-qr-code{max-width:198px}.connect-qr-caption{margin:10px 0}}
