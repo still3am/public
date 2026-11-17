@@ -1,7 +1,11 @@
 .library-rotation{width:100%;margin:10px auto 30px;padding:8px 0 18px;border-bottom:1px solid hsl(var(--border)/.7)}
 .library-rotation-stage{position:relative;width:100%;height:430px;overflow:hidden;isolation:isolate;perspective:1000px;--rotation-step:226px;--rotation-drag:0px;touch-action:pan-x pinch-zoom;overscroll-behavior:contain;user-select:none;-webkit-user-select:none}
 .library-rotation-stage:focus-visible{outline:2px solid hsl(var(--ring));outline-offset:-4px;border-radius:18px}
-.library-rotation-card{position:absolute;left:50%;top:50%;width:min(250px,68vw);transform:translate3d(-50%,calc(-50% + var(--rotation-offset)*var(--rotation-step) + var(--rotation-drag)),0) scale(var(--rotation-scale, .88));transform-origin:center;backface-visibility:hidden;transition:transform 560ms cubic-bezier(.2,.78,.2,1),opacity 420ms ease;pointer-events:auto}
+.library-rotation-card{position:absolute;left:50%;top:50%;width:min(250px,68vw);transform:translate3d(-50%,calc(-50% + var(--rotation-drag)),0) scale(var(--rotation-scale, .88));transform-origin:center;backface-visibility:hidden;transition:transform 560ms cubic-bezier(.2,.78,.2,1),opacity 420ms ease;pointer-events:auto}
+.library-rotation-card[data-offset="-2"]{transform:translate3d(-50%,calc(-50% - var(--rotation-step)*2 + var(--rotation-drag)),0) scale(var(--rotation-scale, .88))}
+.library-rotation-card[data-offset="-1"]{transform:translate3d(-50%,calc(-50% - var(--rotation-step) + var(--rotation-drag)),0) scale(var(--rotation-scale, .88))}
+.library-rotation-card[data-offset="1"]{transform:translate3d(-50%,calc(-50% + var(--rotation-step) + var(--rotation-drag)),0) scale(var(--rotation-scale, .88))}
+.library-rotation-card[data-offset="2"]{transform:translate3d(-50%,calc(-50% + var(--rotation-step)*2 + var(--rotation-drag)),0) scale(var(--rotation-scale, .88))}
 .library-rotation-art{position:relative;display:grid;place-items:center;width:100%;aspect-ratio:1;overflow:hidden;border:1px solid hsl(var(--foreground)/.1);border-radius:18px;background:hsl(var(--muted));box-shadow:0 18px 44px -25px #000a;color:hsl(var(--muted-foreground))}
 .library-rotation-art>img{display:block;width:100%;height:100%;object-fit:cover;-webkit-user-drag:none}
 .library-rotation-placeholder{display:grid;place-items:center;width:100%;height:100%;background:linear-gradient(140deg,hsl(var(--muted)),hsl(var(--card)))}
