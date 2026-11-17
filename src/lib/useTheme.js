@@ -28,6 +28,11 @@ function applyAccentVariables(id=currentAccent,isDark=current==="dark"){
  root.style.setProperty("--sidebar-accent-foreground",`${option.hue} ${option.saturation}% ${isDark?78:34}%`);
 }
 function notify(){window.dispatchEvent(new CustomEvent(EVENT,{detail:{theme:current,accent:currentAccent}}));}
+if(typeof document!=="undefined"){
+ document.documentElement.classList.toggle("dark",current==="dark");
+ document.documentElement.style.colorScheme=current;
+ applyAccentVariables(currentAccent,current==="dark");
+}
 function apply(next,persist=false){
  current=next;
  if(persist){explicit=true;try{localStorage.setItem(KEY,next);}catch{}}
