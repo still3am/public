@@ -1,11 +1,11 @@
-import {useLongPressMenu} from '@/hooks/useLongPressMenu';
+import { useLongPressMenu } from '@/hooks/useLongPressMenu';
 import { createPortal } from "react-dom";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useCoverUrl } from "@/hooks/useCoverUrl";
 import {
   X, Trash2, Play, Pause, Plus, Music2, GripVertical, GitMerge, Search,
-  SkipBack, SkipForward, Undo2, ListMusic
-} from "lucide-react";
+  SkipBack, SkipForward, Undo2, ListMusic } from
+"lucide-react";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { useNavigate } from "react-router-dom";
 import { usePlayer } from "@/context/PlayerContext";
@@ -21,12 +21,12 @@ function QueueCover({ url }) {
 }
 
 /** @param {any} props */
-function QueueMenuRow({provided,dragging,children}){
-  const lp=useLongPressMenu(dragging,{allowButtons:true});
-  return <div ref={node=>{provided.innerRef(node);lp.ref.current=node;}} {...provided.draggableProps} {...lp.handlers}
-    onClickCapture={event=>{if(lp.consumeLongPress()){event.preventDefault();event.stopPropagation();}}}
-    style={{...provided.draggableProps.style,touchAction:dragging?'none':'pan-y'}}
-    className={'queue-upcoming-row song-menu-surface group flex items-center gap-3 px-2 py-2 rounded-xl transition '+(dragging?'bg-accent ring-1 ring-border':'hover:bg-accent')}>{children(lp)}</div>;
+function QueueMenuRow({ provided, dragging, children }) {
+  const lp = useLongPressMenu(dragging, { allowButtons: true });
+  return <div ref={(node) => {provided.innerRef(node);lp.ref.current = node;}} {...provided.draggableProps} {...lp.handlers}
+  onClickCapture={(event) => {if (lp.consumeLongPress()) {event.preventDefault();event.stopPropagation();}}}
+  style={{ ...provided.draggableProps.style, touchAction: dragging ? 'none' : 'pan-y' }}
+  className={'queue-upcoming-row song-menu-surface group flex items-center gap-3 px-2 py-2 rounded-xl transition ' + (dragging ? 'bg-accent ring-1 ring-border' : 'hover:bg-accent')}>{children(lp)}</div>;
 }
 
 export default function QueuePanel({ open, onClose, embedded = false }) {
@@ -40,7 +40,7 @@ export default function QueuePanel({ open, onClose, embedded = false }) {
   const undoTimer = useRef(null);
 
   useEffect(() => {
-    if (!open) { setShowPicker(false); setQuery(""); setDragRows(null); }
+    if (!open) {setShowPicker(false);setQuery("");setDragRows(null);}
   }, [open]);
   useEffect(() => () => window.clearTimeout(undoTimer.current), []);
 
@@ -54,16 +54,16 @@ export default function QueuePanel({ open, onClose, embedded = false }) {
   );
   const displayUpcoming = dragRows || upcoming;
   const visibleUpcoming = displayUpcoming.filter(({ trk }) => !query.trim() || [trk.title, trk.artist, trk.uploader_name].some((value) => (value || "").toLowerCase().includes(query.trim().toLowerCase())));
-  const totalSeconds = upcoming.every(({trk}) => Number.isFinite(trk.duration_seconds) && trk.duration_seconds > 0)
-    ? upcoming.reduce((sum, {trk}) => sum + trk.duration_seconds, 0) : 0;
+  const totalSeconds = upcoming.every(({ trk }) => Number.isFinite(trk.duration_seconds) && trk.duration_seconds > 0) ?
+  upcoming.reduce((sum, { trk }) => sum + trk.duration_seconds, 0) : 0;
 
   if (!open) return null;
 
-  const transitionLabel = t.mode === TRANSITION_MODES.OFF
-    ? null
-    : t.isGapless ? "Gapless"
-    : t.isCrossfade ? "Crossfade " + t.crossfadeSeconds + "s"
-    : null;
+  const transitionLabel = t.mode === TRANSITION_MODES.OFF ?
+  null :
+  t.isGapless ? "Gapless" :
+  t.isCrossfade ? "Crossfade " + t.crossfadeSeconds + "s" :
+  null;
 
   const clearUpcoming = () => {
     if (!upcoming.length) return;
@@ -81,10 +81,10 @@ export default function QueuePanel({ open, onClose, embedded = false }) {
     window.clearTimeout(undoTimer.current);
   };
 
-  const panel = (
-    <div role={embedded ? "region" : "dialog"} aria-modal={embedded ? undefined : "true"} aria-label="Playback queue" data-public-dialog={embedded ? undefined : true} tabIndex={embedded ? undefined : -1}
-      onKeyDown={(e) => { if (e.key === "Escape") { e.stopPropagation(); if (showPicker) setShowPicker(false); else onClose?.(); } }}
-      className={`queue-panel ${embedded ? "queue-panel-embedded" : "fixed inset-0 z-[60] animate-[fadeIn_.22s_ease-out]"} bg-card text-foreground flex flex-col`}>
+  const panel =
+  <div role={embedded ? "region" : "dialog"} aria-modal={embedded ? undefined : "true"} aria-label="Playback queue" data-public-dialog={embedded ? undefined : true} tabIndex={embedded ? undefined : -1}
+  onKeyDown={(e) => {if (e.key === "Escape") {e.stopPropagation();if (showPicker) setShowPicker(false);else onClose?.();}}}
+  className={`queue-panel ${embedded ? "queue-panel-embedded" : "fixed inset-0 z-[60] animate-[fadeIn_.22s_ease-out]"} bg-card text-foreground flex flex-col`}>
       <header className="queue-header top-bar-safe flex items-center justify-between px-4 pt-2 pb-3 shrink-0">
         <div className="queue-heading min-w-0">
           <span className="queue-eyebrow">PUBLIC. / NOW PLAYING</span>
@@ -129,45 +129,45 @@ export default function QueuePanel({ open, onClose, embedded = false }) {
           </div>
         </section>}
 
-        {transitionLabel && <button type="button" onClick={() => { onClose(); nav("/settings/transitions"); }}
-          className="queue-transition"><GitMerge size={14} /><span>{transitionLabel} active</span><span>Edit</span></button>}
+        {transitionLabel && <button type="button" onClick={() => {onClose();nav("/settings/transitions");}}
+      className="queue-transition"><GitMerge size={14} /><span>{transitionLabel} active</span><span>Edit</span></button>}
 
         <section className="queue-next-section">
           <div className="queue-list-heading">
-            <div><h3>Playing Next</h3><span>{upcoming.length} {upcoming.length === 1 ? "song" : "songs"}</span></div>
-            {upcoming.length > 5 && <div className="queue-search-wrap"><Search size={15} aria-hidden="true" /><input aria-label="Search upcoming songs" placeholder="Search queue" value={query} disabled={!!dragRows} onChange={(e) => setQuery(e.target.value)} />{query && <button type="button" onClick={() => setQuery("")} aria-label="Clear search"><X size={14}/></button>}</div>}
+            <div className="hidden"><h3>Playing Next</h3><span>{upcoming.length} {upcoming.length === 1 ? "song" : "songs"}</span></div>
+            {upcoming.length > 5 && <div className="queue-search-wrap"><Search size={15} aria-hidden="true" /><input aria-label="Search upcoming songs" placeholder="Search queue" value={query} disabled={!!dragRows} onChange={(e) => setQuery(e.target.value)} />{query && <button type="button" onClick={() => setQuery("")} aria-label="Clear search"><X size={14} /></button>}</div>}
           </div>
 
           {!displayUpcoming.length ? <div className="queue-empty">
             <div className="queue-empty-icon"><ListMusic size={25} /></div>
             <strong>Nothing up next</strong>
             <p>Add songs from your library or use a song’s menu to play it next.</p>
-            <button type="button" className="chrome-button" onClick={() => setShowPicker(true)}><Plus size={16}/>Add music</button>
+            <button type="button" className="chrome-button" onClick={() => setShowPicker(true)}><Plus size={16} />Add music</button>
           </div> : <DragDropContext
-            onDragStart={() => setDragRows(upcoming)}
-            onDragEnd={(res) => {
-              const rows = dragRows || upcoming; setDragRows(null);
-              if (!res.destination) return;
-              const source = rows[res.source.index]?.trk, target = rows[res.destination.index]?.trk;
-              const from = p.queue.indexOf(source), to = p.queue.indexOf(target);
-              if (from <= p.currentIndex || to <= p.currentIndex || from === to) return;
-              p.moveInQueue(from, to);
-            }}>
+          onDragStart={() => setDragRows(upcoming)}
+          onDragEnd={(res) => {
+            const rows = dragRows || upcoming;setDragRows(null);
+            if (!res.destination) return;
+            const source = rows[res.source.index]?.trk,target = rows[res.destination.index]?.trk;
+            const from = p.queue.indexOf(source),to = p.queue.indexOf(target);
+            if (from <= p.currentIndex || to <= p.currentIndex || from === to) return;
+            p.moveInQueue(from, to);
+          }}>
             <Droppable droppableId="queue">
               {(dropProvided) => <div className="queue-list" ref={dropProvided.innerRef} {...dropProvided.droppableProps}>
                 {!visibleUpcoming.length && <div className="queue-no-matches"><strong>No matching songs</strong><button type="button" onClick={() => setQuery("")}>Show all upcoming songs</button></div>}
                 {visibleUpcoming.map(({ trk: tt, i }, pos) => <Draggable key={tt.id + "-" + i} draggableId={tt.id + "-" + i} index={pos} isDragDisabled={!!query.trim()}>{(dragProvided, snapshot) =>
-                  <QueueMenuRow provided={dragProvided} dragging={snapshot.isDragging}>{lp => <>
-                    <div {...dragProvided.dragHandleProps} className="queue-drag-handle" aria-label="Reorder song" title="Drag to reorder"><GripVertical size={17}/></div>
-                    <div className="queue-track-art"><QueueCover url={tt.cover_art_url}/><button type="button" onClick={() => p.playQueueItem(i)} aria-label={"Play " + (tt.title || "song")}><Play size={14} fill="white"/></button></div>
+                <QueueMenuRow provided={dragProvided} dragging={snapshot.isDragging}>{(lp) => <>
+                    <div {...dragProvided.dragHandleProps} className="queue-drag-handle" aria-label="Reorder song" title="Drag to reorder"><GripVertical size={17} /></div>
+                    <div className="queue-track-art"><QueueCover url={tt.cover_art_url} /><button type="button" onClick={() => p.playQueueItem(i)} aria-label={"Play " + (tt.title || "song")}><Play size={14} fill="white" /></button></div>
                     <button type="button" onClick={() => p.playQueueItem(i)} className="queue-track-copy">
                       <strong>{tt.title}</strong><span>{tt.artist || tt.uploader_name || "Unknown"}</span>
                       {tt._publicAutoplay && <em className="queue-autoplay-badge">PUBLIC AUTOPLAY</em>}
                     </button>
                     <span className="queue-track-duration">{Number.isFinite(tt.duration_seconds) && tt.duration_seconds > 0 ? formatTime(tt.duration_seconds) : "—"}</span>
                     <TrackOptionsMenu className="song-menu-reveal" openSignal={lp.signal} anchorRef={lp.ref} track={tt} size={16}
-                      buttonClassName="queue-track-menu"
-                      items={[{ icon: Trash2, label: "Remove from queue", danger: true, onClick: () => p.removeFromQueue(i) }]} />
+                    buttonClassName="queue-track-menu"
+                    items={[{ icon: Trash2, label: "Remove from queue", danger: true, onClick: () => p.removeFromQueue(i) }]} />
                   </>}</QueueMenuRow>
                 }</Draggable>)}
                 {dropProvided.placeholder}
@@ -179,7 +179,7 @@ export default function QueuePanel({ open, onClose, embedded = false }) {
         {history.length > 0 && <details className="queue-history">
           <summary>Previously played <span>{history.length}</span></summary>
           <div>{history.map(({ trk: tt, i }) => <button type="button" key={tt.id + "-" + i} onClick={() => p.playQueueItem(i)} className="queue-history-row">
-            <div className="queue-history-art"><QueueCover url={tt.cover_art_url}/></div><span><strong>{tt.title}</strong><small>{tt.artist || tt.uploader_name || "Unknown"}</small></span><Play size={14}/>
+            <div className="queue-history-art"><QueueCover url={tt.cover_art_url} /></div><span><strong>{tt.title}</strong><small>{tt.artist || tt.uploader_name || "Unknown"}</small></span><Play size={14} />
           </button>)}</div>
         </details>}
       </div>
@@ -187,15 +187,15 @@ export default function QueuePanel({ open, onClose, embedded = false }) {
       {!embedded && p.currentTrack && <footer className="queue-transport">
         <div className="queue-transport-song"><span>{p.currentTrack.title}</span><small>{p.currentTrack.artist || p.currentTrack.uploader_name || "Unknown"}</small></div>
         <div className="queue-transport-controls">
-          <button type="button" onClick={p.prev} aria-label="Previous song"><SkipBack size={19} fill="currentColor"/></button>
-          <button type="button" onClick={p.togglePlay} aria-label={p.isPlaying ? "Pause" : "Play"} className="queue-transport-main">{p.isPlaying ? <Pause size={19} fill="currentColor"/> : <Play size={19} fill="currentColor"/>}</button>
-          <button type="button" onClick={p.next} aria-label="Next song"><SkipForward size={19} fill="currentColor"/></button>
+          <button type="button" onClick={p.prev} aria-label="Previous song"><SkipBack size={19} fill="currentColor" /></button>
+          <button type="button" onClick={p.togglePlay} aria-label={p.isPlaying ? "Pause" : "Play"} className="queue-transport-main">{p.isPlaying ? <Pause size={19} fill="currentColor" /> : <Play size={19} fill="currentColor" />}</button>
+          <button type="button" onClick={p.next} aria-label="Next song"><SkipForward size={19} fill="currentColor" /></button>
         </div>
       </footer>}
 
       <QueueLibraryPicker open={showPicker} onClose={() => setShowPicker(false)} />
-    </div>
-  );
+    </div>;
+
 
   return embedded ? panel : createPortal(panel, document.body);
 }
