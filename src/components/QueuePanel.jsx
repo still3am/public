@@ -98,7 +98,7 @@ export default function QueuePanel({ open, onClose, embedded = false }) {
             <Plus size={17} /><span className="text-xs font-semibold">Add</span>
           </button>
           {upcoming.length > 0 && <button type="button" onClick={clearUpcoming} className="queue-clear-button" aria-label="Clear upcoming songs" title="Clear upcoming songs">Clear</button>}
-          <button type="button" onClick={onClose} className="queue-close-button" aria-label="Close queue" title="Close queue"><X size={20} /></button>
+          {!embedded && <button type="button" onClick={onClose} className="queue-close-button" aria-label="Close queue" title="Close queue"><X size={20} /></button>}
         </div>
       </header>
 
@@ -116,14 +116,16 @@ export default function QueuePanel({ open, onClose, embedded = false }) {
               <strong title={p.currentTrack.title}>{p.currentTrack.title}</strong>
               {p.currentTrack._publicAutoplay && <em className="queue-autoplay-badge">PUBLIC AUTOPLAY</em>}
               <span title={p.currentTrack.artist || p.currentTrack.uploader_name || "Unknown"}>{p.currentTrack.artist || p.currentTrack.uploader_name || "Unknown"}</span>
-              <div className="queue-current-progress" aria-label="Playback progress">
-                <div style={{ width: (p.duration ? Math.min(100, Math.max(0, p.position / p.duration * 100)) : 0) + "%" }} />
-              </div>
-              <div className="queue-current-times"><span>{formatTime(p.position)}</span><span>-{formatTime(Math.max(0, (p.duration || 0) - (p.position || 0)))}</span></div>
+              {!embedded && <>
+                <div className="queue-current-progress" aria-label="Playback progress">
+                  <div style={{ width: (p.duration ? Math.min(100, Math.max(0, p.position / p.duration * 100)) : 0) + "%" }} />
+                </div>
+                <div className="queue-current-times"><span>{formatTime(p.position)}</span><span>-{formatTime(Math.max(0, (p.duration || 0) - (p.position || 0)))}</span></div>
+              </>}
             </div>
-            <button type="button" onClick={p.togglePlay} className="queue-current-play" aria-label={p.isPlaying ? "Pause" : "Play"}>
+            {!embedded && <button type="button" onClick={p.togglePlay} className="queue-current-play" aria-label={p.isPlaying ? "Pause" : "Play"}>
               {p.isPlaying ? <Pause size={18} fill="currentColor" /> : <Play size={18} fill="currentColor" />}
-            </button>
+            </button>}
           </div>
         </section>}
 
