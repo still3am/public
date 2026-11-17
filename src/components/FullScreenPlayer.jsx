@@ -222,7 +222,7 @@ export default function FullScreenPlayer({ onClose }) {
       transition: dragging ? "none" : "transform .32s cubic-bezier(.22,1,.36,1), opacity .28s ease-out"
     }}>
 
-      <MotionGradient colors={playerPalette} speed={.85} active={!showQueue} className="absolute inset-0 z-0" />
+      <MotionGradient colors={playerPalette} speed={.85} active className="absolute inset-0 z-0" />
 
 
 
@@ -269,11 +269,7 @@ export default function FullScreenPlayer({ onClose }) {
           track={t}
           variant="icon"
           size={18}
-          appearance="glass"
-          items={[
-          { icon: ListMusic, label: "View queue", onClick: () => setShowQueue(true) }]
-
-          } />
+          appearance="glass" />
 
       </div>
 
@@ -283,6 +279,7 @@ export default function FullScreenPlayer({ onClose }) {
         <div className="full-player-main flex-1 flex flex-col px-6 md:px-10 xl:px-10 xl:max-w-[580px] xl:mx-auto xl:justify-center min-h-0 pb-[env(safe-area-inset-bottom)]">
           {/* artwork / mobile lyrics */}
           <div className="full-player-visual relative flex-1 xl:flex-none flex items-center justify-center min-h-0 py-4">
+            {showQueue && <div className="xl:hidden w-full h-full min-h-0 overflow-hidden"><QueuePanel open={showQueue} onClose={() => setShowQueue(false)} embedded /></div>}
             {showingLyrics &&
             <div className="xl:hidden w-full h-full overflow-hidden flex flex-col min-h-0">
                 <SyncedLyrics key={t.id} trackId={t.id} position={p.position} getPlaybackPosition={p.getPlaybackPosition} resolvedLyrics={lyricsAvailability} onShareLine={hasLyrics?openLyricShare:undefined} onSeek={p.seek} onRetry={() => setLyricsRevision((v) => v + 1)} />
@@ -296,7 +293,7 @@ export default function FullScreenPlayer({ onClose }) {
               onLostPointerCapture={() => {volDrag.current.active = false;}}
               className={`full-player-art relative aspect-square w-full max-w-[min(38vh,80vw)] xl:max-w-[440px] 2xl:max-w-[480px] xl:max-h-[46vh] 2xl:max-h-[52vh] rounded-3xl overflow-hidden shadow-none bg-white/10 shrink-0 touch-none transition-transform duration-500 ${
               p.isPlaying ? "scale-100" : "scale-[0.97]"} ${
-              showingLyrics ? "hidden xl:flex" : "flex"}`}>
+              showingLyrics || showQueue ? "hidden xl:flex" : "flex"}`}>
 
                 {coverUrl && !coverFailed ?
               <img src={coverUrl} alt="" draggable={false} onError={() => setCoverFailed(true)} className="w-full h-full object-cover pointer-events-none select-none" /> :
@@ -321,7 +318,7 @@ export default function FullScreenPlayer({ onClose }) {
           </div>
 
           {/* metadata */}
-          <div className={`${showingLyrics ? "hidden xl:flex" : "flex"} items-start justify-between gap-3 mt-1 mb-4 shrink-0`}>
+          <div className={`${showingLyrics || showQueue ? "hidden xl:flex" : "flex"} items-start justify-between gap-3 mt-1 mb-4 shrink-0`}>
             <div className="min-w-0">
               <h2 className="text-xl md:text-2xl xl:text-4xl font-extrabold tracking-tight truncate"><OverflowText text={t.title} /></h2>
               <Link
@@ -381,19 +378,22 @@ export default function FullScreenPlayer({ onClose }) {
           </div>
 
           <div className="full-player-actions flex items-center justify-center gap-6 shrink-0">
-            {<>
-              <button type="button" onClick={() => setLyricsMode((value) => !value)} aria-label={showingLyrics ? "Hide lyrics" : "Show lyrics"} aria-pressed={showingLyrics} className="full-player-lyrics-toggle full-player-lyrics-mobile">
+            <>
+              <button type="button" onClick={() => { setShowQueue(false); setLyricsMode((value) => !value); }} aria-label={showingLyrics ? "Hide lyrics" : "Show lyrics"} aria-pressed={showingLyrics} className="full-player-lyrics-toggle full-player-lyrics-mobile">
                 <MessageSquareText size={22} strokeWidth={1.8} aria-hidden="true" />
               </button>
-              <button type="button" onClick={() => setShowLyricsPanel((value) => !value)} aria-label={showLyricsPanel ? "Hide lyrics" : "Show lyrics"} aria-pressed={showLyricsPanel} className="full-player-lyrics-toggle full-player-lyrics-desktop">
+              <button type="button" onClick={() => { setShowQueue(false); setShowLyricsPanel((value) => !value); }} aria-label={showLyricsPanel ? "Hide lyrics" : "Show lyrics"} aria-pressed={showLyricsPanel} className="full-player-lyrics-toggle full-player-lyrics-desktop">
                 <MessageSquareText size={22} strokeWidth={1.8} aria-hidden="true" />
               </button>
-            </>}
+              <button type="button" onClick={() => { setLyricsMode(false); setShowLyricsPanel(false); setShowQueue((value) => !value); }} aria-label={showQueue ? "Hide queue" : "Show queue"} aria-pressed={showQueue} className="full-player-lyrics-toggle">
+                <ListMusic size={22} strokeWidth={1.8} aria-hidden="true" />
+              </button>
+            </>
           </div>
         </div>
 
-        {/* RIGHT (desktop): lyrics panel — only when this track has lyrics */}
-        <div className={`${showLyricsPanel ? "hidden xl:flex" : "hidden"} full-player-lyrics flex-col min-h-0 w-[440px] 2xl:w-[480px] shrink-0 bg-white/[0.06] ring-1 ring-white/10 rounded-[2rem] overflow-hidden`}>
+        {/* RIGHT (desktop): switchable queue or lyrics pane */}
+        <div className={`${showLyricsPanel || showQueue ? "hidden xl:flex" : "hidden"} full-player-lyrics flex-col min-h-0 w-[440px] 2xl:w-[480px] shrink-0 bg-white/[0.06] ring-1 ring-white/10 rounded-[2rem] overflow-hidden`}>
           <div className="flex items-center justify-between px-5 pt-4 pb-1 shrink-0">
             <span className="text-[10px] uppercase tracking-[0.25em] opacity-50 flex items-center gap-2">
               
@@ -415,8 +415,9 @@ export default function FullScreenPlayer({ onClose }) {
 
 
 
-          <div className="flex-1 min-h-0 flex flex-col">
-            {showLyricsPanel && <SyncedLyrics key={t.id} trackId={t.id} position={p.position} getPlaybackPosition={p.getPlaybackPosition} resolvedLyrics={lyricsAvailability} onShareLine={hasLyrics?openLyricShare:undefined} onSeek={p.seek} onRetry={() => setLyricsRevision((v) => v + 1)} />}
+          <div className="flex-1 min-h-0 flex flex-col overflow-hidden">
+            {showQueue && <QueuePanel open={showQueue} onClose={() => setShowQueue(false)} embedded />}
+            {!showQueue && showLyricsPanel && <SyncedLyrics key={t.id} trackId={t.id} position={p.position} getPlaybackPosition={p.getPlaybackPosition} resolvedLyrics={lyricsAvailability} onShareLine={hasLyrics?openLyricShare:undefined} onSeek={p.seek} onRetry={() => setLyricsRevision((v) => v + 1)} />}
           </div>
         </div>
       </div>
@@ -426,7 +427,7 @@ export default function FullScreenPlayer({ onClose }) {
         onClose?.();
         navigate("/messages",{state:{lyricShare:{id:t.id,title:t.title,artist:t.artist,cover_art_url:t.cover_art_url,lyrics}}});
       }}/>}
-      <QueuePanel open={showQueue} onClose={() => setShowQueue(false)} />
+
 
       {/* copied toast */}
       {copied &&
