@@ -99,6 +99,7 @@ export default function LoungeHostModal({ lounge, onClose }) {
 
   return (
     <div role="dialog" aria-modal="true" aria-label="Connect invite" data-public-dialog tabIndex={-1} onKeyDown={(e) => {if (e.key === "Escape") {e.stopPropagation();onClose?.();}}} className="profile-qr-overlay connect-qr-overlay" onClick={onClose}>
+      <MotionGradient colors={songColors} motion="flow" speed={0.72} active={!scanning} className="connect-qr-ambient" />
       <section className="profile-qr-shell connect-qr-shell" onClick={(e) => e.stopPropagation()}>
         <div className="profile-qr-art" aria-hidden="true">
           <MotionGradient colors={songColors} motion="flow" speed={0.72} active={!scanning} className="absolute inset-0" />
