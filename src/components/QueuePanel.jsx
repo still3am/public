@@ -110,7 +110,7 @@ export default function QueuePanel({ open, onClose, embedded = false }) {
         
 
           {!displayUpcoming.length ? <div className="queue-empty">
-            <div className="queue-empty-icon"><ListMusic size={25} /></div>
+            <div className="queue-empty-icon hidden"><ListMusic size={25} /></div>
             <strong>Nothing up next</strong>
             <p>Add songs from your library or use a song’s menu to play it next.</p>
             <button type="button" className="chrome-button" onClick={() => setShowPicker(true)}><Plus size={16} />Add music</button>
