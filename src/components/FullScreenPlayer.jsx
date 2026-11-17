@@ -264,7 +264,7 @@ export default function FullScreenPlayer({ onClose }) {
 
           </button>}
         </div>
-        {(showingLyrics || showQueue)&&<TrackFavoriteButton trackId={t.id} className="xl:hidden mr-2"/>
+        {(showingLyrics || showQueue)&&<TrackFavoriteButton trackId={t.id} className="xl:hidden mr-2"/>}
         <TrackOptionsMenu
           track={t}
           variant="icon"
