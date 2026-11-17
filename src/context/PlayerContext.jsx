@@ -1264,7 +1264,7 @@ export function PlayerProvider({ children }) {
   useEffect(()=>{
     if(!("mediaSession" in navigator))return;
     const invoke=(name,...args)=>{try{const result=mediaControls.current?.[name]?.(...args);result?.catch?.(()=>{});}catch{}};
-      const actions={
+    const actions={
       play:()=>invoke("resumePlayback"),pause:()=>invoke("pausePlayback"),
       previoustrack:()=>invoke("prev"),nexttrack:()=>invoke("next"),
       seekto:details=>{if(Number.isFinite(details?.seekTime))invoke("seek",details.seekTime);},
