@@ -6,6 +6,8 @@ export default function QRScannerModal({ onClose }) {
   const nav = useNavigate();
   const scannerRef = useRef(null);
   const handledRef = useRef(false);
+  const onCloseRef = useRef(onClose);
+  onCloseRef.current = onClose;
   const [error, setError] = useState("");
   const [starting, setStarting] = useState(true);
   const [attempt, setAttempt] = useState(0);
@@ -24,18 +26,18 @@ export default function QRScannerModal({ onClose }) {
     const connect = pathname.match(/^\/lounge\/([A-Z2-9]{5})\/?$/i);
     if (profile) {
       handledRef.current = true;
-      onClose?.();
+      onCloseRef.current?.();
       nav(`/profile/${profile[1]}`);
       return;
     }
     if (connect) {
       handledRef.current = true;
-      onClose?.();
+      onCloseRef.current?.();
       nav(`/lounge/${connect[1].toUpperCase()}`);
       return;
     }
     setError("That QR code isn’t a PUBLIC profile or Connect invite.");
-  }, [nav, onClose]);
+  }, [nav]);
 
   useEffect(() => {
     let cancelled = false;
@@ -134,7 +136,7 @@ export default function QRScannerModal({ onClose }) {
         {error && (
           <div className="mt-3 text-center" role="alert">
             <p className="text-xs text-red-500">{error}</p>
-            {!starting && error.includes("camera") && (
+            {!starting && /camera/i.test(error) && (
               <button
                 type="button"
                 onClick={() => setAttempt((value) => value + 1)}
