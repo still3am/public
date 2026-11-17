@@ -253,7 +253,7 @@
 
 /* Desktop profile composition. Mobile keeps its existing centered layout. */
 .public-app .profile-page.profile-redesigned{box-sizing:border-box;width:100%;max-width:1320px;min-width:0;margin-inline:auto}
-.profile-avatar-username,.profile-inline-username{display:none}
+.profile-avatar-display-name{display:none}
 @media(min-width:768px){
  .public-app .profile-page.profile-redesigned{padding:20px clamp(18px,3vw,40px) 56px;overflow-x:clip}
  .public-app .profile-page.profile-redesigned :is(.profile-overview,.profile-identity,.profile-details,.profile-content,.profile-music,.profile-community-column){min-width:0;box-sizing:border-box}
@@ -284,8 +284,8 @@
  .public-app .profile-page.profile-redesigned .profile-community-heading{min-height:0}
 }
 @media(min-width:1024px){
- .public-app .profile-page.profile-redesigned .profile-avatar-username{display:block;max-width:132px;margin:10px auto 0;color:hsl(var(--muted-foreground));font-size:12px;font-weight:550;line-height:1.35;text-align:center;overflow-wrap:anywhere}
- .public-app .profile-page.profile-redesigned .profile-inline-username{display:none}
+ .public-app .profile-page.profile-redesigned .profile-avatar-display-name{display:block;max-width:180px;margin:10px auto 0;color:hsl(var(--foreground));font-size:20px;font-weight:700;line-height:1.25;letter-spacing:-.035em;text-align:center;overflow-wrap:anywhere}
+ .public-app .profile-page.profile-redesigned .profile-inline-display-name{display:none}
 }
 @media(min-width:768px) and (max-width:1023px){
  .public-app .profile-page.profile-redesigned{padding-inline:24px}
@@ -297,8 +297,8 @@
  .public-app .profile-page.profile-redesigned .profile-community-column>.profile-public-playlists{min-width:0;margin:0}
 }
 @media(max-width:1023px){
- .public-app .profile-page.profile-redesigned .profile-avatar-username{display:none}
- .public-app .profile-page.profile-redesigned .profile-inline-username{display:inline}
+ .public-app .profile-page.profile-redesigned .profile-avatar-display-name{display:none}
+ .public-app .profile-page.profile-redesigned .profile-inline-display-name{display:block}
 }
 @media(prefers-reduced-motion:reduce){
  .public-app .profile-page.profile-redesigned{scroll-behavior:auto}
