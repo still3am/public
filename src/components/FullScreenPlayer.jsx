@@ -394,27 +394,6 @@ export default function FullScreenPlayer({ onClose }) {
 
         {/* RIGHT (desktop): switchable queue or lyrics pane */}
         <div className={`${showLyricsPanel || showQueue ? "hidden xl:flex" : "hidden"} full-player-lyrics flex-col min-h-0 w-[440px] 2xl:w-[480px] shrink-0 bg-white/[0.06] ring-1 ring-white/10 rounded-[2rem] overflow-hidden`}>
-          <div className="flex items-center justify-between px-5 pt-4 pb-1 shrink-0">
-            <span className="text-[10px] uppercase tracking-[0.25em] opacity-50 flex items-center gap-2">
-              
-            </span>
-            
-
-
-
-
-            
-          </div>
-
-
-
-
-
-
-
-
-
-
           <div className="flex-1 min-h-0 flex flex-col overflow-hidden">
             {showQueue && <QueuePanel open={showQueue} onClose={() => setShowQueue(false)} embedded />}
             {!showQueue && showLyricsPanel && <SyncedLyrics key={t.id} trackId={t.id} position={p.position} getPlaybackPosition={p.getPlaybackPosition} resolvedLyrics={lyricsAvailability} onShareLine={hasLyrics?openLyricShare:undefined} onSeek={p.seek} onRetry={() => setLyricsRevision((v) => v + 1)} />}
