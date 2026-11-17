@@ -8,7 +8,7 @@ import "./library-rotation.css";
 
 function RotationCover({ track, offset, active, onSelect, onPlay, playing }) {
   const cover = useCoverUrl(track.cover_art_url);
-  return <article className={"library-rotation-card" + (active ? " is-active" : "")} style={{ "--rotation-offset": offset }}>
+  return <article className={"library-rotation-card" + (active ? " is-active" : "")} data-offset={offset} style={{ "--rotation-offset": offset, "--rotation-scale": active ? 1 : 0.88, zIndex: 10 - Math.abs(offset), opacity: active ? 1 : Math.abs(offset) === 1 ? 0.5 : 0, pointerEvents: Math.abs(offset) > 1 ? "none" : "auto" }}>
     <button type="button" className="library-rotation-art" onClick={active ? onPlay : onSelect}
       aria-label={active ? (playing ? "Pause " : "Play ") + track.title + " by " + (track.artist || "Unknown artist") : "Show " + track.title}>
       {cover ? <Image src={cover} alt="" fittingType="fill" className="w-full h-full" /> : <span className="library-rotation-placeholder"><Music size={34} /></span>}
