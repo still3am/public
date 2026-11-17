@@ -12,8 +12,8 @@ export function generateLoungeCode(len = 5) {
 }
 
 export function loungeUrl(code) {
-  if (typeof window === "undefined") return `/lounge/${code}`;
-  return `${window.location.origin}/lounge/${code}`;
+  if (typeof window === "undefined") return `/connect/${code}`;
+  return `${window.location.origin}/connect/${code}`;
 }
 
 export function qrImageUrl(data, size = 360) {
