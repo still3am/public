@@ -1,84 +1,124 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { X, Loader2, ScanLine } from "lucide-react";
+import { X, Loader2, ScanLine, RefreshCw } from "lucide-react";
 
-/** @param {any} props */
 export default function QRScannerModal({ onClose }) {
   const nav = useNavigate();
-  const instRef = useRef(null);
-  const [err, setErr] = useState("");
+  const scannerRef = useRef(null);
+  const handledRef = useRef(false);
+  const [error, setError] = useState("");
   const [starting, setStarting] = useState(true);
+  const [attempt, setAttempt] = useState(0);
 
-  function handle(decoded) {
-    if (!decoded) return;
-    const prof = decoded.match(/\/profile\/([a-zA-Z0-9_-]+)/);
-    if (prof) {
-      onClose();
-      nav(`/profile/${prof[1]}`);
+  const handle = useCallback((decoded) => {
+    if (!decoded || handledRef.current) return;
+    let pathname = "";
+    try {
+      pathname = new URL(decoded.trim(), window.location.origin).pathname;
+    } catch {
+      setError("That QR code isn’t a valid PUBLIC link. Try another code.");
       return;
     }
-    const connect = decoded.match(/\/lounge\/([A-Z2-9]{5})\/?(?:[?#].*)?$/i);
+
+    const profile = pathname.match(/^\/profile\/([a-zA-Z0-9_-]+)\/?$/i);
+    const connect = pathname.match(/^\/lounge\/([A-Z2-9]{5})\/?$/i);
+    if (profile) {
+      handledRef.current = true;
+      onClose?.();
+      nav(`/profile/${profile[1]}`);
+      return;
+    }
     if (connect) {
-      onClose();
+      handledRef.current = true;
+      onClose?.();
       nav(`/lounge/${connect[1].toUpperCase()}`);
       return;
     }
-    setErr("That QR code isn't a PUBLIC profile or Connect invite.");
-  }
+    setError("That QR code isn’t a PUBLIC profile or Connect invite.");
+  }, [nav, onClose]);
 
   useEffect(() => {
     let cancelled = false;
+    handledRef.current = false;
+    setStarting(true);
+    setError("");
+
     (async () => {
+      let scanner;
       try {
+        if (!navigator.mediaDevices?.getUserMedia) {
+          throw new Error("Camera access requires a secure browser connection.");
+        }
         const mod = await import("html5-qrcode");
         const Html5Qrcode = mod.Html5Qrcode;
-        if(typeof Html5Qrcode!=="function")throw new Error("Scanner unavailable");
+        if (typeof Html5Qrcode !== "function") throw new Error("Scanner unavailable");
         if (cancelled) return;
-        const inst = new Html5Qrcode("qr-reader");
-        instRef.current = inst;
-        await inst.start(
+
+        scanner = new Html5Qrcode("qr-reader", { verbose: false });
+        scannerRef.current = scanner;
+        await scanner.start(
           { facingMode: "environment" },
-          { fps: 10, qrbox: { width: 250, height: 250 } },
+          { fps: 12, qrbox: { width: 250, height: 250 }, aspectRatio: 1 },
           (decoded) => handle(decoded),
           () => {}
         );
-        if (!cancelled) setStarting(false);
-      } catch (e) {
-        setErr(
-          "Could not access your camera. Check permissions and try again."
+        if (cancelled) {
+          await scanner.stop().catch(() => {});
+          await scanner.clear().catch(() => {});
+          return;
+        }
+        setStarting(false);
+      } catch (cause) {
+        if (cancelled) return;
+        setError(
+          window.isSecureContext
+            ? "Couldn’t open the camera. Allow camera access for PUBLIC, then try again."
+            : "Camera scanning needs a secure connection. Open PUBLIC in its secure web address and try again."
         );
         setStarting(false);
       }
     })();
+
     return () => {
       cancelled = true;
-      const inst = instRef.current;
-      if (inst) {
-        inst.stop().then(() => inst.clear()).catch(() => {});
-        instRef.current = null;
+      const scanner = scannerRef.current;
+      scannerRef.current = null;
+      if (scanner) {
+        Promise.resolve(scanner.stop()).catch(() => {}).finally(() => {
+          try { scanner.clear(); } catch {}
+        });
       }
     };
-  }, []);
+  }, [attempt, handle]);
 
   return (
-    <div role="dialog" aria-modal="true" aria-label="QRScanner" data-public-dialog tabIndex={-1} onKeyDown={e=>{if(e.key==="Escape"){e.stopPropagation();onClose?.();}}}
-      className="fixed inset-0 z-[60] bg-black/85 backdrop-blur-md grid place-items-center p-4"
+    <div
+      role="dialog"
+      aria-modal="true"
+      aria-label="Scan a PUBLIC QR"
+      data-public-dialog
+      tabIndex={-1}
+      onKeyDown={(event) => {
+        if (event.key === "Escape") {
+          event.stopPropagation();
+          onClose?.();
+        }
+      }}
+      className="fixed inset-0 z-[130] bg-black/85 backdrop-blur-md grid place-items-center p-4"
       onClick={onClose}
     >
-      <div
-        className="bg-card rounded-3xl w-full max-w-sm p-5 relative"
-        onClick={(e) => e.stopPropagation()}
-      >
+      <div className="bg-card rounded-3xl w-full max-w-sm p-5 relative" onClick={(event) => event.stopPropagation()}>
         <button
+          type="button"
           onClick={onClose}
-          className="absolute right-3 top-3 p-2 rounded-full hover:bg-foreground/10"
-          aria-label="Close"
+          className="absolute right-3 top-3 w-10 h-10 rounded-full grid place-items-center hover:bg-foreground/10"
+          aria-label="Close scanner"
         >
           <X size={20} />
         </button>
-        <h3 className="font-extrabold text-center mb-1">Scan a PUBLIC QR</h3>
+        <h3 className="font-extrabold text-center mb-1 pr-9">Scan a PUBLIC QR</h3>
         <p className="text-xs text-foreground/50 text-center mb-3">
-          Point your camera at a PUBLIC profile or Connect QR code.
+          Point your camera at a profile or Connect invite.
         </p>
         <div className="relative rounded-2xl overflow-hidden bg-black aspect-square">
           <div id="qr-reader" className="w-full h-full [&_video]:object-cover [&_video]:w-full [&_video]:h-full" />
@@ -91,7 +131,20 @@ export default function QRScannerModal({ onClose }) {
             </div>
           )}
         </div>
-        {err && <p className="text-xs text-red-500 text-center mt-3">{err}</p>}
+        {error && (
+          <div className="mt-3 text-center" role="alert">
+            <p className="text-xs text-red-500">{error}</p>
+            {!starting && error.includes("camera") && (
+              <button
+                type="button"
+                onClick={() => setAttempt((value) => value + 1)}
+                className="inline-flex items-center justify-center gap-2 mt-3 min-h-10 px-4 rounded-full border border-border text-xs font-semibold"
+              >
+                <RefreshCw size={14} /> Try again
+              </button>
+            )}
+          </div>
+        )}
         <p className="text-[10px] text-foreground/40 text-center mt-3 flex items-center justify-center gap-1">
           <ScanLine size={10} /> Opens profiles and Connect invites.
         </p>
