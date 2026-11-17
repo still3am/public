@@ -114,6 +114,7 @@ export default function QueuePanel({ open, onClose }) {
             <div className="queue-current-art"><QueueCover url={p.currentTrack.cover_art_url} /></div>
             <div className="queue-current-copy">
               <strong title={p.currentTrack.title}>{p.currentTrack.title}</strong>
+              {p.currentTrack._publicAutoplay && <em className="queue-autoplay-badge">PUBLIC AUTOPLAY</em>}
               <span title={p.currentTrack.artist || p.currentTrack.uploader_name || "Unknown"}>{p.currentTrack.artist || p.currentTrack.uploader_name || "Unknown"}</span>
               <div className="queue-current-progress" aria-label="Playback progress">
                 <div style={{ width: (p.duration ? Math.min(100, Math.max(0, p.position / p.duration * 100)) : 0) + "%" }} />
@@ -159,6 +160,7 @@ export default function QueuePanel({ open, onClose }) {
                     <div className="queue-track-art"><QueueCover url={tt.cover_art_url}/><button type="button" onClick={() => p.playQueueItem(i)} aria-label={"Play " + (tt.title || "song")}><Play size={14} fill="white"/></button></div>
                     <button type="button" onClick={() => p.playQueueItem(i)} className="queue-track-copy">
                       <strong>{tt.title}</strong><span>{tt.artist || tt.uploader_name || "Unknown"}</span>
+                      {tt._publicAutoplay && <em className="queue-autoplay-badge">PUBLIC AUTOPLAY</em>}
                     </button>
                     <span className="queue-track-duration">{Number.isFinite(tt.duration_seconds) && tt.duration_seconds > 0 ? formatTime(tt.duration_seconds) : "—"}</span>
                     <TrackOptionsMenu className="song-menu-reveal" openSignal={lp.signal} anchorRef={lp.ref} track={tt} size={16}
