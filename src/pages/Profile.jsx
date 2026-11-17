@@ -517,6 +517,7 @@ export default function Profile({ ownProfileTab = false }) {
             <div className="profile-avatar-notes">
               {!editMode && <PublicNotes key={[targetId, me?.id].join(":")} profileId={targetId} isOwn={isOwn} active={isCurrentPage} userTracks={tracks} />}
               <ProfileAvatar gallery={gallery} setGallery={setGallery} user={{ ...profile, ...(editMode ? { avatar_video_url: form.avatar_video_url, avatar_gif_url: form.avatar_gif_url } : {}), avatar_url: avatarUrl, avatar_preset: editMode ? "" : profile.avatar_preset }} active={isCurrentPage && !showMedia} onView={(event) => { avatarTrigger.current = event.currentTarget;setShowMedia(true); }} editing={editMode} busy={uploadingAvatar || uploadingBanner || saving} onUpload={uploadAvatar} onMotionUpload={(media) => uploadProfileMotion("avatar", media)} onSelect={(value) => {if (!isOwn || uploadingAvatar || saving) return;const url=typeof value==="string"?value:value?.url||"";avatarVersion.current++;setForm((previous) => ({ ...previous, avatar_url: url, ...(value?.source==="giphy"?{avatar_video_url:"",avatar_gif_url:value.gifUrl}:{...(url !== previous.avatar_url || !url ? { avatar_video_url: "", avatar_gif_url: "" } : {})}) }));}} onSelectBanner={banner=>{if(uploadingBanner||saving)return;bannerVersion.current++;setForm(old=>({...old,banner_url:banner.url,banner_mobile_url:banner.url,banner_use_default:false,banner_video_url:banner.videoUrl||"",banner_gif_url:banner.gifUrl||""}));}} />
+              {!editMode && profile.username && <span className="profile-avatar-username">@{profile.username}</span>}
             </div>
 
             <div className="profile-info flex-1 min-w-0 w-full md:w-auto text-center md:text-left">
@@ -540,7 +541,7 @@ export default function Profile({ ownProfileTab = false }) {
 
               {!editMode &&
                   <div className="profile-metadata flex flex-wrap items-center justify-center md:justify-start gap-x-3 gap-y-1 text-xs text-foreground/40 mt-1.5">
-                  {profile.username && <span>@{profile.username}</span>}
+                  {profile.username && <span className="profile-inline-username">@{profile.username}</span>}
                   {profile.location &&
                     <span className="inline-flex items-center gap-1">
                       <MapPin size={12} /> {profile.location}
