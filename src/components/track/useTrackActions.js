@@ -1,7 +1,7 @@
 import {setLikeState} from "@/lib/likeActions";
 import {useRef,useEffect} from "react";
 import {
-  Play, Pause, ListPlus, Check, Plus, ListMusic, Download, Heart,
+  Play, Pause, SkipForward, ListPlus, Check, Plus, ListMusic, Download, Heart,
   RefreshCw, Music2, User, UserPlus, UserCheck, Radio, Share2, Flag, EyeOff, Send,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
@@ -112,6 +112,20 @@ export function useTrackActions(track, menuState, ui) {
       },
     },
     {
+      icon: SkipForward,
+      label: "Play next",
+      onClick: () => {
+        if (!p.currentTrack) {
+          p.playTrackAt([track]);
+        } else {
+          const queuedIndex = p.queue.findIndex((queued) => queued?.id === track.id);
+          if (queuedIndex > p.currentIndex) p.moveInQueue(queuedIndex, p.currentIndex + 1);
+          else p.addNextToQueue(track);
+        }
+        toast({ title: "Playing next" });
+      },
+    },
+    {
       icon: inLib ? Check : Plus,
       label: inLib ? "Remove from library" : "Add to library",
       active: inLib,
@@ -161,7 +175,7 @@ export function useTrackActions(track, menuState, ui) {
 
   // Visual dividers: playback | your stuff | navigate/follow | extras | report
   const GROUPS = [
-    [Play, Pause, ListPlus],
+    [Play, Pause, ListPlus, SkipForward],
     [Check, Plus, ListMusic, Download, Heart],
     [Music2, User, UserPlus, UserCheck],
     [Radio, Share2, Send, RefreshCw],
