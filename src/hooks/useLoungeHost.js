@@ -202,16 +202,20 @@ function useLoungeHostState() {
     if(!session?.id)return;
     let active=true,reading=false;
     const load=async()=>{if(!active||reading)return;reading=true;try{
-      const rows=await readAllPages(opts=>base44.entities.LoungeQueueItem.filter({session_id:session.id},{sort:"created_date",...opts}));
+      const fetched=await readAllPages(opts=>base44.entities.LoungeQueueItem.filter({session_id:session.id},{sort:"created_date",...opts}));
       if(!active)return;
+      const rows=[...fetched],positions=rows.map(row=>Number(row.position)||0);
+      if(new Set(positions).size>1)rows.sort((a,b)=>(Number(a.position)||0)-(Number(b.position)||0)||String(a.created_date||"").localeCompare(String(b.created_date||"")));
+      else rows.sort((a,b)=>String(a.created_date||"").localeCompare(String(b.created_date||"")));
       const player=pRef.current;
       for(const it of rows){if(addedRef.current.has(it.id))continue;let track;try{track=JSON.parse(it.track);}catch{continue;}
         if(!track?.id)continue;addedRef.current.add(it.id);player.addToQueue({...track,_loungeRowId:it.id});}
       const live=new Set(rows.map(r=>r.id));
       for(let i=player.queue.length-1;i>=0;i--){const t=player.queue[i];if(t._loungeRowId&&!live.has(t._loungeRowId))player.removeFromQueue(i);}
+      player.syncLoungeQueue?.(rows.map(it=>{try{return {...JSON.parse(it.track),_loungeRowId:it.id};}catch{return null;}}).filter(Boolean));
       persistAdded();
     }catch{}finally{reading=false;}}
-    load();const reload=coalesce(load,400),timer=setInterval(reload,8000);let unsub;try{unsub=base44.entities.LoungeQueueItem.subscribe(reload);}catch{}
+    load();const reload=coalesce(load,400),timer=setInterval(reload,5000);let unsub;try{unsub=base44.entities.LoungeQueueItem.subscribe(reload);}catch{}
     return()=>{active=false;reload.cancel();clearInterval(timer);if(unsub)unsub();};
   },[session?.id]);
 
