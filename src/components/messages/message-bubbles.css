@@ -65,7 +65,7 @@
 }
 .public-messages-thread[data-wallpaper="true"] .public-message-author {
   color:hsl(var(--foreground));
-  background:hsl(var(--background)/.78);
+  background:transparent;
 }
 .public-message-content {
   position:relative;
