@@ -4,7 +4,7 @@ import "@/components/profile/profile-mobile.css";
 import DiscoverPeople from "@/components/profile/DiscoverPeople";
 import { entityRows } from "@/lib/entityRows";
 import ProfileMedia from "@/components/ProfileMedia";
-import { validateMotionFile,validateMotionDuration } from "@/lib/profileMotion";
+import { validateMotionFile, validateMotionDuration } from "@/lib/profileMotion";
 import ProfileBannerEditor from '@/components/profile/ProfileBannerEditor';
 import ProfileDetailsEditor from '@/components/profile/ProfileDetailsEditor';
 import { normalizeProfileDraft } from '@/lib/profileEditing';
@@ -100,32 +100,32 @@ export default function Profile({ ownProfileTab = false }) {
   const { pathname } = useLocation();
   const { user: me, checkUserAuth } = useAuth();
   const isOwn = !id || id === me?.id;
-  const [unreadMessageOwner,setUnreadMessageOwner]=useState(null);
-  const hasUnreadMessages=isOwn&&Boolean(me?.id)&&unreadMessageOwner===me.id;
-  useEffect(()=>{
-    if(!isOwn||!me?.id)return;
-    const owner=me.id;
-    let active=true,loadingUnread=false;
-    async function refreshUnread(){
-      if(document.hidden||loadingUnread)return;
-      loadingUnread=true;
-      try{
-        const response=await base44.functions.invoke("messages",{action:"inbox"});
-        const chats=response.data?.conversations;
-        if(active&&Array.isArray(chats))setUnreadMessageOwner(chats.some(chat=>chat.unread&&chat.dm_status!=="declined")?owner:null);
-      }catch{}finally{loadingUnread=false;}
+  const [unreadMessageOwner, setUnreadMessageOwner] = useState(null);
+  const hasUnreadMessages = isOwn && Boolean(me?.id) && unreadMessageOwner === me.id;
+  useEffect(() => {
+    if (!isOwn || !me?.id) return;
+    const owner = me.id;
+    let active = true,loadingUnread = false;
+    async function refreshUnread() {
+      if (document.hidden || loadingUnread) return;
+      loadingUnread = true;
+      try {
+        const response = await base44.functions.invoke("messages", { action: "inbox" });
+        const chats = response.data?.conversations;
+        if (active && Array.isArray(chats)) setUnreadMessageOwner(chats.some((chat) => chat.unread && chat.dm_status !== "declined") ? owner : null);
+      } catch {} finally {loadingUnread = false;}
     }
     void refreshUnread();
-    const timer=window.setInterval(refreshUnread,15000);
-    document.addEventListener("visibilitychange",refreshUnread);
-    window.addEventListener("focus",refreshUnread);
-    return()=>{
-      active=false;
+    const timer = window.setInterval(refreshUnread, 15000);
+    document.addEventListener("visibilitychange", refreshUnread);
+    window.addEventListener("focus", refreshUnread);
+    return () => {
+      active = false;
       window.clearInterval(timer);
-      document.removeEventListener("visibilitychange",refreshUnread);
-      window.removeEventListener("focus",refreshUnread);
+      document.removeEventListener("visibilitychange", refreshUnread);
+      window.removeEventListener("focus", refreshUnread);
     };
-  },[isOwn,me?.id]);
+  }, [isOwn, me?.id]);
 
   // This page can stay mounted in the background as a kept-alive tab.
   const isCurrentPage = pathname === (id ? `/profile/${id}` : "/profile");
@@ -141,12 +141,12 @@ export default function Profile({ ownProfileTab = false }) {
   const [stats, setStats] = useState({ followers: null, following: null, plays: 0, likes: 0 });
   const [editMode, setEditMode] = useState(false);
   const [gallery, setGallery] = useState(null);
-  useEffect(() => { if (!editMode) setGallery(null); }, [editMode]);
+  useEffect(() => {if (!editMode) setGallery(null);}, [editMode]);
   const [copied, setCopied] = useState(false);
   const [showQR, setShowQR] = useState(false);
   const [showMedia, setShowMedia] = useState(false);
   const avatarTrigger = useRef(null);
-  useEffect(() => { setShowMedia(false); }, [targetId, isCurrentPage, editMode]);
+  useEffect(() => {setShowMedia(false);}, [targetId, isCurrentPage, editMode]);
   const [showDelete, setShowDelete] = useState(false);
   const [showSettings, setShowSettings] = useState(false);
   const [showColors, setShowColors] = useState(false);
@@ -156,7 +156,7 @@ export default function Profile({ ownProfileTab = false }) {
   const [deleteError, setDeleteError] = useState("");
   const deleteLock = useRef(false);
   const [saving, setSaving] = useState(false);
-  const [saveError,setSaveError]=useState("");
+  const [saveError, setSaveError] = useState("");
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [uploadingBanner, setUploadingBanner] = useState(false);
   const bannerVersion = useRef(0),bannerBusy = useRef(false),saveLock = useRef(false);
@@ -223,7 +223,7 @@ export default function Profile({ ownProfileTab = false }) {
         return;
       }
       request === loadVersion.current && setProfile(prof);
-      if(!isOwn && prof.profile_private === true)return;
+      if (!isOwn && prof.profile_private === true) return;
       request === loadVersion.current && setForm(formFromProfile(prof));
       // Owners see all their own tracks (pending/private/approved); others only see approved ones.
       const trackFilter = isOwn ?
@@ -269,15 +269,15 @@ export default function Profile({ ownProfileTab = false }) {
   // Kept-alive visitor pages must refresh across devices as well as on navigation.
   useEffect(() => {
     if (isOwn || !targetId || !isCurrentPage) return;
-    let active = true, busy = false;
+    let active = true,busy = false;
     const refresh = async () => {
       if (busy || document.visibilityState === "hidden") return;
       busy = true;
       try {
         const next = (await getUsersByIds([targetId], { fresh: true }))[0] || null;
         if (active) setProfile(next);
-      } catch { /* Keep the last confirmed profile during a temporary outage. */ }
-      finally { busy = false; }
+      } catch {/* Keep the last confirmed profile during a temporary outage. */} finally
+      {busy = false;}
     };
     void refresh();
     const timer = window.setInterval(refresh, 30000);
@@ -285,10 +285,10 @@ export default function Profile({ ownProfileTab = false }) {
     document.addEventListener("visibilitychange", refresh);
     let unsubscribe;
     try {
-      unsubscribe = base44.entities.PublicProfile.subscribe(event => {
+      unsubscribe = base44.entities.PublicProfile.subscribe((event) => {
         if (event?.data?.user_id === targetId) void refresh();
       });
-    } catch { /* Focus and periodic refresh also cover unavailable realtime. */ }
+    } catch {/* Focus and periodic refresh also cover unavailable realtime. */}
     return () => {
       active = false;
       window.clearInterval(timer);
@@ -388,7 +388,7 @@ export default function Profile({ ownProfileTab = false }) {
     try {
       const type = validateMotionFile(media.file);
       if (type !== media.type || !media.poster) throw Error("Choose a valid video or GIF with a preview.");
-      validateMotionDuration(media.duration,kind);
+      validateMotionDuration(media.duration, kind);
       const [source, poster] = await Promise.all([base44.integrations.Core.UploadFile({ file: media.file }), base44.integrations.Core.UploadFile({ file: media.poster })]);
       if (!source.file_url || !poster.file_url) throw Error("Your media did not upload. Please retry.");
       if (version !== versionRef.current || identity.current !== key) return false;
@@ -420,7 +420,7 @@ export default function Profile({ ownProfileTab = false }) {
       if (Object.entries(changes).some(([field, value]) => JSON.stringify(saved[field]) !== JSON.stringify(value))) throw Error('Some changes were not confirmed. Your draft is still here.');
       setProfile(confirmed);setForm(saved);setBackgroundDraft(null);setEditMode(false);
       window.dispatchEvent(new Event('profiles:changed'));await checkUserAuth({ silent: true });
-    } catch (error) {if (identity.current === key) setSaveError(actionError(error, 'Your profile changes could not save.')+' Your draft is still here. Retry Save changes.');} finally
+    } catch (error) {if (identity.current === key) setSaveError(actionError(error, 'Your profile changes could not save.') + ' Your draft is still here. Retry Save changes.');} finally
     {saveLock.current = false;if (identity.current === key) setSaving(false);}
   }
   function cancelEdit() {
@@ -464,7 +464,7 @@ export default function Profile({ ownProfileTab = false }) {
     <h1 className="text-xl font-bold">{profile.display_name}</h1>
     {profile.username && <p className="text-sm text-muted-foreground">@{profile.username}</p>}
     <p className="mt-5 text-sm">This profile is private.</p>
-    <Link className="playlist-action mt-3 inline-flex" state={{recipientName:profile.display_name}} to={"/messages?recipient="+encodeURIComponent(profile.id)}><MessageCircle size={16} aria-hidden="true"/>Request to message</Link>
+    <Link className="playlist-action mt-3 inline-flex" state={{ recipientName: profile.display_name }} to={"/messages?recipient=" + encodeURIComponent(profile.id)}><MessageCircle size={16} aria-hidden="true" />Request to message</Link>
   </section>;
 
   const isAdminProfile = isOwn ? me?.role === "admin" : profile.is_public_admin === true;
@@ -506,17 +506,17 @@ export default function Profile({ ownProfileTab = false }) {
           {(bannerUrl || currentBackground.mode === "auto" && coverUrl) && <ProfileMedia key={bannerUrl || coverUrl} src={bannerUrl || coverUrl} mobileSrc={bannerMobileUrl} videoSrc={!useDefaultBanner ? editMode ? form.banner_video_url : profile?.banner_video_url : ""} gifSrc={!useDefaultBanner ? editMode ? form.banner_gif_url : profile?.banner_gif_url : ""} active={isCurrentPage} style={{ width: "100%", height: "100%" }} />}
           <div className="profile-cover-fade" />
         </div>
-        {editMode && <ProfileBannerEditor gallery={gallery} setGallery={setGallery} busy={uploadingAvatar || uploadingBanner || saving} hasBanner={!!form.banner_url && !form.banner_use_default} onSelect={banner=>{if(uploadingBanner||saving)return;bannerVersion.current++;setForm(old=>({...old,banner_url:banner.url,banner_mobile_url:banner.url,banner_use_default:false,banner_video_url:banner.videoUrl||"",banner_gif_url:banner.gifUrl||""}));}} onApply={uploadBanner} onMotionApply={(media) => uploadProfileMotion("banner", media)} onRemove={() => setForm((old) => ({ ...old, banner_use_default: true }))} />}
+        {editMode && <ProfileBannerEditor gallery={gallery} setGallery={setGallery} busy={uploadingAvatar || uploadingBanner || saving} hasBanner={!!form.banner_url && !form.banner_use_default} onSelect={(banner) => {if (uploadingBanner || saving) return;bannerVersion.current++;setForm((old) => ({ ...old, banner_url: banner.url, banner_mobile_url: banner.url, banner_use_default: false, banner_video_url: banner.videoUrl || "", banner_gif_url: banner.gifUrl || "" }));}} onApply={uploadBanner} onMotionApply={(media) => uploadProfileMotion("banner", media)} onRemove={() => setForm((old) => ({ ...old, banner_use_default: true }))} />}
         {!editMode && isAdminProfile && <ProfileBadge variant="admin" colors={backgroundColors} motion={currentBackground.motion} speed={currentBackground.speed} active={gradientActive} />}
-        {!editMode && !isAdminProfile && profile.creator_role==="artist" && <ProfileBadge variant="artist" />}
-        {!editMode && !isAdminProfile && profile.creator_role==="uploader" && <ProfileBadge variant="uploader" />}
+        {!editMode && !isAdminProfile && profile.creator_role === "artist" && <ProfileBadge variant="artist" />}
+        {!editMode && !isAdminProfile && profile.creator_role === "uploader" && <ProfileBadge variant="uploader" />}
         
         {/* Identity, stats, actions */}
         <div className="profile-details relative z-10 px-5 md:px-10 pb-5 md:pb-8 pt-5 md:pt-8">
           <div className="profile-identity-row flex flex-col items-center md:flex-row md:items-center md:justify-center gap-4 md:gap-8">
             <div className="profile-avatar-notes">
               {!editMode && <PublicNotes key={[targetId, me?.id].join(":")} profileId={targetId} isOwn={isOwn} active={isCurrentPage} userTracks={tracks} />}
-              <ProfileAvatar gallery={gallery} setGallery={setGallery} user={{ ...profile, ...(editMode ? { avatar_video_url: form.avatar_video_url, avatar_gif_url: form.avatar_gif_url } : {}), avatar_url: avatarUrl, avatar_preset: editMode ? "" : profile.avatar_preset }} active={isCurrentPage && !showMedia} onView={(event) => { avatarTrigger.current = event.currentTarget;setShowMedia(true); }} editing={editMode} busy={uploadingAvatar || uploadingBanner || saving} onUpload={uploadAvatar} onMotionUpload={(media) => uploadProfileMotion("avatar", media)} onSelect={(value) => {if (!isOwn || uploadingAvatar || saving) return;const url=typeof value==="string"?value:value?.url||"";avatarVersion.current++;setForm((previous) => ({ ...previous, avatar_url: url, ...(value?.source==="giphy"?{avatar_video_url:"",avatar_gif_url:value.gifUrl}:{...(url !== previous.avatar_url || !url ? { avatar_video_url: "", avatar_gif_url: "" } : {})}) }));}} onSelectBanner={banner=>{if(uploadingBanner||saving)return;bannerVersion.current++;setForm(old=>({...old,banner_url:banner.url,banner_mobile_url:banner.url,banner_use_default:false,banner_video_url:banner.videoUrl||"",banner_gif_url:banner.gifUrl||""}));}} />
+              <ProfileAvatar gallery={gallery} setGallery={setGallery} user={{ ...profile, ...(editMode ? { avatar_video_url: form.avatar_video_url, avatar_gif_url: form.avatar_gif_url } : {}), avatar_url: avatarUrl, avatar_preset: editMode ? "" : profile.avatar_preset }} active={isCurrentPage && !showMedia} onView={(event) => {avatarTrigger.current = event.currentTarget;setShowMedia(true);}} editing={editMode} busy={uploadingAvatar || uploadingBanner || saving} onUpload={uploadAvatar} onMotionUpload={(media) => uploadProfileMotion("avatar", media)} onSelect={(value) => {if (!isOwn || uploadingAvatar || saving) return;const url = typeof value === "string" ? value : value?.url || "";avatarVersion.current++;setForm((previous) => ({ ...previous, avatar_url: url, ...(value?.source === "giphy" ? { avatar_video_url: "", avatar_gif_url: value.gifUrl } : { ...(url !== previous.avatar_url || !url ? { avatar_video_url: "", avatar_gif_url: "" } : {}) }) }));}} onSelectBanner={(banner) => {if (uploadingBanner || saving) return;bannerVersion.current++;setForm((old) => ({ ...old, banner_url: banner.url, banner_mobile_url: banner.url, banner_use_default: false, banner_video_url: banner.videoUrl || "", banner_gif_url: banner.gifUrl || "" }));}} />
               {!editMode && <span className="profile-avatar-display-name">{displayName}</span>}
             </div>
 
@@ -548,7 +548,7 @@ export default function Profile({ ownProfileTab = false }) {
                     </span>
                     }
                   {profile.created_date &&
-                    <span className="inline-flex items-center gap-1">
+                    <span className="inline-flex items-center gap-1 hidden">
                       <Calendar size={12} /> Joined{" "}
                       {new Date(profile.created_date).toLocaleDateString(undefined, {
                         month: "short",
@@ -559,14 +559,14 @@ export default function Profile({ ownProfileTab = false }) {
                 </div>
                   }
 
-              <div data-creator={isAdminProfile||["artist","uploader"].includes(profile.creator_role)?"true":"false"} className="profile-stats flex flex-wrap items-center justify-center md:justify-start gap-x-4 gap-y-1 mt-2.5 text-sm md:text-base">
+              <div data-creator={isAdminProfile || ["artist", "uploader"].includes(profile.creator_role) ? "true" : "false"} className="profile-stats flex flex-wrap items-center justify-center md:justify-start gap-x-4 gap-y-1 mt-2.5 text-sm md:text-base">
                 <button onClick={() => setFollowList("followers")} className="hover:underline transition">
                   <span className="font-bold">{stats.followers === null ? "—" : formatNumber(stats.followers)}</span> <span className="text-foreground/50">followers</span>
                 </button>
                 <button onClick={() => setFollowList("following")} className="hover:underline transition">
                   <span className="font-bold">{stats.following === null ? "—" : formatNumber(stats.following)}</span> <span className="text-foreground/50">following</span>
                 </button>
-                {(isAdminProfile || ["artist","uploader"].includes(profile.creator_role)) && <span><span className="font-bold">{formatNumber(stats.plays)}</span> <span className="text-foreground/50 text-center">song plays</span></span>}
+                {(isAdminProfile || ["artist", "uploader"].includes(profile.creator_role)) && <span><span className="font-bold">{formatNumber(stats.plays)}</span> <span className="text-foreground/50 text-center">song plays</span></span>}
                 <span className={stats.likes > 0 ? "" : "profile-zero-stat"}><span className="font-bold">{formatNumber(stats.likes)}</span> <span className="text-foreground/50">likes</span></span>
               </div>
 
@@ -647,7 +647,7 @@ export default function Profile({ ownProfileTab = false }) {
                     {followingBusy ? <Loader2 size={16} className="animate-spin" /> : following ? <UserCheck size={16} /> : <UserPlus size={16} />}<span>{followingBusy ? "Saving…" : following ? "Following" : "Follow"}</span>
                   </button>
                     }
-                {!editMode && (isOwn || profile.id) && <Link className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-border grid place-items-center" aria-label={isOwn ? (hasUnreadMessages ? "Open Messages, unread messages" : "Open Messages") : "Send a message"} title={isOwn ? "Messages" : "Message"} state={isOwn ? undefined : {recipientName:profile.display_name}} to={isOwn ? "/messages" : "/messages?recipient=" + encodeURIComponent(profile.id)}><span className="relative grid place-items-center"><MessageCircle size={16} aria-hidden="true" />{hasUnreadMessages&&<span aria-hidden="true" className="absolute -right-1 -top-1 h-2 w-2 rounded-full bg-current ring-2 ring-background" />}</span></Link>}
+                {!editMode && (isOwn || profile.id) && <Link className="w-10 h-10 md:w-12 md:h-12 rounded-full border border-border grid place-items-center" aria-label={isOwn ? hasUnreadMessages ? "Open Messages, unread messages" : "Open Messages" : "Send a message"} title={isOwn ? "Messages" : "Message"} state={isOwn ? undefined : { recipientName: profile.display_name }} to={isOwn ? "/messages" : "/messages?recipient=" + encodeURIComponent(profile.id)}><span className="relative grid place-items-center"><MessageCircle size={16} aria-hidden="true" />{hasUnreadMessages && <span aria-hidden="true" className="absolute -right-1 -top-1 h-2 w-2 rounded-full bg-current ring-2 ring-background" />}</span></Link>}
                 {!isOwn && followMessage && <p id="profile-follow-message" role="status" className="basis-full text-xs text-muted-foreground leading-relaxed text-center">{followMessage} <button type="button" onClick={() => setFollowMessage("")} className="underline underline-offset-2" aria-label="Dismiss follow message">Dismiss</button></p>}
                 {!editMode &&
                     <button
