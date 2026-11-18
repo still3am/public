@@ -651,14 +651,16 @@ function MessagesPage({ user }) {
               openMessageMenu(message, event.currentTarget);
             }}
             onContextMenu={(event) => {event.preventDefault();cancelHold();openMessageMenu(message, event.currentTarget);}}>
-              <div className="public-group-sender" data-own={message.sender_id===user?.id}><PersonAvatar size={24} person={messageSender(message,thread.chat,user)} /><span>{messageSender(message,thread.chat,user).display_name}</span></div>
               {message.reply_preview && <ReplyQuote preview={message.reply_preview} />}
               {message.track_id && <SharedSong message={message} playing={player.currentTrack?.id === message.track_id && player.isPlaying && (!songData(message)?.lyrics || lyricPlayback.current === message.id)} onPlay={() => void perform(() => playSharedSong(message))} busy={busy} />}
               {message.media_url && !messageGifId(message) && ['image', 'video'].includes(message.media_type) && <ChatMedia key={message.id} chatId={id} message={message} />}
               {messageGifId(message) && <MomentGif id={messageGifId(message)} label="Shared GIF" />}
               {message.text && <p className="public-message-bubble" data-own={message.sender_id === user?.id}>{message.text}</p>}
               <MessageReactions message={message} userId={user?.id} />
-              {messageTime(message.created_date) && <time dateTime={message.created_date}>{messageTime(message.created_date)}</time>}
+              <div className="public-message-footer" data-own={message.sender_id===user?.id}>
+                <PersonAvatar size={20} person={messageSender(message,thread.chat,user)} />
+                <div className="public-message-footer-meta"><span className="public-message-sender-name">{messageSender(message,thread.chat,user).display_name}</span>{messageTime(message.created_date)&&<time dateTime={message.created_date}>{messageTime(message.created_date)}</time>}</div>
+              </div>
             </div>)}
             {peerTyping && currentPeer !== user?.id && <div className="public-message-typing" role="status" aria-live="polite" aria-label={peerName(thread.chat) + " is typing"}><span className="public-message-typing-dots" aria-hidden="true"><i /><i /><i /></span></div>}
           </div>
