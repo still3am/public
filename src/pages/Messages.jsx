@@ -377,21 +377,38 @@ function MessagesPage({ user }) {
   };
   async function saveConversationPalette(value) {
     if (!id || !thread?.chat?.id) throw new Error('Choose a conversation first.');
-    const background = value.mode === 'off' ? { type: 'none' } : { type: 'gradient', value: JSON.stringify({
-        colors: value.colors.slice(0, 5), motion: value.motion === 'still' ? 'still' : 'flow',
-        speed: Math.max(0.35, Math.min(1.6, Number(value.speed) || 1))
-      }) };
+    const chatId = id;
+    const version = ++backgroundSaveVersion.current;
+    const background = value.mode === 'off' ? { type: 'none' } : {
+      type: 'gradient',
+      value: JSON.stringify({
+        colors: value.colors.slice(0, 5),
+        motion: value.motion === 'still' ? 'still' : 'flow',
+        speed: Math.max(0.35, Math.min(1.6, Number(value.speed) || 1)),
+      }),
+    };
     setSavingBackground(true);
     setBackgroundError('');
+    const save = backgroundSaveQueue.current.catch(() => {}).then(() =>
+      messages('set_background', { id: chatId, background })
+    );
+    backgroundSaveQueue.current = save;
     try {
-      const result = await messages('set_background', { id, background });
-      setThread((current) => current?.chat?.id === id ? { ...current, chat: { ...current.chat, background: result.background } } : current);
-      setChatBackgrounds((current) => ({ ...current, [id]: result.background }));
+      const result = await save;
+      if (!result?.background) throw new Error('Background save could not be confirmed.');
+      setChatBackgrounds(current => ({ ...current, [chatId]: result.background }));
+      if (version === backgroundSaveVersion.current && currentChat.current === chatId) {
+        setThread(current => current?.chat?.id === chatId
+          ? { ...current, chat: { ...current.chat, background: result.background } }
+          : current);
+      }
     } catch (error) {
-      setBackgroundError(error.message || 'Could not save this gradient.');
+      if (version === backgroundSaveVersion.current && currentChat.current === chatId) {
+        setBackgroundError(error.message || 'Could not save this gradient.');
+      }
       throw error;
     } finally {
-      setSavingBackground(false);
+      if (version === backgroundSaveVersion.current) setSavingBackground(false);
     }
   }
   function chooseMarketBackground(asset) {
@@ -1060,25 +1077,36 @@ function ChatMedia({ chatId, message }) {
   const [url, setUrl] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(false);
+  const requestVersion = useRef(0);
   const image = message.media_type === 'image';
+
   const open = useCallback(async () => {
+    const version = ++requestVersion.current;
     setLoading(true);
     setError(false);
+    setUrl('');
     try {
       const result = await messages('open_media', { id: chatId, messageId: message.id });
-      if (!result.url?.startsWith('https://')) throw Error();
-      setUrl(result.url);
+      if (!result.url?.startsWith('https://')) throw new Error('Attachment unavailable');
+      if (version === requestVersion.current) setUrl(result.url);
     } catch {
-      setError(true);
+      if (version === requestVersion.current) setError(true);
     } finally {
-      setLoading(false);
+      if (version === requestVersion.current) setLoading(false);
     }
   }, [chatId, message.id]);
-  useEffect(() => {void open();}, [open]);
+
+  useEffect(() => {
+    void open();
+    return () => { requestVersion.current++; };
+  }, [open]);
+
   const fail = () => {setUrl('');setError(true);};
-  if (url) return image ? <img className="public-message-upload" src={url} alt="Shared photo" onError={fail} /> : <video className="public-message-upload" src={url} controls playsInline preload="metadata" onError={fail} />;
-  return <button type="button" className="public-message-open-media" disabled={loading} onClick={() => void open()}>
-    {loading ? 'Loading attachment…' : error ? 'Couldn’t open. Tap to retry' : 'Loading attachment…'}
+  if (url) return image
+    ? <img className="public-message-upload" src={url} alt="Shared photo" loading="lazy" decoding="async" onError={fail} />
+    : <video className="public-message-upload" src={url} controls playsInline preload="metadata" onError={fail} />;
+  return <button type="button" className="public-message-open-media" disabled={loading} onClick={() => void open()} aria-busy={loading}>
+    {loading ? 'Loading attachment…' : error ? 'Couldn’t open. Tap to retry' : 'Open attachment'}
   </button>;
 }
 
