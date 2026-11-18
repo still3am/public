@@ -929,7 +929,7 @@ function SharedSong({ message, onPlay, busy, playing }) {
   const title = typeof song?.title === 'string' && song.title ? song.title : 'Shared song';
   const artist = typeof song?.artist === 'string' ? song.artist : '';
   const seconds = Number.isSafeInteger(lyrics?.startMs) ? Math.floor(lyrics.startMs / 1000) : null;
-  return <div className={lyrics ? "public-message-lyric-card public-lyric-gradient" : undefined}>
+  return <div className={lyrics ? "public-message-lyric-card public-lyric-gradient" : "public-message-music"}>
     {lyrics && <LyricCoverGradient cover={cover} animated={lyrics.animated === true} />}
     {lyrics && <div className="public-message-lyric-lines">
       {lyrics.lines.map((line, index) => <div key={index}>{line}</div>)}
