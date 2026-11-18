@@ -27,15 +27,15 @@
   display:flex;
   align-items:flex-end;
   justify-content:center;
-  flex:0 0 32px;
-  width:32px;
-  min-width:32px;
-  min-height:28px;
+  flex:0 0 38px;
+  width:38px;
+  min-width:38px;
+  min-height:34px;
   padding:0 2px 2px;
   box-sizing:border-box;
   overflow:visible;
 }
-.public-message-avatar-rail>.public-messages-avatar { flex:0 0 28px; border:0; background:none; }
+.public-message-avatar-rail>.public-messages-avatar { flex:0 0 34px; border:0; background:none; }
 .public-message-body {
   position:relative;
   display:flex;
@@ -46,7 +46,7 @@
   min-width:0;
   max-width:100%;
 }
-.public-message-group[data-own="false"]>.public-message-body { max-width:calc(100% - 40px); }
+.public-message-group[data-own="false"]>.public-message-body { max-width:calc(100% - 46px); }
 .public-message-group[data-own="true"]>.public-message-body { align-items:flex-end; }
 .public-message-author {
   display:block;
@@ -121,6 +121,6 @@
 @media(max-width:900px) {
   .public-messages .public-messages-thread>.public-messages-history { padding-inline:max(10px,env(safe-area-inset-left)) max(12px,env(safe-area-inset-right)); }
   .public-messages .public-messages-stream>.public-message-group { max-width:90%; }
-  .public-message-avatar-rail { flex-basis:30px; width:30px; min-width:30px; }
-  .public-message-group[data-own="false"]>.public-message-body { max-width:calc(100% - 38px); }
+  .public-message-avatar-rail { flex-basis:38px; width:38px; min-width:38px; }
+  .public-message-group[data-own="false"]>.public-message-body { max-width:calc(100% - 46px); }
 }
