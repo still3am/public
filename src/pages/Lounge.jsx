@@ -120,7 +120,7 @@ export default function Lounge() {
       reading=true;
       try{const current=await base44.entities.LoungeSession.get(session.id);if(active){setSession(current);if(!current.is_active){setNotFound(true);setPickerOpen(false);}}}catch(error){if(active&&(error.status??error.response?.status)===410){setNotFound(true);setPickerOpen(false);}}finally{reading=false;}
     };
-    refresh();const timer=setInterval(refresh,15000);
+    refresh();const timer=setInterval(refresh,4000);
     return()=>{active=false;clearInterval(timer);};
   },[session?.id,member?.status]);
   const approved = member?.status === "approved";
