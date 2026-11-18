@@ -58,7 +58,7 @@ function messageTime(value) {
 }
 
 function PersonAvatar({ person, size = 40 }) {
-  return <span className="public-messages-avatar"><Avatar user={person} size={size} motion /></span>;
+  return <span className="public-messages-avatar" style={{width:size,height:size}}><Avatar user={person} size={size} motion /></span>;
 }
 
 export default function Messages() {
