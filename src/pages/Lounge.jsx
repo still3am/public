@@ -1,3 +1,4 @@
+import "./connect-page.css";
 import {copyText} from '@/lib/shareLink';
 import {readAllPages} from "@/lib/readPages";
 import {Image} from "@/components/ui/image";
@@ -37,6 +38,7 @@ export default function Lounge() {
   const [notFound, setNotFound] = useState(false);
   const [error,setError]=useState(false),[retry,setRetry]=useState(0);
   const [pickerOpen, setPickerOpen] = useState(false);
+  const [listenersOpen,setListenersOpen]=useState(false);
   const memberVersion=useRef(0),room=useRef({code,uid:user?.id,sid:session?.id});room.current={code,uid:user?.id,sid:session?.id};
 
   // Resolve session + create-or-fetch my membership record.
@@ -131,7 +133,7 @@ export default function Lounge() {
 
   if(error)return <LoadError onRetry={()=>setRetry(n=>n+1)}/>;
   return (
-    <div className="min-h-screen pb-10">
+    <div className="connect-page min-h-screen pb-10">
       <div className="lounge-layout mx-auto">
         {loading ?
         <div className="flex justify-center py-24">
@@ -178,39 +180,17 @@ export default function Lounge() {
           </div> :
 
         <>
-            <header className="lounge-hero">
-              <div className="eyebrow flex items-center gap-2"><Speaker size={14}/> Connect</div>
-              <h1>{session.name || "Good music. Shared company."}</h1>
-              <p>A shared music queue. Add songs, arrange what’s next, and request a skip together. Hosted by {session.host_name || "Host"}.</p>
-              <div className="flex flex-wrap items-center gap-3 mt-5">
-                <button className="chrome-button" onClick={async()=>{try{await copyText(window.location.href);toast({title:"Connect invite copied"});}catch{toast({title:"Couldn’t copy the Connect invite. Please try again.",variant:"destructive"});}}}><Copy size={15}/> Copy invite</button>
-                <span className="chip"><Users size={14}/>{members.filter(m=>m.status==="approved").length} approved</span>
-                <span className="chip">Code {session.code}</span>
-              </div>
+            <header className="connect-page-header">
+              <div><h1>Connect</h1><p>Hosted by {session.host_name || "Host"}</p></div>
+              <button type="button" className="connect-icon-button" aria-label="Copy Connect invite" onClick={async()=>{try{await copyText(window.location.href);toast({title:"Connect invite copied"});}catch{toast({title:"Couldn’t copy invite",variant:"destructive"});}}}><Copy size={18}/></button>
             </header>
-            <div className="lounge-columns">
-            <div>
-            <LoungeQueueList key={session.id} sessionId={session.id} session={session} isHost={isHost} />
-
+            <div className="connect-session-bar">
+              <button type="button" className="connect-listener-toggle" aria-expanded={listenersOpen} onClick={()=>setListenersOpen(value=>!value)}><Users size={16}/><span>{members.filter(m=>m.status==="approved").length} listening</span><ChevronDown size={14} className={listenersOpen?"rotate-180":""}/></button>
+              <span className="connect-session-code">{session.code}</span>
             </div>
-            <aside className="lounge-community">
-              <div className="eyebrow">Connect session</div>
-              <h2 className="text-xl font-bold mt-2 mb-4">Listeners</h2>
-              <div className="space-y-3">{members.filter(m=>m.status==="approved").map(m=><div key={m.id} className="flex items-center gap-3"><Avatar user={{...m,display_name:m.name||"Listener"}} size={38}/><div className="min-w-0"><p className="text-sm font-semibold truncate">{m.name || "Listener"}</p><p className="text-xs text-muted-foreground">{m.role==="host"?"Host":"Guest"}</p></div></div>)}</div>
-              <p className="text-sm text-muted-foreground leading-relaxed mt-5 mb-4">Everyone in this session can add and reorder songs. The host controls playback; guests can request a skip.</p>
-            {/* Add to the shared queue */}
-            <button
-            onClick={() => setPickerOpen(true)}
-            className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-2xl border border-border hover:bg-foreground/[0.04] text-sm font-semibold transition mb-3">
-            
-              <Plus size={16} /> Add music to the queue
-            </button>
+            {listenersOpen&&<section className="connect-listeners" aria-label="Connected listeners">{members.filter(m=>m.status==="approved").map(m=><div key={m.id}><Avatar user={{...m,display_name:m.name||"Listener"}} size={36}/><span><strong>{m.name||"Listener"}</strong><small>{m.role==="host"?"Host":"Guest"}</small></span></div>)}</section>}
+            <LoungeQueueList key={session.id} sessionId={session.id} session={session} isHost={isHost} onAdd={()=>setPickerOpen(true)} />
 
-            <div className="text-[11px] text-foreground/40 text-center">
-              Connect code <span className="font-bold tracking-widest">{session?.code}</span>
-              {!isHost && ` · hosted by ${session?.host_name || "Host"}`}
-            </div>
-            </aside></div>
           </>
         }
       </div>
@@ -302,7 +282,7 @@ function GuestQueuePicker({ sessionId, user, onClose, onAdded }) {
       });
       if(pickerAlive.current){setJustAdded((prev) => new Set(prev).add(t.id));onAdded?.(true);}
     } catch (e) {
-      // Preserve the picker for retry without a failure popup.
+      if(pickerAlive.current)onAdded?.(false);
     } finally {addingRef.current.delete(t.id);if(pickerAlive.current)setAdding(new Set(addingRef.current));}
   };
 
@@ -374,7 +354,7 @@ function GuestQueuePicker({ sessionId, user, onClose, onAdded }) {
 
 // ---------------- Live shared queue ----------------
 /** @param {any} props */
-function LoungeQueueList({ sessionId, session, isHost }) {
+function LoungeQueueList({ sessionId, session, isHost, onAdd }) {
   const p = usePlayer();
   const {user}=useAuth();
   const { toast } = useToast();
@@ -383,6 +363,7 @@ function LoungeQueueList({ sessionId, session, isHost }) {
   const [queueError,setQueueError]=useState(false);
   const [busy,setBusy]=useState(false);
   const [queueQuery,setQueueQuery]=useState("");
+  const [editingQueue,setEditingQueue]=useState(false);
   const queueVersion=useRef(0);
   const currentSong=parseTrack(session?.current_track);
 
@@ -449,37 +430,35 @@ function LoungeQueueList({ sessionId, session, isHost }) {
   };
 
   return (
-    <section className="lounge-queue rounded-2xl border border-border bg-foreground/[0.02] p-4 mb-3" aria-label="Connect shared queue">
-      <header className="flex items-center justify-between gap-3 mb-3">
+    <section className="connect-queue" aria-label="Connect shared queue">
+      <header className="connect-queue-heading">
         <div className="flex items-center gap-2 min-w-0">
           <ListMusic size={17} className="opacity-70 shrink-0" />
           <div><h2 className="text-base font-bold">Queue</h2><p className="text-xs text-foreground/45">{parsed.length} {parsed.length===1?"song":"songs"} up next</p></div>
         </div>
-        <button type="button" onClick={skip} disabled={busy} className="inline-flex min-h-10 items-center gap-2 rounded-full border border-border px-3 text-xs font-semibold hover:bg-foreground/[0.05] disabled:opacity-50" aria-label={isHost?"Skip current song":"Request to skip current song"}>
+        <div className="connect-queue-actions"><button type="button" onClick={()=>setEditingQueue(value=>!value)} aria-pressed={editingQueue} className="connect-text-button">{editingQueue?"Done":"Edit"}</button><button type="button" onClick={onAdd} className="connect-add-button"><Plus size={16}/>Add music</button></div>
+      </header>
+      {currentSong&&<div className="connect-playing"><div className="connect-playing-song"><div className="connect-playing-art">{currentSong.cover_art_url&&<Image src={currentSong.cover_art_url} fittingType="fill" alt="" className="w-full h-full"/>}</div><div><small>Now playing</small><strong>{currentSong.title}</strong><span>{currentSong.artist||"Unknown"}</span></div></div><button type="button" onClick={skip} disabled={busy} className="inline-flex min-h-10 items-center gap-2 rounded-full border border-border px-3 text-xs font-semibold hover:bg-foreground/[0.05] disabled:opacity-50" aria-label={isHost?"Skip current song":"Request to skip current song"}>
           <SkipForward size={15}/>{isHost?"Skip":"Request skip"}
         </button>
-      </header>
-      {currentSong&&<div className="flex items-center gap-3 rounded-xl border border-border/70 bg-foreground/[0.035] p-2.5 mb-3">
-        <div className="w-11 h-11 rounded-lg overflow-hidden bg-foreground/10 shrink-0">{currentSong.cover_art_url&&<Image src={currentSong.cover_art_url} fittingType="fill" alt="" className="w-full h-full"/>}</div>
-        <div className="min-w-0 flex-1"><div className="text-[10px] uppercase tracking-wider text-foreground/45">Now playing</div><div className="text-sm font-semibold truncate">{currentSong.title}</div><div className="text-xs text-foreground/45 truncate">{currentSong.artist||"Unknown"}</div></div>
       </div>}
       {parsed.length>0&&<div className="lounge-queue-search mb-3"><input aria-label="Search Connect queue" placeholder="Search the queue" value={queueQuery} onChange={e=>setQueueQuery(e.target.value)} onKeyDown={e=>{if(e.key==="Escape")setQueueQuery("");}}/>{queueQuery&&<button aria-label="Clear queue search" onClick={()=>setQueueQuery("")}><X size={15}/></button>}</div>}
       {queueError&&<button onClick={load} className="playlist-action text-xs mb-3">Refresh queue</button>}
       {loadingQ ? <div className="flex justify-center py-6"><Loader2 size={16} className="animate-spin text-foreground/40" /></div> :
       parsed.length===0 ? <div className="rounded-xl border border-dashed border-border p-6 text-center"><ListMusic size={22} className="mx-auto mb-2 text-foreground/35"/><p className="text-sm font-semibold">Nothing queued yet</p><p className="text-xs text-foreground/45 mt-1">Add a song and everyone in Connect will see it.</p></div> :
-      <div className="lounge-queue-scroll space-y-1 max-h-[65vh] overflow-y-auto no-scrollbar">
+      <div className="connect-queue-list">
         {!visibleQueue.length&&<p className="text-sm text-muted-foreground p-3">No matching songs in this queue.</p>}
         {visibleQueue.map((t)=>{
           const i=parsed.indexOf(t),playing=p.currentTrack?._loungeRowId===t._row.id;
-          return <div key={t._row.id} className="flex items-center gap-2 sm:gap-3 px-2 py-2 rounded-xl border border-transparent hover:border-border/70 hover:bg-foreground/[0.035] transition">
-            <div className="flex flex-col shrink-0">
+          return <div key={t._row.id} className="connect-song-row">
+            {editingQueue&&<div className="connect-reorder">
               <button type="button" onClick={()=>moveItem(i,i-1)} disabled={busy||i===0} className="grid w-7 h-6 place-items-center rounded-md text-foreground/50 hover:text-foreground disabled:opacity-25" aria-label={`Move ${t.title} up`}><ChevronUp size={16}/></button>
               <button type="button" onClick={()=>moveItem(i,i+1)} disabled={busy||i===parsed.length-1} className="grid w-7 h-6 place-items-center rounded-md text-foreground/50 hover:text-foreground disabled:opacity-25" aria-label={`Move ${t.title} down`}><ChevronDown size={16}/></button>
-            </div>
+            </div>}
             <div className="w-11 h-11 rounded-lg overflow-hidden bg-foreground/10 shrink-0">{t.cover_art_url&&<Image src={t.cover_art_url} fittingType="fill" alt="" className="w-full h-full"/>}</div>
             <div className="min-w-0 flex-1"><div className={`text-sm font-semibold truncate ${playing?"text-foreground":""}`}>{t.title}</div><div className="text-xs text-foreground/45 truncate">{t.artist||"Unknown"}{t._row.added_by_name?` · added by ${t._row.added_by_name}`:""}</div></div>
             {isHost&&<button type="button" aria-label={playing&&p.isPlaying?`Pause ${t.title}`:`Play ${t.title}`} onClick={()=>playing?p.togglePlay():p.playTrackAt(parsed.map(x=>({...x,_loungeRowId:x._row.id})),i)} className="min-h-9 shrink-0 rounded-full bg-foreground px-3 text-xs font-semibold text-background">{playing&&p.isPlaying?"Pause":"Play"}</button>}
-            {(isHost||t._row.added_by_id===user?.id)&&<button type="button" onClick={()=>removeItem(t._row.id)} disabled={busy} className="grid w-9 h-9 shrink-0 place-items-center rounded-full text-foreground/45 hover:text-destructive hover:bg-destructive/10 disabled:opacity-40" aria-label={`Remove ${t.title} from queue`}><X size={15}/></button>}
+            {editingQueue&&(isHost||t._row.added_by_id===user?.id)&&<button type="button" onClick={()=>removeItem(t._row.id)} disabled={busy} className="grid w-9 h-9 shrink-0 place-items-center rounded-full text-foreground/45 hover:text-destructive hover:bg-destructive/10 disabled:opacity-40" aria-label={`Remove ${t.title} from queue`}><X size={15}/></button>}
           </div>;
         })}
       </div>}
