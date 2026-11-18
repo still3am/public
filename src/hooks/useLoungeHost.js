@@ -258,7 +258,7 @@ function useLoungeHostState() {
       for(const it of rows){if(addedRef.current.has(it.id))continue;let track;try{track=JSON.parse(it.track);}catch{continue;}
         if(!track?.id)continue;addedRef.current.add(it.id);player.addToQueue({...track,_loungeRowId:it.id});}
       const live=new Set(rows.map(r=>r.id));
-      for(let i=player.queue.length-1;i>=0;i--){const t=player.queue[i];if(t._loungeRowId&&!live.has(t._loungeRowId))player.removeFromQueue(i);}
+      for(let i=player.queue.length-1;i>=0;i--){const t=player.queue[i];if(t._loungeRowId&&!live.has(t._loungeRowId)&&i!==player.currentIndex)player.removeFromQueue(i);}
       player.syncLoungeQueue?.(rows.map(it=>{try{return {...JSON.parse(it.track),_loungeRowId:it.id};}catch{return null;}}).filter(Boolean));
       persistAdded();
     }catch{}finally{reading=false;}}
