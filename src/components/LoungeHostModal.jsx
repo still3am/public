@@ -115,7 +115,6 @@ export default function LoungeHostModal({ lounge, onClose }) {
         </header>
 
         <div className="profile-qr-identity connect-qr-identity">
-          {user && <div className="connect-host-identity"><Avatar user={user} size={48} active={!scanning} /><span>{user.display_name || user.full_name || "Host"}</span></div>}
           {songArt ? <img src={songArt} alt="" className="profile-qr-avatar connect-qr-avatar" /> : <div className="profile-qr-avatar connect-qr-avatar connect-qr-placeholder"><Music2 size={25} /></div>}
           <p className="connect-qr-track">
             {p.currentTrack ?
@@ -218,9 +217,9 @@ export default function LoungeHostModal({ lounge, onClose }) {
           }}
           disabled={ending}
           className="connect-qr-end">
-          
           <Power size={15} /> {ending ? "Ending Connect…" : "End Connect"}
         </button>
+        {user && <div className="connect-host-identity connect-host-footer"><Avatar user={user} size={42} active={!scanning} /><span>{user.display_name || user.full_name || "Host"}</span></div>}
       </section>
       {scanning && <QRScannerModal onClose={() => setScanning(false)} />}
     </div>);
