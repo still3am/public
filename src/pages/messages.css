@@ -758,12 +758,6 @@
 }
 
 .public-chat-details {
-  display: block;
-  width: min(720px, calc(100vw - 24px));
-  max-width: 720px;
-  max-height: min(90dvh, 900px);
-  padding: 0;
-  overflow: auto;
   border-color: hsl(var(--border) / .8);
   background: hsl(var(--card) / .94);
   -webkit-backdrop-filter: blur(24px);
@@ -1079,14 +1073,7 @@
 
 @media (max-width: 560px) {
   .public-chat-details {
-    position: fixed;
-    inset: auto 0 0;
-    width: 100%;
-    max-width: none;
-    max-height: min(92dvh, 900px);
     border-radius: 24px 24px 0 0;
-    transform: translate(-50%, 0);
-    padding-bottom: env(safe-area-inset-bottom);
   }
 
   .public-chat-backgrounds {
@@ -1108,21 +1095,8 @@
 
 @media (max-width: 560px) {
   .public-chat-details {
-    inset: auto 0 0 !important;
-    left: 0 !important;
-    right: 0 !important;
-    top: auto !important;
-    bottom: 0 !important;
-    width: 100% !important;
-    height: min(86dvh, 760px);
-    max-height: calc(100dvh - env(safe-area-inset-top) - 8px);
-    overflow-x: hidden;
-    overflow-y: auto;
     overscroll-behavior: contain;
     border-radius: 26px 26px 0 0;
-    padding-bottom: calc(env(safe-area-inset-bottom) + 20px);
-    transform: none !important;
-    translate: 0 0 !important;
   }
 
   .public-chat-details-header {
@@ -1286,12 +1260,6 @@ html:not(.dark) .public-messages-thread[data-wallpaper="true"] .public-message-b
 }
 
 /* Keep the conversation background controls docked to the bottom of the details sheet. */
-.public-chat-details {
-  display: flex;
-  flex-direction: column;
-  height: min(90dvh, 900px);
-  overflow: hidden;
-}
 
 .public-chat-details-header,
 .public-chat-details-person,
@@ -1376,10 +1344,6 @@ html:not(.dark) .public-messages-thread[data-wallpaper="true"] .public-message-b
 
 
 @media (max-width: 560px) {
-  .public-chat-details {
-    height: min(90dvh, 900px);
-    max-height: calc(100dvh - env(safe-area-inset-top) - 8px);
-  }
 
   .public-chat-background-scroll {
     padding: 12px 14px;
@@ -1408,13 +1372,6 @@ html:not(.dark) .public-messages-thread[data-wallpaper="true"] .public-message-b
 }
 
 /* Info is a compact sheet; only the Backgrounds picker needs the tall scroll area. */
-.public-chat-details[data-tab="info"] {
-  height: auto !important;
-  min-height: 0 !important;
-  max-height: min(90dvh, 720px) !important;
-  overflow-x: hidden !important;
-  overflow-y: auto !important;
-}
 
 .public-chat-details[data-tab="info"] .public-chat-info {
   min-height: 0;
@@ -1425,22 +1382,10 @@ html:not(.dark) .public-messages-thread[data-wallpaper="true"] .public-message-b
 .public-chat-details[data-tab="info"] .public-chat-info p { margin-bottom: 8px; }
 
 @media (max-width: 560px) {
-  .public-chat-details[data-tab="info"] {
-    height: auto !important;
-    max-height: min(82dvh, 680px) !important;
-    padding-bottom: calc(env(safe-area-inset-bottom) + 8px) !important;
-  }
 }
 
 /* Conversation details follow the full-height contact panel from the reference. */
 .public-chat-details[data-tab="backgrounds"] {
-  display: flex !important;
-  flex-direction: column !important;
-  width: min(620px, calc(100vw - 32px)) !important;
-  max-width: 620px !important;
-  height: min(94dvh, 960px) !important;
-  max-height: min(94dvh, 960px) !important;
-  overflow: hidden !important;
   border-radius: 28px !important;
   background: hsl(var(--card) / .78) !important;
   -webkit-backdrop-filter: blur(34px) saturate(1.35) !important;
@@ -1552,12 +1497,7 @@ html:not(.dark) .public-messages-thread .public-messages-compose {
 
 @media (max-width: 560px) {
   .public-chat-details[data-tab="backgrounds"] {
-    inset: 8px !important;
-    width: auto !important;
-    height: calc(100dvh - 16px) !important;
-    max-height: calc(100dvh - 16px) !important;
     border-radius: 26px !important;
-    padding-bottom: env(safe-area-inset-bottom) !important;
   }
 
   .public-chat-details[data-tab="backgrounds"] .public-chat-details-person {
@@ -1666,13 +1606,6 @@ html:not(.dark) .public-messages-thread .public-messages-compose {
   flex: 0 0 auto;
 }
 .public-chat-details:is([data-tab="photos"], [data-tab="gifs"], [data-tab="music"]) {
-  display: flex !important;
-  flex-direction: column !important;
-  width: min(620px, calc(100vw - 32px)) !important;
-  max-width: 620px !important;
-  height: min(94dvh, 960px) !important;
-  max-height: min(94dvh, 960px) !important;
-  overflow: hidden !important;
   border-radius: 28px !important;
   background: hsl(var(--card) / .78) !important;
   -webkit-backdrop-filter: blur(34px) saturate(1.35) !important;
@@ -1706,13 +1639,6 @@ html:not(.dark) .public-messages-thread .public-messages-compose {
 
 /* Info now shares the same centered contact-sheet sizing as Backgrounds. */
 .public-chat-details[data-tab="info"] {
-  display: flex !important;
-  flex-direction: column !important;
-  width: min(620px, calc(100vw - 32px)) !important;
-  max-width: 620px !important;
-  height: min(94dvh, 960px) !important;
-  max-height: min(94dvh, 960px) !important;
-  overflow: hidden !important;
   border-radius: 28px !important;
   background: hsl(var(--card) / .78) !important;
   -webkit-backdrop-filter: blur(34px) saturate(1.35) !important;
@@ -1798,10 +1724,6 @@ html:not(.dark) .public-messages-thread .public-messages-compose {
 
 @media (max-width: 560px) {
   .public-chat-details[data-tab="info"] {
-    inset: 8px !important;
-    width: auto !important;
-    height: calc(100dvh - 16px) !important;
-    max-height: calc(100dvh - 16px) !important;
     border-radius: 26px !important;
   }
   .public-chat-details[data-tab="info"] .public-chat-details-person { padding: 12px 16px; }
@@ -1917,10 +1839,6 @@ html:not(.dark) .public-messages-thread .public-messages-compose {
 }
 @media (max-width: 560px) {
   .public-chat-details:is([data-tab="photos"], [data-tab="gifs"], [data-tab="music"]) {
-    inset: 8px !important;
-    width: auto !important;
-    height: calc(100dvh - 16px) !important;
-    max-height: calc(100dvh - 16px) !important;
     border-radius: 26px !important;
   }
   .public-chat-details:is([data-tab="photos"], [data-tab="gifs"], [data-tab="music"]) .public-chat-shared-items { padding: 12px 14px 24px; }

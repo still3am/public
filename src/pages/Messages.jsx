@@ -20,6 +20,7 @@ import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/compone
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import './messages.css';
 import '@/components/messages/group-chat-layout.css';
+import '@/components/messages/messages-layout.css';
 
 const REACTIONS = ["❤️", "👍", "👎", "😂", "‼️", "❓", "🔥"];
 const REACTION_LABELS = ['Love', 'Like', 'Dislike', 'Laugh', 'Emphasize', 'Question', 'Fire'];
@@ -59,7 +60,7 @@ function messageTime(value) {
 }
 
 function PersonAvatar({ person, size = 40 }) {
-  return <span className="public-messages-avatar" style={{ width: size, height: size }}><Avatar user={person} size={size} motion /></span>;
+  return <span className="public-messages-avatar" style={{ width: size, height: size, "--message-avatar-size":size+"px" }}><Avatar user={person} size={size} motion /></span>;
 }
 
 export default function Messages() {
@@ -69,6 +70,17 @@ export default function Messages() {
 
 function MessagesPage({ user }) {
   const [params, setParams] = useSearchParams();
+  const [viewport,setViewport]=useState(()=>({height:window.visualViewport?.height||window.innerHeight,top:window.visualViewport?.offsetTop||0}));
+  useEffect(()=>{
+    let frame;
+    const sync=()=>{cancelAnimationFrame(frame);frame=requestAnimationFrame(()=>setViewport({height:window.visualViewport?.height||window.innerHeight,top:window.visualViewport?.offsetTop||0}));};
+    window.addEventListener('resize',sync);
+    window.visualViewport?.addEventListener('resize',sync);
+    window.visualViewport?.addEventListener('scroll',sync);
+    sync();
+    return()=>{cancelAnimationFrame(frame);window.removeEventListener('resize',sync);window.visualViewport?.removeEventListener('resize',sync);window.visualViewport?.removeEventListener('scroll',sync);};
+  },[]);
+  const viewportStyle={'--messages-viewport-height':viewport.height+'px','--messages-viewport-top':viewport.top+'px'};
   const id = params.get('chat');
   const [inbox, setInbox] = useState(null),[loadedThread, setThread] = useState(null),[requests, setRequests] = useState(false);
   const thread = loadedThread?.chat?.id === id ? loadedThread : null;
@@ -466,7 +478,7 @@ function MessagesPage({ user }) {
     if (followLatest.current) jumpToLatest();else
     setShowLatest(true);
   }, [id, lastMessage]);
-  return <main className="public-messages" data-thread={Boolean(id)} data-composing={composing}>
+  return <main className="public-messages" style={viewportStyle} data-thread={Boolean(id)} data-composing={composing}>
     {error && <p role="alert" className="rounded-lg border p-3">{error}</p>}
     <div className="public-messages-layout">
       <aside className="public-messages-inbox">
@@ -532,10 +544,10 @@ function MessagesPage({ user }) {
           {thread?.chat?.is_group&&!groupInvited&&<button type="button" className="public-group-details-button" aria-label="Group details and members" onClick={()=>{setDetailsTab('info');setBackgroundError('');setChatDetailsOpen(true);}}><Info size={21}/></button>}
         </header>
         {thread && currentPeer && !groupInvited && <Dialog open={chatDetailsOpen} onOpenChange={setChatDetailsOpen}>
-          <DialogContent className="public-chat-details" data-group={Boolean(thread.chat.is_group)} data-tab={detailsTab} showClose={false}>
+          <DialogContent className="public-chat-details" style={viewportStyle} data-group={Boolean(thread.chat.is_group)} data-tab={detailsTab} showClose={false}>
             <header className="public-chat-details-header">
               <button type="button" aria-label="Close conversation details" onClick={() => setChatDetailsOpen(false)}><ChevronLeft size={22} /></button>
-              
+              <span className="public-chat-details-heading">{thread.chat.is_group?"Group":"Conversation"}</span>
               <button type="button" className="public-chat-details-done" onClick={() => setChatDetailsOpen(false)}>Done</button>
             </header>
             <div className="public-chat-details-person">
