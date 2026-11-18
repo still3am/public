@@ -519,16 +519,15 @@ function MessagesPage({ user }) {
   async function loadEarlierMessages(){
     if(olderPending.current||!thread?.historyCursor||!id)return;
     const chatId=id,cursor=thread.historyCursor;
-    const history=scroll.current;
-    const anchor=history&&[...history.querySelectorAll('[data-message-id]')].find(element=>element.getBoundingClientRect().bottom>=history.getBoundingClientRect().top);
-    const savedAnchor=anchor?{chatId,messageId:anchor.dataset.messageId,top:anchor.getBoundingClientRect().top}:null;
     olderPending.current=true;readVersion.current++;setLoadingOlder(true);setOlderError('');
     followLatest.current=false;
     try{
       const data=await messages('history',{id:chatId,cursor});
       if(currentChat.current!==chatId)return;
       if(!Array.isArray(data.messages))throw Error('Earlier messages could not load.');
-      pendingScrollAnchor.current=savedAnchor;
+      const history=scroll.current;
+      const anchor=!followLatest.current&&history&&[...history.querySelectorAll('[data-message-id]')].find(element=>element.getBoundingClientRect().bottom>=history.getBoundingClientRect().top);
+      pendingScrollAnchor.current=anchor?{chatId,messageId:anchor.dataset.messageId,top:anchor.getBoundingClientRect().top}:null;
       setThread(previous=>{
         if(previous?.chat?.id!==chatId)return previous;
         const snapshot={...previous,messages:mergeEarlierMessages(previous.messages,data.messages),historyCursor:data.nextCursor&&data.nextCursor!==cursor?data.nextCursor:null};
