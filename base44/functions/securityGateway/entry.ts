@@ -505,7 +505,7 @@ export default async function handleRequest(req) {
           await relation(a.s.host_id);
           const existing=await handler.filter({session_id:a.s.id,user_id:user.id},'-created_date',1);
           if(existing[0]) return existing[0];
-          data={session_id:a.s.id,user_id:user.id,name:user.display_name||user.full_name||'',role:a.host?'host':'guest',status:a.host?'approved':a.s.join_approval_mode==='auto'?'approved':'pending'};
+          data={session_id:a.s.id,user_id:user.id,name:user.display_name||user.full_name||'',avatar_url:user.avatar_url||'',creator_role:user.creator_role||'',is_artist:user.is_artist===true,is_public_admin:user.is_public_admin===true||user.role==='admin',friends_family_badge:user.friends_family_badge===true,moment_badge:user.moment_badge||'',profile_background_colors:Array.isArray(user.profile_background_colors)?user.profile_background_colors:[],role:a.host?'host':'guest',status:a.host?'approved':a.s.join_approval_mode==='auto'?'approved':'pending'};
         } else {
           if(kind==='delete' && (a.host||old.user_id===user.id)) return await handler.delete(id);
           if(!a.host) fail('Only the host can approve members');
