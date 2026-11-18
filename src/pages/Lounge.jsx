@@ -10,6 +10,7 @@ import { base44 } from "@/api/base44Client";
 import { useAuth } from "@/lib/AuthContext";
 import { useToast } from "@/components/ui/use-toast";
 import { usePlayer } from "@/context/PlayerContext";
+import Avatar from "@/components/Avatar";
 import { useLibrary } from "@/context/LibraryContext";
 import { fetchSessionByCode, parseTrack } from "@/lib/lounge";
 import { getRecentPlays } from "@/lib/recentPlays";
@@ -195,7 +196,7 @@ export default function Lounge() {
             <aside className="lounge-community">
               <div className="eyebrow">Connect session</div>
               <h2 className="text-xl font-bold mt-2 mb-4">Listeners</h2>
-              <div className="space-y-3">{members.filter(m=>m.status==="approved").map(m=><div key={m.id} className="flex items-center gap-3"><div className="w-9 h-9 rounded-full bg-muted grid place-items-center"><Users size={15}/></div><div className="min-w-0"><p className="text-sm font-semibold truncate">{m.name || "Listener"}</p><p className="text-xs text-muted-foreground">{m.role==="host"?"Host":"Guest"}</p></div></div>)}</div>
+              <div className="space-y-3">{members.filter(m=>m.status==="approved").map(m=><div key={m.id} className="flex items-center gap-3"><Avatar user={{...m,display_name:m.name||"Listener"}} size={38}/><div className="min-w-0"><p className="text-sm font-semibold truncate">{m.name || "Listener"}</p><p className="text-xs text-muted-foreground">{m.role==="host"?"Host":"Guest"}</p></div></div>)}</div>
               <p className="text-sm text-muted-foreground leading-relaxed mt-5 mb-4">Everyone in this session can add and reorder songs. The host controls playback; guests can request a skip.</p>
             {/* Add to the shared queue */}
             <button
