@@ -389,7 +389,7 @@ function LoungeQueueList({ sessionId, session, isHost }) {
     const request=++queueVersion.current;
     try{
       const list=await readAllPages(opts=>base44.entities.LoungeQueueItem.filter({session_id:sessionId},{sort:"created_date",...opts}));
-      if(request===queueVersion.current){setQueueError(false);setItems(list);}
+      if(request===queueVersion.current){const rows=[...list];const positions=rows.map(row=>Number(row.position)||0);if(new Set(positions).size>1)rows.sort((a,b)=>(Number(a.position)||0)-(Number(b.position)||0)||String(a.created_date||"").localeCompare(String(b.created_date||"")));else rows.sort((a,b)=>String(a.created_date||"").localeCompare(String(b.created_date||"")));setQueueError(false);setItems(rows);}
     }catch{if(request===queueVersion.current)setQueueError(true);}
     finally{if(request===queueVersion.current)setLoadingQ(false);}
   },[sessionId]);
