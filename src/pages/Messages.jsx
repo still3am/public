@@ -6,7 +6,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react
 import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
-import { ArrowUp, ChevronLeft, ChevronRight, Clapperboard, Copy, Disc3, ExternalLink, Library, Trash2, Users, MessageCircle, Image, ImagePlus, Music2, Palette, Pause, Play, Plus, Reply, Search, ShoppingBag, SquarePen, TextQuote, UserRound, X } from 'lucide-react';
+import { ArrowUp, Check, ChevronLeft, ChevronRight, Clapperboard, Copy, Disc3, ExternalLink, Library, Trash2, Users, MessageCircle, Image, ImagePlus, Music2, Palette, Pause, Play, Plus, Reply, Search, ShoppingBag, SquarePen, TextQuote, UserRound, X } from 'lucide-react';
 import LyricSharePicker from '@/components/LyricSharePicker';
 import LyricCoverGradient from '@/components/LyricCoverGradient';
 import TrackPickerSheet from '@/components/profile/TrackPickerSheet';
@@ -30,7 +30,9 @@ async function messages(action, data = {}) {
     if (!result.data || result.data.error) throw Error(result.data?.error || 'Messages are unavailable.');
     return result.data;
   } catch (error) {
-    throw Error(error.response?.data?.error || error.message);
+    const failure = new Error(error.response?.data?.error || error.message);
+    failure.status = error.response?.status || error.status;
+    throw failure;
   }
 }
 
@@ -73,6 +75,7 @@ function MessagesPage({ user }) {
   const [groupMode,setGroupMode]=useState(false);
   const [groupPeople,setGroupPeople]=useState([]);
   const [groupName,setGroupName]=useState('');
+  const groupCreationRequest=useRef(null);
   const [chatBackgrounds, setChatBackgrounds] = useState(() =>
     user?.message_backgrounds && typeof user.message_backgrounds === 'object' ? user.message_backgrounds : {}
   );
@@ -221,7 +224,10 @@ function MessagesPage({ user }) {
       setReadError(null);
       setInbox((previous) => previous?.map((chat) => chat.id === chatId ? { ...chat, unread: false } : chat) ?? null);
     } catch (error) {
-      if (version === readVersion.current && currentChat.current === chatId) setReadError({ id: chatId, message: error.message });
+      if (version === readVersion.current && currentChat.current === chatId) {
+        setReadError({ id: chatId, message: error.message });
+        if([401,403,404].includes(error.status)){setThread(null);setChatDetailsOpen(false);setShowChatColorEditor(false);setShowChatMarketplace(false);setInbox(previous=>previous?.filter(chat=>chat.id!==chatId)??null);}
+      }
     }
   }, []);
   useEffect(() => {
@@ -230,6 +236,7 @@ function MessagesPage({ user }) {
     return () => clearInterval(timer);
   }, [loadInbox]);
   useEffect(() => {
+    setChatDetailsOpen(false);setShowChatColorEditor(false);setShowChatMarketplace(false);setBackgroundError('');
     setThread(null);setGif('');setShowGifs(false);setReply(null);setAttachment(id ? lyricShare : null);setSelectingLyrics(false);setMusicMenu(false);setSongPicker(false);setError('');setReadError(null);
     if (!id) return;
     let pending = false;
@@ -424,6 +431,17 @@ function MessagesPage({ user }) {
       await loadInbox();
     });
   }
+  function createGroup() {
+    void perform(async()=>{
+      const name=groupName.trim();
+      const memberIds=groupPeople.map(person=>person.id).sort();
+      const key=JSON.stringify([name,memberIds]);
+      if(!groupCreationRequest.current||groupCreationRequest.current.key!==key)groupCreationRequest.current={key,requestId:createSendRequestId()};
+      const chat=await messages('create_group',{name,memberIds,requestId:groupCreationRequest.current.requestId});
+      groupCreationRequest.current=null;
+      setParams({chat:chat.id});setComposing(false);setGroupMode(false);setGroupPeople([]);setGroupName('');setContactQuery('');setRequests(false);await loadInbox();
+    });
+  }
   const scroll = useRef(null);
   const followLatest = useRef(true);
   const [showLatest, setShowLatest] = useState(false);
@@ -446,7 +464,7 @@ function MessagesPage({ user }) {
     if (followLatest.current) jumpToLatest();else
     setShowLatest(true);
   }, [id, lastMessage]);
-  return <main className="public-messages" data-thread={Boolean(id)}>
+  return <main className="public-messages" data-thread={Boolean(id)} data-composing={composing}>
     {error && <p role="alert" className="rounded-lg border p-3">{error}</p>}
     <div className="public-messages-layout">
       <aside className="public-messages-inbox">
@@ -456,13 +474,13 @@ function MessagesPage({ user }) {
         </header>
         {composing && <div className="px-4 pb-3">
           <div className="public-group-compose-tabs"><button aria-pressed={!groupMode} onClick={()=>{setGroupMode(false);setGroupPeople([]);}}>Message</button><button aria-pressed={groupMode} onClick={()=>setGroupMode(true)}><Users size={16}/>New group</button></div>
-          {groupMode&&<div className="public-group-create"><input aria-label="Group name" placeholder="Group name" maxLength={80} value={groupName} onChange={event=>setGroupName(event.target.value)}/><div className="public-group-selected">{groupPeople.map(person=><button key={person.id} onClick={()=>setGroupPeople(previous=>previous.filter(item=>item.id!==person.id))}>{person.name}<X size={13}/></button>)}</div><button disabled={busy||groupPeople.length<2||!groupName.trim()} onClick={()=>void perform(async()=>{const chat=await messages('create_group',{name:groupName,memberIds:groupPeople.map(person=>person.id)});setParams({chat:chat.id});setComposing(false);setGroupMode(false);setGroupPeople([]);setGroupName('');setContactQuery('');setRequests(false);await loadInbox();})}>Create group · {groupPeople.length+1}/20</button><p>Add at least two people. Private accounts and people who aren’t mutual followers receive an invitation.</p></div>}
+          {groupMode&&<div className="public-group-create"><input aria-label="Group name" placeholder="Group name" maxLength={80} value={groupName} onChange={event=>setGroupName(event.target.value)}/><div className="public-group-selected">{groupPeople.map(person=><button key={person.id} onClick={()=>setGroupPeople(previous=>previous.filter(item=>item.id!==person.id))}>{person.name}<X size={13}/></button>)}</div><button disabled={busy||groupPeople.length<2||!groupName.trim()} onClick={createGroup}}>Create group · {groupPeople.length+1}/20</button><p>Add at least two people. Private accounts and people who aren’t mutual followers receive an invitation.</p></div>}
 
           {(recipient || to) && <button className="mb-3 rounded-lg border px-3 py-2" type="button" disabled={busy} onClick={() => startChat(recipient ? { recipientId: recipient } : { username: to })}>{recipientName ? `Message ${recipientName}` : "Start message"}</button>}
           <input type="search" aria-label="Search people you follow by name" placeholder="Search by name" className="mb-2 w-full rounded-xl border bg-muted px-3 py-2 text-base" maxLength={80} value={contactQuery} onChange={(event) => setContactQuery(event.target.value)} />
-          {matches.map((person) => <button type="button" className="public-messages-row" key={person.id} disabled={busy} onClick={() => {if(!groupMode){startChat({recipientId:person.id});return;}setGroupPeople(previous=>previous.some(item=>item.id===person.id)?previous.filter(item=>item.id!==person.id):previous.length<19?[...previous,person]:previous);}} aria-pressed={groupMode?groupPeople.some(item=>item.id===person.id):undefined}>
+          {matches.map((person) => <button type="button" className="public-messages-row" key={person.id} disabled={busy||groupMode&&groupPeople.length>=19&&!groupPeople.some(item=>item.id===person.id)} onClick={() => {if(!groupMode){startChat({recipientId:person.id});return;}setGroupPeople(previous=>previous.some(item=>item.id===person.id)?previous.filter(item=>item.id!==person.id):previous.length<19?[...previous,person]:previous);}} aria-pressed={groupMode?groupPeople.some(item=>item.id===person.id):undefined}>
             <PersonAvatar person={person} />
-            <span className="truncate font-semibold">{person.name}</span><ChevronRight size={14} aria-hidden="true" />
+            <span className="truncate font-semibold">{person.name}</span>{groupMode?<span className="public-group-selection-mark" data-selected={groupPeople.some(item=>item.id===person.id)}>{groupPeople.some(item=>item.id===person.id)&&<Check size={14}/>}</span>:<ChevronRight size={14} aria-hidden="true" />}
           </button>)}
           {searching && contacts && matches.length === 0 && <p role="status" className="text-sm text-muted-foreground">No matching people you follow.</p>}
           {searching && !contacts && !contactError && <p role="status" className="text-sm">Searching…</p>}
@@ -483,7 +501,7 @@ function MessagesPage({ user }) {
         {inboxError ? <p role="alert" className="public-messages-list-empty">Inbox couldn’t refresh. <button type="button" className="underline" onClick={loadInbox}>Retry</button></p> : inbox === null && <p role="status" className="public-messages-list-empty">Loading conversations…</p>}
         {visibleChats?.length === 0 && <p className="public-messages-list-empty">{inboxTerm && tabChats?.length ? "No conversations match that name." : requests ? "No message requests." : "No conversations yet. Tap the compose icon to start one."}</p>}
         {visibleChats?.map((chat) =>
-        <button key={chat.id} onClick={() => setParams({ chat: chat.id })} aria-current={id === chat.id} className="public-messages-row">
+        <button key={chat.id} onClick={() => {setComposing(false);setParams({ chat: chat.id });}} aria-current={id === chat.id} className="public-messages-row">
             <>{chat.is_group?<GroupChatAvatar chat={chat}/>:<PersonAvatar person={peerFor(chat)} />}</>
             <span className="min-w-0"><span className="public-messages-row-title"><strong className="truncate">{peerName(chat)}</strong>{chat.last_message_at && <time dateTime={chat.last_message_at}>{messageTime(chat.last_message_at)}</time>}</span><span className="block truncate text-sm opacity-70">{chat.last_message_text || 'New conversation'}</span></span>
             {chat.unread ? <span className="public-messages-dot" aria-label="Unread" /> : <ChevronRight size={14} aria-hidden="true" />}
@@ -554,7 +572,7 @@ function MessagesPage({ user }) {
                 <p className="public-chat-background-note">Background changes are shared with everyone in this conversation.</p>
               </div>
               <input ref={backgroundFile} type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" onChange={(event) => { void uploadChatBackground(event.target.files?.[0]);event.target.value = ''; }} />
-            </section> : detailsTab === 'info' && thread.chat.is_group ? <GroupChatPanel key={id} chat={thread.chat} userId={user?.id} invoke={messages} busy={busy} onChanged={async()=>{await loadThread(id);await loadInbox();}} onLeft={()=>{setChatDetailsOpen(false);setParams({});void loadInbox();}} /> : detailsTab === 'info' ? <section className="public-chat-info" aria-label="Conversation info">
+            </section> : detailsTab === 'info' && thread.chat.is_group ? <GroupChatPanel key={id} chat={thread.chat} userId={user?.id} invoke={messages} busy={busy} onChanged={async()=>{if(currentChat.current===id)await loadThread(id);await loadInbox();}} onLeft={()=>{if(currentChat.current===id){setChatDetailsOpen(false);setParams({});}void loadInbox();}} /> : detailsTab === 'info' ? <section className="public-chat-info" aria-label="Conversation info">
               <h3>Conversation info</h3>
               <p>Messages, photos, GIFs, and music shared here stay available to everyone in this conversation.</p>
               <Link to={"/profile/" + encodeURIComponent(currentPeer)} onClick={() => setChatDetailsOpen(false)}><UserRound size={16} aria-hidden="true" /> View {peerName(thread.chat)}’s profile</Link>

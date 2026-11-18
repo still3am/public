@@ -23,6 +23,7 @@ async function changeGroup(db, id, uid, compute, allowInvited = false) {
     if (!current?.is_group || !current.participant_ids?.includes(uid)) fail('Conversation unavailable.', 404);
     if (!allowInvited && current.invited_ids?.includes(uid)) fail('Accept the group invitation first.', 403);
     const patch = await compute(current);
+    if(!Object.keys(patch).length)return current;
     const revision = current.group_revision == null
       ? {$or:[{group_revision:{$exists:false}},{group_revision:null}]}
       : {group_revision:current.group_revision};
@@ -339,7 +340,7 @@ Deno.serve(async req => {
       const messages = rows(page);
       const unreadIds = messages.filter(message=>message.recipient_id===uid&&!message.read).map(message=>message.id);
       if (unreadIds.length) await db.Message.updateMany({id:{$in:unreadIds},recipient_id:uid,read:false},{$set:{read:true}});
-      if(chat.is_group){const readAt=messages[0]?.created_date||chat.last_message_at||new Date().toISOString();await changeGroup(db,id,uid,current=>{let reads={};try{reads=JSON.parse(current.group_reads||'{}');}catch{}return {group_reads:JSON.stringify({...reads,[uid]:Date.parse(reads[uid]||'')>Date.parse(readAt)?reads[uid]:readAt})};});}
+      if(chat.is_group){const readAt=messages[0]?.created_date||chat.last_message_at||new Date().toISOString();await changeGroup(db,id,uid,current=>{let reads={};try{reads=JSON.parse(current.group_reads||'{}');}catch{}if(Date.parse(reads[uid]||'')>=Date.parse(readAt))return {};return {group_reads:JSON.stringify({...reads,[uid]:Date.parse(reads[uid]||'')>Date.parse(readAt)?reads[uid]:readAt})};});}
       return Response.json({chat:{...chat,peer:profile?publicPerson(profile):null,members:rows(profiles).map(publicPerson)},messages:messages.reverse().map(message=>({...message,...reactionFields(message)}))});
     }
     if (action === 'respond' && chat.dm_status === 'pending' && chat.dm_requester !== uid && typeof accept === 'boolean') {
