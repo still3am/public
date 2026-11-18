@@ -131,3 +131,11 @@
 .public-message-content>.public-message-reaction-group>.public-message-reaction-badge{flex:0 0 auto;font-size:23px;line-height:1;white-space:nowrap}
 .public-message-group[data-own="true"] .public-message-reaction-badge+.public-message-reaction-badge{margin-left:0;margin-right:-8px}
 .public-message-body:has(>.public-message-author)>.public-message-content:has(>.public-message-reaction-group){margin-top:9px}
+
+/* Music wrappers use the visible card width so corner reactions cannot drift. */
+.public-messages-stream .public-message-body{width:max-content;min-width:0}
+.public-messages-stream .public-message-content{width:max-content;min-width:0;max-width:100%}
+.public-messages-stream .public-message-content>.public-message-music{width:300px;min-width:0;max-width:100%;box-sizing:border-box}
+.public-messages-stream .public-message-content>.public-message-lyric-card{width:380px;min-width:0;max-width:100%;box-sizing:border-box}
+.public-message-music>.public-message-song{width:100%;max-width:100%;box-sizing:border-box}
+.public-message-content>.public-message-music,.public-message-content>.public-message-lyric-card{flex:0 0 auto;align-self:inherit}
