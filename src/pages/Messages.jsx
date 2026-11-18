@@ -8,7 +8,8 @@ import GroupChatPanel, { GroupChatAvatar } from '@/components/messages/GroupChat
 import { getRecentPlays } from '@/lib/recentPlays';
 import MomentGifPicker, { MomentGif } from '@/components/moments/MomentGifPicker';
 import '@/components/moments/moment-tools.css';
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { Fragment, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { copyText } from '@/lib/shareLink';
 import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
@@ -64,6 +65,20 @@ function messageTime(value) {
   return new Intl.DateTimeFormat(undefined, today ?
   { hour: "numeric", minute: "2-digit" } :
   { month: "short", day: "numeric", hour: "numeric", minute: "2-digit" }).format(date);
+}
+
+function messageDay(value) {
+  const date = new Date(value);
+  if (!Number.isFinite(date.getTime())) return '';
+  const today = new Date();
+  const yesterday = new Date(today);
+  yesterday.setDate(today.getDate() - 1);
+  if (date.toDateString() === today.toDateString()) return 'Today';
+  if (date.toDateString() === yesterday.toDateString()) return 'Yesterday';
+  return new Intl.DateTimeFormat(undefined, {
+    weekday: 'short', month: 'short', day: 'numeric',
+    ...(date.getFullYear() !== today.getFullYear() ? { year: 'numeric' } : {}),
+  }).format(date);
 }
 
 function PersonAvatar({ person, size = 40 }) {
@@ -286,8 +301,9 @@ function MessagesPage({ user }) {
   }, [loadInbox]);
   useEffect(() => {
     setOlderError('');setLoadingOlder(false);pendingScrollAnchor.current=null;
-    backgroundSaveVersion.current++;setSavingBackground(false);
+    backgroundSaveVersion.current++;setSavingBackground(false);setUploadingBackground(false);
     setChatDetailsOpen(false);setShowChatColorEditor(false);setShowChatMarketplace(false);setBackgroundError('');
+    setMediaDraft(null);setMenu(null);
     setThread(threadCache.current.get(id)||null);setGif('');setShowGifs(false);setReply(null);setAttachment(id ? lyricShare : null);setSelectingLyrics(false);setMusicMenu(false);setSongPicker(false);setError('');setReadError(null);
     if (!id) return;
     let pending = false;
@@ -427,16 +443,19 @@ function MessagesPage({ user }) {
       setBackgroundError('Choose a JPG, PNG, or WebP photo up to 8 MB.');
       return;
     }
+    const chatId = id;
+    const version = backgroundSaveVersion.current;
     setUploadingBackground(true);
     setBackgroundError('');
     try {
       const result = await base44.integrations.Core.UploadFile({ file });
       if (!result?.file_url) throw new Error('Photo upload was not confirmed. Please retry.');
+      if (currentChat.current !== chatId || version !== backgroundSaveVersion.current) return;
       await saveChatBackground({ type: 'photo', value: result.file_url });
     } catch (uploadError) {
-      setBackgroundError(uploadError.message || 'Could not upload this photo. Please try again.');
+      if (currentChat.current === chatId) setBackgroundError(uploadError.message || 'Could not upload this photo. Please try again.');
     } finally {
-      setUploadingBackground(false);
+      if (currentChat.current === chatId) setUploadingBackground(false);
     }
   }
   const migratedBackgrounds = useRef(new Set());
@@ -656,7 +675,25 @@ function MessagesPage({ user }) {
               ['photos', 'Photos', <Image size={16} aria-hidden="true" />],
               ['gifs', 'GIFs', <Clapperboard size={16} aria-hidden="true" />],
               ['music', 'Music', <Music2 size={16} aria-hidden="true" />]].
-              map(([tab, label, icon]) => <button key={tab} type="button" role="tab" aria-selected={detailsTab === tab} aria-label={label} onClick={() => setDetailsTab(tab)}><span className="public-chat-tab-icon">{icon}</span><span className="public-chat-tab-label">{label}</span></button>)}
+              map(([tab, label, icon]) => <button
+                key={tab} id={"conversation-tab-" + tab} type="button" role="tab"
+                tabIndex={detailsTab === tab ? 0 : -1}
+                aria-selected={detailsTab === tab} aria-label={label}
+                onClick={() => setDetailsTab(tab)}
+                onKeyDown={event => {
+                  const tabs = ['info', 'backgrounds', 'photos', 'gifs', 'music'];
+                  const index = tabs.indexOf(tab);
+                  let target;
+                  if (event.key === 'ArrowRight') target = tabs[(index + 1) % tabs.length];
+                  else if (event.key === 'ArrowLeft') target = tabs[(index + tabs.length - 1) % tabs.length];
+                  else if (event.key === 'Home') target = tabs[0];
+                  else if (event.key === 'End') target = tabs.at(-1);
+                  else return;
+                  event.preventDefault();
+                  setDetailsTab(target);
+                  event.currentTarget.parentElement.querySelector('#conversation-tab-' + target)?.focus();
+                }}
+              ><span className="public-chat-tab-icon">{icon}</span><span className="public-chat-tab-label">{label}</span></button>)}
             </div>
             {detailsTab === 'backgrounds' ? <section className="public-chat-backgrounds" aria-label="Conversation backgrounds">
               <div className="public-chat-background-scroll">
@@ -730,7 +767,10 @@ function MessagesPage({ user }) {
             {thread.messages.length === 0 && <p className="public-messages-list-empty">{groupInvited ? 'You have been invited to this group. Accept to see its messages.' : pending ? "Send a message request to start the conversation." : "Send the first message."}</p>}
             <div className="public-messages-stream" ref={messageStream}>
             {thread.historyCursor&&<div className="public-message-history-tools"><button type="button" disabled={loadingOlder||!online} onClick={()=>void loadEarlierMessages()}>{loadingOlder?'Loading earlier messages…':'Load earlier messages'}</button>{olderError&&<p role="alert">{olderError}</p>}</div>}
-            {thread.messages.map((message, messageIndex) => <div key={message.id} className="public-message-group" data-message-id={message.id} data-own={message.sender_id === user?.id} data-reply-target={reply?.id === message.id} data-time-visible={revealedTimestamp===message.id} data-run-start={messageRunPosition(thread.messages,messageIndex).start} data-run-end={messageRunPosition(thread.messages,messageIndex).end}
+            {thread.messages.map((message, messageIndex) => <Fragment key={message.id}>
+              {messageDay(message.created_date) && (messageIndex === 0 || new Date(message.created_date).toDateString() !== new Date(thread.messages[messageIndex - 1].created_date).toDateString()) &&
+                <div className="public-message-day"><time dateTime={message.created_date}>{messageDay(message.created_date)}</time></div>}
+              <div className="public-message-group" data-message-id={message.id} data-own={message.sender_id === user?.id} data-reply-target={reply?.id === message.id} data-time-visible={revealedTimestamp===message.id} data-run-start={messageRunPosition(thread.messages,messageIndex).start} data-run-end={messageRunPosition(thread.messages,messageIndex).end}
             onPointerDown={(event) => {
               if (event.pointerType === 'mouse' || event.target instanceof Element && event.target.closest('button,a')) return;
               cancelHold();
@@ -762,7 +802,7 @@ function MessagesPage({ user }) {
               </div>
               {messageTime(message.created_date)&&<time className="public-message-timestamp" dateTime={message.created_date}>{messageTime(message.created_date)}</time>}
               </div>
-            </div>)}
+            </div></Fragment>)}
             {peerTyping && currentPeer !== user?.id && <div className="public-message-typing" role="status" aria-live="polite" aria-label={peerName(thread.chat) + " is typing"}><span className="public-message-typing-dots" aria-hidden="true"><i /><i /><i /></span></div>}
             </div>
           </div>
@@ -802,7 +842,7 @@ function MessagesPage({ user }) {
                   setMenu(null);
                   requestAnimationFrame(() => {scroll.current?.querySelector('[data-reply-target="true"]')?.scrollIntoView({ block: "center" });draftInput.current?.focus({ preventScroll: true });});
                 }}><Reply size={17} /> Reply</button>}
-              {activeMenu.text && <button type="button" onClick={() => {setMenu(null);void perform(() => navigator.clipboard.writeText(activeMenu.text));}}><Copy size={17} /> Copy</button>}
+              {activeMenu.text && <button type="button" onClick={() => {setMenu(null);void perform(() => copyText(activeMenu.text));}}><Copy size={17} /> Copy</button>}
               {activeMenu.track_id && <Link to={'/track/' + encodeURIComponent(activeMenu.track_id)} onClick={() => setMenu(null)}><ExternalLink size={17} /> Open song</Link>}
               {activeMenu.track_id && <button type="button" onClick={() => {setMenu(null);void perform(() => playSharedSong(activeMenu));}}>{player.currentTrack?.id === activeMenu.track_id && player.isPlaying ? 'Pause song' : 'Play song'}</button>}
               {activeMenu.sender_id === user?.id && <button type="button" className="text-destructive" disabled={busy} onClick={() => {
