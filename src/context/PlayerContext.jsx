@@ -1122,13 +1122,15 @@ export function PlayerProvider({ children }) {
     const desiredIds = new Set(desired.map(track => track?._loungeRowId).filter(Boolean));
     setQueue(prev => {
       const current = currentIndexRef.current;
+      const currentRowId = prev[current]?._loungeRowId;
+      const upcoming = desired.filter(track => track?._loungeRowId !== currentRowId);
+      const upcomingIds = new Set(upcoming.map(track => track?._loungeRowId).filter(Boolean));
       const slots = [];
-      prev.forEach((track,index) => { if(index > current && track?._loungeRowId && desiredIds.has(track._loungeRowId)) slots.push(index); });
-      const byId = new Map(desired.map(track => [track._loungeRowId, track]));
+      prev.forEach((track,index) => { if(index > current && track?._loungeRowId && (desiredIds.has(track._loungeRowId) || upcomingIds.has(track._loungeRowId))) slots.push(index); });
       const next = [...prev];
-      slots.forEach((slot,index) => { const track = desired[index]; if(track) next[slot] = track; });
+      slots.forEach((slot,index) => { if(upcoming[index]) next[slot] = upcoming[index]; });
       const present = new Set(next.map(track => track?._loungeRowId).filter(Boolean));
-      desired.forEach(track => { if(track?._loungeRowId && !present.has(track._loungeRowId)) next.push(track); });
+      upcoming.forEach(track => { if(track?._loungeRowId && !present.has(track._loungeRowId)) next.push(track); });
       return next;
     });
   }, []);
