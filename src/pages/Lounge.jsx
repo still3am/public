@@ -419,8 +419,15 @@ function LoungeQueueList({ sessionId, session, isHost }) {
     const [moved]=reordered.splice(from,1);
     reordered.splice(to,0,moved);
     try {
-      for(let index=0;index<reordered.length;index++) {
-        await base44.entities.LoungeQueueItem.update(reordered[index]._row.id,{position:index});
+      const positions=parsed.map(item=>Number(item._row.position)||0);
+      const hasDuplicatePositions=new Set(positions).size!==positions.length;
+      if(hasDuplicatePositions) {
+        for(let index=0;index<reordered.length;index++) await base44.entities.LoungeQueueItem.update(reordered[index]._row.id,{position:index});
+      } else {
+        await Promise.all([
+          base44.entities.LoungeQueueItem.update(parsed[from]._row.id,{position:positions[to]}),
+          base44.entities.LoungeQueueItem.update(parsed[to]._row.id,{position:positions[from]}),
+        ]);
       }
       await load();
       toast({title:"Queue order updated"});
