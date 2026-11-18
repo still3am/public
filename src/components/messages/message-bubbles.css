@@ -126,17 +126,8 @@
 }
 
 /* Reactions stay on one row and point inward on either side of the conversation. */
-.public-message-content>.public-message-reaction-group{display:flex;flex-wrap:nowrap;width:max-content;max-width:none;align-items:center;top:-12px;left:-6px;right:auto;gap:0;overflow:visible;line-height:1;isolation:isolate}
-.public-message-group[data-own="true"] .public-message-content>.public-message-reaction-group{left:auto;right:-6px;flex-direction:row-reverse}
+.public-message-content>.public-message-reaction-group{display:flex;flex-wrap:nowrap;width:max-content;max-width:none;align-items:center;top:-12px;left:auto;right:-6px;gap:0;overflow:visible;line-height:1;isolation:isolate}
+.public-message-group[data-own="true"] .public-message-content>.public-message-reaction-group{left:-6px;right:auto;flex-direction:row-reverse}
 .public-message-content>.public-message-reaction-group>.public-message-reaction-badge{flex:0 0 auto;font-size:23px;line-height:1;white-space:nowrap}
 .public-message-group[data-own="true"] .public-message-reaction-badge+.public-message-reaction-badge{margin-left:0;margin-right:-8px}
 .public-message-body:has(>.public-message-author)>.public-message-content:has(>.public-message-reaction-group){margin-top:9px}
-
-/* Consistent rounded message corners with a tighter corner toward the sender. */
-.public-message-content>.public-message-bubble{border-radius:20px 20px 20px 6px}
-.public-message-group[data-own="true"] .public-message-content>.public-message-bubble{border-radius:20px 20px 6px 20px}
-.public-message-group[data-run-end="false"] .public-message-content>.public-message-bubble{border-radius:20px}
-.public-message-content>:is(.moment-comment-gif,.public-message-upload){border-radius:18px 18px 18px 6px;overflow:hidden}
-.public-message-group[data-own="true"] .public-message-content>:is(.moment-comment-gif,.public-message-upload){border-radius:18px 18px 6px 18px}
-.public-message-content>.public-message-song{border-radius:20px 20px 20px 6px;overflow:hidden}
-.public-message-group[data-own="true"] .public-message-content>.public-message-song{border-radius:20px 20px 6px 20px}
