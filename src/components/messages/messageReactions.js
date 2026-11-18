@@ -7,6 +7,16 @@ export function messageReactionMap(message) {
     ...saved,
   };
 }
+export function messageReactionBadges(message,userId,allowed) {
+  const badges=new Map();
+  for(const [person,emoji] of Object.entries(messageReactionMap(message))){
+    if(!allowed.includes(emoji))continue;
+    const badge=badges.get(emoji)||{emoji,mine:false,people:0};
+    badge.mine=badge.mine||person===userId;badge.people++;
+    badges.set(emoji,badge);
+  }
+  return allowed.filter(emoji=>badges.has(emoji)).map(emoji=>badges.get(emoji));
+}
 export function ownMessageReaction(message,userId) {
   return messageReactionMap(message)[userId]||'';
 }
