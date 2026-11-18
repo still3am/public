@@ -1117,6 +1117,22 @@ export function PlayerProvider({ children }) {
     });
   }, []);
 
+  const syncLoungeQueue = useCallback((tracks) => {
+    const desired = Array.isArray(tracks) ? tracks : [];
+    const desiredIds = new Set(desired.map(track => track?._loungeRowId).filter(Boolean));
+    setQueue(prev => {
+      const current = currentIndexRef.current;
+      const slots = [];
+      prev.forEach((track,index) => { if(index > current && track?._loungeRowId && desiredIds.has(track._loungeRowId)) slots.push(index); });
+      const byId = new Map(desired.map(track => [track._loungeRowId, track]));
+      const next = [...prev];
+      slots.forEach((slot,index) => { const track = desired[index]; if(track) next[slot] = track; });
+      const present = new Set(next.map(track => track?._loungeRowId).filter(Boolean));
+      desired.forEach(track => { if(track?._loungeRowId && !present.has(track._loungeRowId)) next.push(track); });
+      return next;
+    });
+  }, []);
+
   const playQueueItem = useCallback(
     (index) => {
       if (index >= 0 && index < queue.length) {
@@ -1339,6 +1355,7 @@ export function PlayerProvider({ children }) {
     addManyToQueue,
     removeFromQueue,
     moveInQueue,
+    syncLoungeQueue,
     playQueueItem,
     clearQueue,
     sleepTimerEndsAt,
