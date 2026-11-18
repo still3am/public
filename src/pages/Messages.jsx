@@ -80,7 +80,7 @@ function MessagesPage({ user }) {
     sync();
     return()=>{cancelAnimationFrame(frame);window.removeEventListener('resize',sync);window.visualViewport?.removeEventListener('resize',sync);window.visualViewport?.removeEventListener('scroll',sync);};
   },[]);
-  const viewportStyle={'--messages-viewport-height':viewport.height+'px','--messages-viewport-top':viewport.top+'px'};
+  const viewportStyle={'--messages-viewport-height':viewport.height+'px','--messages-viewport-top':viewport.top+'px','--messages-sheet-top':(viewport.top+Math.max(12,(viewport.height-860)/2))+'px'};
   const id = params.get('chat');
   const [inbox, setInbox] = useState(null),[loadedThread, setThread] = useState(null),[requests, setRequests] = useState(false);
   const thread = loadedThread?.chat?.id === id ? loadedThread : null;
