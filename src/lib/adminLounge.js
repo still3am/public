@@ -20,7 +20,7 @@ export async function loungeAction(client, entity, method, args, protectedCall) 
   let data;
   if (entity === "LoungeSession") {
     if (old?.host_id && old.host_id !== user.id) return protectedCall();
-    data = pick(input, ["name","code","is_active","is_playing","position_seconds","current_track_id","current_track","sync_anchor_at","join_approval_mode"]);
+    data = pick(input, ["name","code","is_active","is_playing","position_seconds","current_track_id","current_track","sync_anchor_at","join_approval_mode","skip_request_id","skip_requested_by","skip_requested_at"]);
     if (data.join_approval_mode !== undefined && !["manual","auto"].includes(data.join_approval_mode)) invalid("Choose manual or automatic guest approval.");
     if (data.name !== undefined && (typeof data.name !== "string" || data.name.length > 60)) invalid("Keep the lounge name under 60 characters.");
     if (data.code !== undefined && (typeof data.code !== "string" || !/^[A-Z2-9]{5,12}$/.test(data.code))) invalid("Invalid lounge code.");
@@ -55,12 +55,16 @@ export async function loungeAction(client, entity, method, args, protectedCall) 
         if (method !== "delete" && !["approved","rejected"].includes(data.status)) invalid("Choose approve or decline.");
       }
     } else if (entity === "LoungeQueueItem") {
-      if (method !== "delete") {
-        if (!session.is_active) invalid("This lounge has ended.");
+      if (method === "update" && old && Object.keys(input).length === 1 && Number.isFinite(input.position) && input.position >= 0 && input.position <= 1000000000) {
+        data = { position: input.position };
+      } else if (method !== "delete") {
+        if (!session.is_active) invalid("This Connect session has ended.");
         const track = await client.entities.Track.get(input.track_id || old?.track_id);
         if (!track?.id || track.uploader_id !== user.id && !(track.is_published && track.approval_status === "approved")) invalid("Choose a published song the host can play.");
         if (track.audio_file_uri && !track.audio_url) return protectedCall();
-        data = {session_id: sid, track_id: track.id, track: JSON.stringify(pick(track, ["id","title","artist","uploader_id","uploader_name","cover_art_url","audio_url","duration_seconds","genre","explicit"])), added_by_id: user.id, added_by_name: user.display_name || user.full_name || ""};
+        const existing = page(await handler.filter({session_id:sid}, "-created_date", 1000));
+        const position = existing.reduce((max,row)=>Math.max(max,Number(row.position)||0),-1)+1;
+        data = {session_id: sid, track_id: track.id, track: JSON.stringify(pick(track, ["id","title","artist","uploader_id","uploader_name","cover_art_url","audio_url","duration_seconds","genre","explicit"])), added_by_id: user.id, added_by_name: user.display_name || user.full_name || "", position};
       }
     } else return protectedCall();
   }
