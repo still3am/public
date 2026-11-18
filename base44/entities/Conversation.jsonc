@@ -140,6 +140,17 @@
     "group_reads": {
       "type": "string",
       "default": "{}"
+    },
+    "group_revision": {
+      "type": "string",
+      "default": ""
+    },
+    "group_operations": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
     }
   },
   "required": [
