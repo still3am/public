@@ -144,3 +144,47 @@
 .public-message-group[data-own="true"] .public-message-reaction-target{align-items:flex-end}
 .public-message-reaction-target>.public-message-bubble{max-width:100%;margin:0;box-sizing:border-box}
 .public-message-reaction-target>:is(.moment-comment-gif,.public-message-upload,.public-message-open-media){max-width:100%;margin:0;flex-shrink:0}
+/* Dates span the conversation rather than joining either person's bubble run. */
+.public-message-day {
+  align-self:stretch;
+  display:flex;
+  justify-content:center;
+  flex:0 0 auto;
+  margin:18px 0 12px;
+  padding:0 12px;
+}
+.public-message-day time {
+  max-width:100%;
+  padding:4px 10px;
+  border-radius:12px;
+  font-size:11px;
+  font-weight:600;
+  line-height:1.4;
+  color:hsl(var(--muted-foreground));
+  text-align:center;
+}
+.public-messages-thread[data-wallpaper="true"] .public-message-day time {
+  color:hsl(var(--foreground));
+  background:hsl(var(--background)/.82);
+}
+.public-message-day:first-child { margin-top:0; }
+.public-messages-thread .public-message-close-reply {
+  grid-column:3;
+  grid-row:1;
+  position:static;
+  inset:auto;
+  translate:none;
+  z-index:1;
+}
+.public-messages-thread[data-replying="true"] .public-group-details-button { visibility:hidden; }
+.public-messages-thread .public-messages-thread-header>.public-messages-list-empty {
+  grid-column:2;
+  grid-row:1;
+  padding:8px 0;
+  text-align:center;
+}
+.public-chat-details-tabs [role="tab"]:focus-visible {
+  outline:2px solid hsl(var(--ring));
+  outline-offset:-3px;
+}
+
