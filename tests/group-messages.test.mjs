@@ -33,6 +33,9 @@ assert.equal(data.Message.length,1);assert.deepEqual(data.Message[0].recipient_i
 assert.equal((await invoke('read',{id},'c')).messages.length,0);
 assert.equal((await invoke('group_respond',{id,accept:true},'c')).status,200);
 assert.equal((await invoke('read',{id},'c')).messages.length,1);
+assert.equal((await invoke('inbox',{},'b')).conversations[0].unread,true);
+await invoke('read',{id},'b');
+assert.equal((await invoke('inbox',{},'b')).conversations[0].unread,false);
 assert.equal((await invoke('group_update',{id,name:'Everyone can edit'},'b')).status,200);
 assert.equal(chat.group_name,'Everyone can edit');
 assert.equal((await invoke('set_background',{id,background:{type:'gradient',value:JSON.stringify({colors:['#ff0000','#0000ff'],motion:'flow',speed:1})}},'b')).status,200);

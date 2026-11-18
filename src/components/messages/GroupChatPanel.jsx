@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import Avatar from '@/components/Avatar';
 import { Link } from 'react-router-dom';
@@ -13,6 +13,7 @@ export function GroupChatAvatar({ chat, size = 40 }) {
 
 export default function GroupChatPanel({chat,userId,invoke,onChanged,onLeft,busy}) {
   const [name,setName]=useState(chat.group_name||'');
+  useEffect(()=>setName(chat.group_name||''),[chat.group_name]);
   const [query,setQuery]=useState('');
   const [people,setPeople]=useState([]);
   const [error,setError]=useState('');
