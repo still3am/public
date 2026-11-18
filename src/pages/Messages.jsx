@@ -532,14 +532,14 @@ function MessagesPage({ user }) {
           <DialogContent className="public-chat-details" data-tab={detailsTab} showClose={false}>
             <header className="public-chat-details-header">
               <button type="button" aria-label="Close conversation details" onClick={() => setChatDetailsOpen(false)}><ChevronLeft size={22} /></button>
-              <span className="hidden">Conversation</span>
+              
               <button type="button" className="public-chat-details-done" onClick={() => setChatDetailsOpen(false)}>Done</button>
             </header>
             <div className="public-chat-details-person">
               <>{thread.chat.is_group ? <GroupChatAvatar chat={thread.chat} size={76} /> : <PersonAvatar person={peerFor(thread.chat)} size={76} />}</>
               <DialogTitle>{peerName(thread.chat)}</DialogTitle>
               {!thread.chat.is_group && peerFor(thread.chat)?.username && <p className="public-chat-details-username">@{String(peerFor(thread.chat).username).replace(/^@/, '')}</p>}
-              <DialogDescription className="hidden">Make this conversation feel like yours.</DialogDescription>
+              
               {!thread.chat.is_group && <Link to={"/profile/" + encodeURIComponent(currentPeer)} onClick={() => setChatDetailsOpen(false)}>View profile</Link>}
             </div>
             <div className="public-chat-details-tabs" role="tablist" aria-label="Conversation details">
