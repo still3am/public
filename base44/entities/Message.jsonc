@@ -2,6 +2,7 @@
   "name": "Message",
   "type": "object",
   "properties": {
+    "recipient_ids": {"type":"array","items":{"type":"string"},"default":[]},
     "conversation_id": {
       "type": "string"
     },
@@ -91,6 +92,7 @@
     },
     "read": {
       "$or": [
+        {"data.recipient_ids":"{{user.id}}"},
         {
           "data.sender_id": "{{user.id}}"
         },

@@ -53,7 +53,7 @@
         "type": "string"
       },
       "default": [],
-      "description": "The two user ids in this DM"
+      "description": "Active group members and pending invitees, or both DM participants"
     },
     "participant_names": {
       "type": "array",
@@ -103,6 +103,43 @@
       "type": "string",
       "default": "",
       "description": "ISO timestamp of the last typing indicator update"
+    },
+    "is_group": {
+      "type": "boolean",
+      "default": false
+    },
+    "group_name": {
+      "type": "string",
+      "maxLength": 80
+    },
+    "group_photo": {
+      "type": "string",
+      "maxLength": 4096
+    },
+    "admin_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "invited_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "muted_ids": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
+    "group_reads": {
+      "type": "string",
+      "default": "{}"
     }
   },
   "required": [
