@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import ts from 'typescript';
 let handler, uid='a', serial=0;
+const cursorPages=new Map();let cursorSerial=0;
 const data={Conversation:[],Message:[],Block:[],PublicProfile:['a','b','c','d'].map(id=>({user_id:id,display_name:id.toUpperCase(),visible:true,profile_private:id==='c'})),Follow:[{follower_id:'a',following_id:'b'},{follower_id:'b',following_id:'a'}]};
 function match(row,q){return Object.entries(q||{}).every(([key,value])=>{
  if(key==='$or')return value.some(item=>match(row,item));
@@ -10,7 +11,16 @@ function match(row,q){return Object.entries(q||{}).every(([key,value])=>{
  return Array.isArray(actual)?actual.includes(value):actual===value;
 });}
 const entities=new Proxy({},{get:(_,entity)=>({
- async filter(q,sort,limit=100,offset=0){const result=(data[entity]||[]).filter(row=>match(row,q));if(typeof sort==='string'){const key=sort.replace(/^-/,'');result.sort((a,b)=>String(a[key]||'').localeCompare(String(b[key]||''))*(sort.startsWith('-')?-1:1));}return structuredClone(result.slice(offset,offset+limit));},
+ async filter(q,sort,limit=100,offset=0){
+ if(sort&&typeof sort==='object'){
+   const size=sort.limit||100;
+   let selection;
+   if(sort.cursor){const saved=cursorPages.get(sort.cursor);if(!saved)throw Error('Invalid cursor');selection=saved.map(id=>(data[entity]||[]).find(row=>row.id===id)).filter(Boolean);}
+   else{selection=(data[entity]||[]).filter(row=>match(row,q));const key=(sort.sort||'-created_date').replace(/^-/,'');selection.sort((a,b)=>String(b[key]||'').localeCompare(String(a[key]||'')));}
+   let next=null;if(selection.length>size){next='cursor'+(++cursorSerial);cursorPages.set(next,selection.slice(size).map(row=>row.id));}
+   return {items:structuredClone(selection.slice(0,size)),has_more:Boolean(next),next_cursor:next};
+ }
+ const result=(data[entity]||[]).filter(row=>match(row,q));if(typeof sort==='string'){const key=sort.replace(/^-/,'');result.sort((a,b)=>String(a[key]||'').localeCompare(String(b[key]||''))*(sort.startsWith('-')?-1:1));}return structuredClone(result.slice(offset,offset+limit));},
  async get(id){return structuredClone((data[entity]||[]).find(row=>row.id===id));},
  async create(value){const row={...structuredClone(value),id:'row'+(++serial),created_date:new Date(Date.now()+serial).toISOString()};(data[entity]??=[]).push(row);return structuredClone(row);},
  async update(id,patch){const row=data[entity].find(row=>row.id===id);Object.assign(row,structuredClone(patch));return structuredClone(row);},
@@ -108,4 +118,16 @@ for(const conversation of [dm.id,first.id]){
   assert.equal((await invoke('inbox',{},'b')).conversations.find(row=>row.id===conversation).unread,false);
   assert.equal((await invoke('mute',{id:conversation,enabled:false},'b')).status,200);
 }
+// Cursor history remains scoped to its conversation and is stable as messages arrive.
+const historyChat=await entities.Conversation.create({dm_enabled:true,participant_ids:['a','b'],participant_names:['A','B'],dm_status:'accepted',dm_requester:'a'});
+for(let index=0;index<135;index++)await entities.Message.create({conversation_id:historyChat.id,sender_id:'a',recipient_id:'b',text:'History '+index});
+const latestPage=await invoke('read',{id:historyChat.id},'b');
+assert.equal(latestPage.messages.length,100);assert.ok(latestPage.nextCursor);
+await entities.Message.create({conversation_id:historyChat.id,sender_id:'a',recipient_id:'b',text:'Arrived during pagination'});
+const earlierPage=await invoke('history',{id:historyChat.id,cursor:latestPage.nextCursor},'b');
+assert.equal(earlierPage.messages.length,35);assert.equal(earlierPage.nextCursor,null);
+assert.equal(new Set([...latestPage.messages,...earlierPage.messages].map(message=>message.id)).size,135);
+assert.equal((await invoke('history',{id:historyChat.id,cursor:latestPage.nextCursor},'d')).status,404);
+assert.equal((await invoke('history',{id:dm.id,cursor:latestPage.nextCursor},'a')).status,403);
+assert.equal((await invoke('history',{id:historyChat.id,cursor:''},'b')).status,400);
 console.log('PASS group invitations, membership authorization, shared edits, reactions, replies, admin transfer, mute, limits, DM compatibility, parallel updates, creation retries, pending introductions, and removed-member access');
