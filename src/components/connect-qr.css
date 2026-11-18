@@ -69,3 +69,30 @@
 @media(max-height:700px){.connect-qr-identity{margin:4px 0 10px}.connect-qr-avatar{width:48px;height:48px;border-radius:14px;margin-bottom:8px}.connect-qr-code{width:min(100%,min(50vw,210px));}.connect-qr-caption{margin:10px 0}.connect-qr-shell{padding-top:12px}}
 @media(prefers-reduced-motion:reduce){.connect-qr-shell,.connect-qr-end{scroll-behavior:auto;transition:none}}
 
+/* Keep invitation and session management visually separate. */
+.connect-qr-shell{gap:0}
+.connect-qr-shell .profile-qr-art{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:-1}
+.connect-qr-header{flex:none}
+.connect-qr-identity{display:flex;flex-direction:row;align-items:center;justify-content:center;gap:12px;margin:10px 0 24px;text-align:left}
+.connect-qr-identity .connect-qr-avatar{width:46px;height:46px;margin:0;border-radius:12px;flex:none}
+.connect-qr-identity .connect-qr-track{align-items:flex-start;margin:0;max-width:26ch;font-size:13px}
+.connect-qr-code{width:min(100%,248px);border-radius:24px;padding:14px}
+.connect-qr-caption{font-size:19px;line-height:1.3;margin:18px 0}
+.connect-qr-caption span{font-size:12px;margin-top:6px}
+.connect-qr-actions{gap:10px;margin-bottom:10px}
+.connect-approval{padding:0;background:transparent;border:0;border-top:1px solid rgba(255,255,255,.2);border-radius:0;margin-top:14px}
+.connect-approval summary,.connect-guest-details summary{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:52px;cursor:pointer;list-style:none;font-size:12px;color:rgba(255,255,255,.9)}
+.connect-approval summary::-webkit-details-marker,.connect-guest-details summary::-webkit-details-marker{display:none}
+.connect-approval summary>span:last-child{font-size:11px;color:rgba(255,255,255,.65)}
+.connect-approval-options{margin:0 0 14px}
+.connect-approval-options button{padding:12px;min-height:48px}
+.connect-approval-options button small{display:none}
+.connect-qr-members{margin-top:8px;padding-top:16px}
+.connect-guest-details{flex:none;border-top:1px solid rgba(255,255,255,.15)}
+.connect-guest-details>div{padding-bottom:12px}
+.connect-qr-scan{margin:8px 0 0;font-size:12px}
+.connect-qr-end{margin:14px 0 0;min-height:44px;background:transparent}
+.connect-host-footer{padding:16px 0 0;margin-top:20px}
+@media(max-width:767px){.connect-qr-shell{height:auto;max-height:calc(100dvh - env(safe-area-inset-top,0px) - env(safe-area-inset-bottom,0px));border-radius:28px;padding:20px 22px}.connect-qr-overlay{place-items:center;padding:calc(10px + env(safe-area-inset-top,0px)) 12px calc(10px + env(safe-area-inset-bottom,0px))}.connect-qr-end{position:static;bottom:auto;margin-top:14px;background:transparent;backdrop-filter:none}.connect-qr-identity{margin:10px 0 20px}.connect-qr-code{width:min(100%,240px)}}
+@media(max-height:740px){.connect-qr-code{width:min(100%,190px)}.connect-qr-caption{margin:12px 0;font-size:17px}.connect-qr-identity{margin:4px 0 14px}.connect-host-footer{margin-top:12px;padding-top:12px}}
+
