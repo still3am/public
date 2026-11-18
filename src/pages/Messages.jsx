@@ -667,7 +667,7 @@ function MessagesPage({ user }) {
               openMessageMenu(message, event.currentTarget);
             }}
             onContextMenu={(event) => {event.preventDefault();cancelHold();openMessageMenu(message, event.currentTarget);}}>
-              {message.sender_id!==user?.id&&<span className="public-message-avatar-rail">{messageRunPosition(thread.messages,messageIndex).end&&<PersonAvatar size={28} person={messageSender(message,thread.chat,user)} />}</span>}
+              {message.sender_id!==user?.id&&<span className="public-message-avatar-rail">{messageRunPosition(thread.messages,messageIndex).end&&<PersonAvatar size={34} person={messageSender(message,thread.chat,user)} />}</span>}
               <div className="public-message-body">
               {message.sender_id!==user?.id&&messageRunPosition(thread.messages,messageIndex).start&&<span className="public-message-author">{messageSender(message,thread.chat,user).display_name}</span>}
               <div className="public-message-content">
