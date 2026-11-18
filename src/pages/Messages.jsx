@@ -6,7 +6,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react
 import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
-import { ArrowUp, Check, ChevronLeft, ChevronRight, Clapperboard, Copy, Disc3, ExternalLink, Library, Trash2, Users, MessageCircle, Image, ImagePlus, Music2, Palette, Pause, Play, Plus, Reply, Search, ShoppingBag, SquarePen, TextQuote, UserRound, X } from 'lucide-react';
+import { ArrowUp, ChevronLeft, ChevronRight, Clapperboard, Copy, Disc3, ExternalLink, Library, Trash2, Users, MessageCircle, Image, ImagePlus, Music2, Palette, Pause, Play, Plus, Reply, Search, ShoppingBag, SquarePen, TextQuote, UserRound, X } from 'lucide-react';
 import LyricSharePicker from '@/components/LyricSharePicker';
 import LyricCoverGradient from '@/components/LyricCoverGradient';
 import TrackPickerSheet from '@/components/profile/TrackPickerSheet';
@@ -597,7 +597,7 @@ function MessagesPage({ user }) {
             followLatest.current = node.scrollHeight - node.scrollTop - node.clientHeight < 72;
             if (followLatest.current) setShowLatest(false);
           }}>
-            {thread.messages.length === 0 && <p className="public-messages-list-empty">{pending ? "Send a message request to start the conversation." : "Send the first message."}</p>}
+            {thread.messages.length === 0 && <p className="public-messages-list-empty">{groupInvited ? 'You have been invited to this group. Accept to see its messages.' : pending ? "Send a message request to start the conversation." : "Send the first message."}</p>}
             {thread.messages.map((message) => <div key={message.id} className="public-message-group" data-own={message.sender_id === user?.id} data-reply-target={reply?.id === message.id}
             onPointerDown={(event) => {
               if (event.pointerType === 'mouse' || (event.target instanceof Element && event.target.closest('button,a'))) return;

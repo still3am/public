@@ -46,7 +46,7 @@ Deno.serve(async req => {
     });
 
     if (action === 'inbox') {
-      const conversations = rows(await db.Conversation.filter({participant_ids:uid, dm_enabled:true}, '-updated_date', 100));
+      const conversations = rows(await db.Conversation.filter({participant_ids:uid, dm_enabled:true}, '-last_message_at', 100));
       const ids = [...new Set(conversations.flatMap(chat=>chat.participant_ids).filter(member=>member!==uid))];
       const [profiles, blocks] = ids.length ? await Promise.all([
         db.PublicProfile.filter({user_id:{$in:ids},visible:true}, '-updated_date', 200),
@@ -131,7 +131,7 @@ Deno.serve(async req => {
     const activeIds=chat.participant_ids.filter(member=>!(chat.invited_ids||[]).includes(member));
     if(chat.is_group && action==='group_respond'){
       if(!invited||typeof accept!=='boolean')fail('No pending invitation.');
-      await db.Conversation.update(id,{invited_ids:(chat.invited_ids||[]).filter(member=>member!==uid),...(!accept?{participant_ids:chat.participant_ids.filter(member=>member!==uid),participant_names:chat.participant_names.filter((_,i)=>chat.participant_ids[i]!==uid)}:{})});
+      await db.Conversation.update(id,{invited_ids:(chat.invited_ids||[]).filter(member=>member!==uid),...(accept&&!activeIds.length?{admin_ids:[uid]}:{}),...(!accept?{participant_ids:chat.participant_ids.filter(member=>member!==uid),participant_names:chat.participant_names.filter((_,i)=>chat.participant_ids[i]!==uid)}:{})});
       return Response.json({ok:true});
     }
     if(chat.is_group&&invited){
@@ -303,7 +303,7 @@ Deno.serve(async req => {
       const messages = rows(page);
       const unreadIds = messages.filter(message=>message.recipient_id===uid&&!message.read).map(message=>message.id);
       if (unreadIds.length) await db.Message.updateMany({id:{$in:unreadIds},recipient_id:uid,read:false},{$set:{read:true}});
-      if(chat.is_group){let reads={};try{reads=JSON.parse(chat.group_reads||'{}');}catch{}await db.Conversation.update(id,{group_reads:JSON.stringify({...reads,[uid]:new Date().toISOString()})});}
+      if(chat.is_group){let reads={};try{reads=JSON.parse(chat.group_reads||'{}');}catch{}await db.Conversation.update(id,{group_reads:JSON.stringify({...reads,[uid]:messages[0]?.created_date||chat.last_message_at||new Date().toISOString()})});}
       return Response.json({chat:{...chat,peer:profile?publicPerson(profile):null,members:rows(profiles).map(publicPerson)},messages:messages.reverse().map(message=>({...message,...reactionFields(message)}))});
     }
     if (action === 'respond' && chat.dm_status === 'pending' && chat.dm_requester !== uid && typeof accept === 'boolean') {
