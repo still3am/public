@@ -73,7 +73,7 @@ function MessagesPage({ user }) {
   const [viewport,setViewport]=useState(()=>({height:window.visualViewport?.height||window.innerHeight,top:window.visualViewport?.offsetTop||0}));
   useEffect(()=>{
     let frame;
-    const sync=()=>{cancelAnimationFrame(frame);frame=requestAnimationFrame(()=>setViewport({height:window.visualViewport?.height||window.innerHeight,top:window.visualViewport?.offsetTop||0}));};
+    const sync=()=>{cancelAnimationFrame(frame);frame=requestAnimationFrame(()=>{const height=window.visualViewport?.height||window.innerHeight,top=window.visualViewport?.offsetTop||0;setViewport(previous=>Math.abs(previous.height-height)<1&&Math.abs(previous.top-top)<1?previous:{height,top});});};
     window.addEventListener('resize',sync);
     window.visualViewport?.addEventListener('resize',sync);
     window.visualViewport?.addEventListener('scroll',sync);
@@ -478,7 +478,7 @@ function MessagesPage({ user }) {
     if (followLatest.current) jumpToLatest();else
     setShowLatest(true);
   }, [id, lastMessage]);
-  return <main className="public-messages" style={viewportStyle} data-thread={Boolean(id)} data-composing={composing}>
+  return <main className="public-messages" style={viewportStyle} data-compact={viewport.height<480} data-thread={Boolean(id)} data-composing={composing}>
     {error && <p role="alert" className="rounded-lg border p-3">{error}</p>}
     <div className="public-messages-layout">
       <aside className="public-messages-inbox">
@@ -544,7 +544,7 @@ function MessagesPage({ user }) {
           {thread?.chat?.is_group&&!groupInvited&&<button type="button" className="public-group-details-button" aria-label="Group details and members" onClick={()=>{setDetailsTab('info');setBackgroundError('');setChatDetailsOpen(true);}}><Info size={21}/></button>}
         </header>
         {thread && currentPeer && !groupInvited && <Dialog open={chatDetailsOpen} onOpenChange={setChatDetailsOpen}>
-          <DialogContent className="public-chat-details" style={viewportStyle} data-group={Boolean(thread.chat.is_group)} data-tab={detailsTab} showClose={false}>
+          <DialogContent className="public-chat-details" style={viewportStyle} data-compact={viewport.height<480} data-group={Boolean(thread.chat.is_group)} data-tab={detailsTab} showClose={false}>
             <header className="public-chat-details-header">
               <button type="button" aria-label="Close conversation details" onClick={() => setChatDetailsOpen(false)}><ChevronLeft size={22} /></button>
               <span className="public-chat-details-heading">{thread.chat.is_group?"Group":"Conversation"}</span>

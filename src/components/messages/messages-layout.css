@@ -258,3 +258,46 @@
   .public-chat-details[data-tab] .public-chat-tab-label { font-size:9px; }
   .public-chat-details[data-tab] .public-chat-background-tools>button { flex-direction:column; justify-content:center; text-align:center; gap:6px; }
 }
+
+/* Phones, narrow windows, and tablet split views use one pane. */
+@media(max-width:900px) {
+  .public-messages>.public-messages-layout{grid-template-columns:minmax(0,1fr)}
+  .public-messages[data-thread="true"]:not([data-composing="true"]) .public-messages-inbox{display:none}
+  .public-messages[data-composing="true"] .public-messages-inbox{display:block}
+  .public-messages[data-composing="true"] .public-messages-thread,.public-messages-layout>.public-messages-empty{display:none}
+  .public-messages-thread>.public-messages-history{padding-inline:max(14px,env(safe-area-inset-left)) max(14px,env(safe-area-inset-right));scrollbar-gutter:auto}
+  .public-messages-thread>.public-messages-compose{padding-left:max(10px,env(safe-area-inset-left)) !important;padding-right:max(10px,env(safe-area-inset-right)) !important}
+  .public-messages-inbox-header{padding:16px max(16px,env(safe-area-inset-right)) 12px max(16px,env(safe-area-inset-left))}
+  .public-messages-thread .public-message-group{max-width:88%}
+}
+/* Restore the desktop panes explicitly after a window is widened. */
+@media(min-width:901px) {
+  .public-messages-layout>.public-messages-inbox{display:block;border-inline-end:1px solid hsl(var(--border))}
+  .public-messages-layout>.public-messages-thread{display:flex}
+  .public-messages-layout>.public-messages-empty{display:grid}
+  .public-messages-inbox-header{padding:20px 22px 14px}
+  .public-messages-thread>.public-messages-history{padding-inline:max(28px,calc((100% - 880px)/2))}
+  .public-messages-thread .public-message-group{max-width:min(76%,620px)}
+  .public-chat-details[data-tab] .public-chat-shared-grid{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+/* Keep the conversation usable in landscape and above an open keyboard. */
+.public-messages[data-compact="true"] .public-messages-thread>.public-messages-thread-header{
+  min-height:56px;height:56px;padding-block:4px;box-sizing:border-box;
+}
+.public-messages[data-compact="true"] .public-messages-peer{
+  display:flex;flex-direction:row;justify-content:center;align-items:center;gap:9px;max-width:100%;min-width:0;
+}
+.public-messages[data-compact="true"] .public-messages-peer>.public-group-portrait,
+.public-messages[data-compact="true"] .public-messages-peer>.public-messages-avatar{display:none}
+.public-messages[data-compact="true"] .public-group-header-count{display:none}
+.public-messages[data-compact="true"] .public-messages-peer h2{font-size:14px}
+.public-messages[data-compact="true"] .public-messages-thread>.public-messages-compose{padding-top:6px !important;padding-bottom:6px !important}
+.public-messages[data-compact="true"] .public-messages-history{padding-block:10px}
+.public-messages[data-compact="true"] :is(.public-message-lyric-draft,.public-message-attachment,.public-message-reply-draft){max-height:24%;flex-shrink:0}
+.public-chat-details[data-tab][data-compact="true"]>.public-chat-details-person{display:none !important}
+.public-chat-details[data-tab][data-compact="true"]>.public-chat-details-header{min-height:48px;padding-block:2px}
+.public-chat-details[data-tab][data-compact="true"]>.public-chat-details-tabs{padding-block:0 4px}
+.public-chat-details[data-tab][data-compact="true"] .public-chat-details-tabs>button{min-height:44px;padding-block:2px}
+.public-chat-details[data-tab][data-compact="true"] :is(.public-group-settings,.public-chat-info,.public-chat-background-scroll,.public-chat-shared-items){padding-block:12px}
+.public-group-selected>button{max-width:100%;overflow-wrap:anywhere;text-align:left}
+.public-group-selected>button>svg{flex-shrink:0}
