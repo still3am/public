@@ -1,3 +1,5 @@
+import ConversationMuteSwitch from '@/components/messages/ConversationMuteSwitch';
+import { messageReactionMap, ownMessageReaction } from '@/components/messages/messageReactions';
 import GroupChatPanel, { GroupChatAvatar } from '@/components/messages/GroupChatPanel';
 import { getRecentPlays } from '@/lib/recentPlays';
 import MomentGifPicker, { MomentGif } from '@/components/moments/MomentGifPicker';
@@ -19,7 +21,7 @@ import { useCoverUrl } from '@/hooks/useCoverUrl';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import './messages.css';
-import '@/components/messages/group-chat-layout.css';
+import '@/components/messages/conversation-layout.css';
 import '@/components/messages/messages-layout.css';
 
 const REACTIONS = ["❤️", "👍", "👎", "😂", "‼️", "❓", "🔥"];
@@ -533,7 +535,7 @@ function MessagesPage({ user }) {
           <button className="public-messages-back" onClick={() => setParams({})} aria-label="Back to inbox"><ChevronLeft size={23} /></button>
           {readError?.id === id ? <p role="alert" className="public-messages-list-empty">{readError.message} <button type="button" className="underline" onClick={() => loadThread(id)}>Retry</button></p> : !thread && <p role="status" className="public-messages-list-empty">Loading conversation…</p>}
         {thread && currentPeer && <button type="button" className="public-messages-peer" aria-label={"Conversation details for " + peerName(thread.chat)} onClick={() => {
-            setDetailsTab(thread.chat.is_group ? 'info' : 'backgrounds');
+            setDetailsTab('info');
             setBackgroundError('');
             if (!groupInvited) setChatDetailsOpen(true);
           }}>
@@ -541,13 +543,13 @@ function MessagesPage({ user }) {
           <h2>{peerName(thread.chat)}</h2>
           {thread.chat.is_group&&<span className="public-group-header-count">{thread.chat.participant_ids.length-(thread.chat.invited_ids?.length||0)} members{(thread.chat.invited_ids?.length||0)>0?` · ${thread.chat.invited_ids?.length||0} invited`:""}</span>}
         </button>}
-          {thread?.chat?.is_group&&!groupInvited&&<button type="button" className="public-group-details-button" aria-label="Group details and members" onClick={()=>{setDetailsTab('info');setBackgroundError('');setChatDetailsOpen(true);}}><Info size={21}/></button>}
+          {thread?.chat&&!groupInvited&&<button type="button" className="public-group-details-button" aria-label="Conversation details" onClick={()=>{setDetailsTab('info');setBackgroundError('');setChatDetailsOpen(true);}}><Info size={21}/></button>}
         </header>
         {thread && currentPeer && !groupInvited && <Dialog open={chatDetailsOpen} onOpenChange={setChatDetailsOpen}>
           <DialogContent className="public-chat-details" style={viewportStyle} data-compact={viewport.height<480} data-group={Boolean(thread.chat.is_group)} data-tab={detailsTab} showClose={false}>
             <header className="public-chat-details-header">
               <button type="button" aria-label="Close conversation details" onClick={() => setChatDetailsOpen(false)}><ChevronLeft size={22} /></button>
-              <span className="public-chat-details-heading">{thread.chat.is_group?"Group":"Conversation"}</span>
+              <span className="public-chat-details-heading">Conversation</span>
               <button type="button" className="public-chat-details-done" onClick={() => setChatDetailsOpen(false)}>Done</button>
             </header>
             <div className="public-chat-details-person">
@@ -590,6 +592,7 @@ function MessagesPage({ user }) {
               <input ref={backgroundFile} type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" onChange={(event) => {void uploadChatBackground(event.target.files?.[0]);event.target.value = '';}} />
             </section> : detailsTab === 'info' && thread.chat.is_group ? <GroupChatPanel key={id} chat={thread.chat} userId={user?.id} invoke={messages} busy={busy} onChanged={async () => {if (currentChat.current === id) await loadThread(id);await loadInbox();}} onLeft={() => {if (currentChat.current === id) {setChatDetailsOpen(false);setParams({});}void loadInbox();}} /> : detailsTab === 'info' ? <section className="public-chat-info" aria-label="Conversation info">
               <h3>Conversation info</h3>
+              <ConversationMuteSwitch chat={thread.chat} userId={user?.id} invoke={messages} disabled={busy} onChanged={async()=>{if(currentChat.current===id)await loadThread(id);await loadInbox();}} />
               <p>Messages, photos, GIFs, and music shared here stay available to everyone in this conversation.</p>
               <Link to={"/profile/" + encodeURIComponent(currentPeer)} onClick={() => setChatDetailsOpen(false)}><UserRound size={16} aria-hidden="true" /> View {peerName(thread.chat)}’s profile</Link>
             </section> : detailsTab === 'photos' ? <section className="public-chat-shared-items" aria-label="Shared photos and videos">
@@ -666,7 +669,7 @@ function MessagesPage({ user }) {
               <DialogDescription className="sr-only">React or choose an action for this message.</DialogDescription>
               <div className="public-message-reactions" role="group" aria-label="Emoji reactions" aria-busy={savingReaction !== null}>
                 {REACTIONS.map((emoji, index) => {
-                  const selected = (thread.chat.is_group ? (() => {try {return JSON.parse(activeMenu.reactions || '{}')[user?.id];} catch {return '';}})() : activeMenu.sender_id === user?.id ? activeMenu.sender_reaction : activeMenu.recipient_reaction) === emoji;
+                  const selected = ownMessageReaction(activeMenu,user?.id) === emoji;
                   return <button key={emoji} type="button" aria-label={REACTION_LABELS[index]} aria-pressed={selected} data-saving={savingReaction === emoji} disabled={busy} onClick={() => void perform(async () => {
                     setSavingReaction(emoji);
                     let saved;
@@ -874,17 +877,13 @@ function messageGifId(message) {
 }
 
 function MessageReactions({ message, userId }) {
-  let all;try {all = JSON.parse(message.reactions || '{}');} catch {}
-  const reactions = (all && Object.values(all).some(Boolean) ? Object.entries(all).map(([key, emoji]) => ({ key, emoji })) : [
-  { emoji: message.sender_reaction, key: "sender" },
-  { emoji: message.recipient_reaction, key: "recipient" }]).
-  filter(({ emoji }) => REACTIONS.includes(emoji));
+  const reactions=Object.entries(messageReactionMap(message)).map(([key,emoji])=>({key,emoji})).filter(({emoji})=>REACTIONS.includes(emoji));
 
   if (!reactions.length) return null;
 
   return <div className="public-message-reaction-group" role="group" aria-label="Message reactions">
     {reactions.map(({ emoji, key }) => {
-      const mine = key === "sender" ? message.sender_id === userId : key === "recipient" ? message.sender_id !== userId : key === userId;
+      const mine = key === userId;
       const label = REACTION_LABELS[REACTIONS.indexOf(emoji)];
       return <span
         className="public-message-reaction-badge"

@@ -1,10 +1,10 @@
-/* Group conversation layout: one header, one scroll area, one composer. */
-.public-messages-thread[data-group="true"] {
+/* Shared conversation layout: one header, one scroll area, one composer. */
+.public-messages-thread {
   min-width:0;
   min-height:0;
   overflow:hidden;
 }
-.public-messages-thread[data-group="true"] .public-messages-thread-header {
+.public-messages-thread .public-messages-thread-header {
   display:grid;
   grid-template-columns:44px minmax(0,1fr) 44px;
   align-items:center;
@@ -15,7 +15,7 @@
   padding:10px 16px;
   box-sizing:border-box;
 }
-.public-messages-thread[data-group="true"] .public-messages-thread-header>.public-messages-back {
+.public-messages-thread .public-messages-thread-header>.public-messages-back {
   position:static;
   inset:auto;
   translate:none;
@@ -25,7 +25,7 @@
   width:44px;
   height:44px;
 }
-.public-messages-thread[data-group="true"] .public-messages-peer {
+.public-messages-thread .public-messages-peer {
   grid-column:2;
   grid-row:1;
   display:flex;
@@ -38,7 +38,7 @@
   gap:4px;
   padding:0 4px;
 }
-.public-messages-thread[data-group="true"] .public-messages-peer h2 {
+.public-messages-thread .public-messages-peer h2 {
   width:100%;
   min-width:0;
   margin:0;
@@ -70,7 +70,7 @@
   color:hsl(var(--foreground));
   background:hsl(var(--muted)/.65);
 }
-.public-messages-thread[data-group="true"] .public-messages-history {
+.public-messages-thread .public-messages-history {
   flex:1 1 0%;
   min-height:0;
   min-width:0;
@@ -80,13 +80,13 @@
   overflow-y:auto;
   scroll-padding-block:18px;
 }
-.public-messages-thread[data-group="true"] .public-message-group {
+.public-messages-thread .public-message-group {
   flex:0 0 auto;
   width:fit-content;
   max-width:min(82%,560px);
   min-width:0;
 }
-.public-messages-thread[data-group="true"] .public-group-sender {
+.public-messages-thread .public-group-sender {
   display:flex;
   align-items:center;
   gap:8px;
@@ -96,20 +96,20 @@
   font-size:12px;
   line-height:1.35;
 }
-.public-messages-thread[data-group="true"] .public-group-sender>.public-messages-avatar {
+.public-messages-thread .public-group-sender>.public-messages-avatar {
   width:24px;
   height:24px;
   flex:0 0 24px;
 }
-.public-messages-thread[data-group="true"] .public-message-group>time {
+.public-messages-thread .public-message-group>time {
   margin:4px 8px 7px;
   line-height:1.3;
 }
-.public-messages-thread[data-group="true"] .public-message-bubble {
+.public-messages-thread .public-message-bubble {
   max-width:100%;
   line-height:1.45;
 }
-.public-messages-thread[data-group="true"] .public-messages-compose {
+.public-messages-thread .public-messages-compose {
   flex:0 0 auto;
   width:100%;
   min-width:0;
@@ -117,13 +117,13 @@
   padding-inline:clamp(12px,3vw,32px);
   gap:9px;
 }
-.public-messages-thread[data-group="true"] .public-messages-compose>button {
+.public-messages-thread .public-messages-compose>button {
   flex:0 0 44px;
 }
-.public-messages-thread[data-group="true"] .public-messages-compose textarea {
+.public-messages-thread .public-messages-compose textarea {
   min-width:0;
 }
-.public-messages-thread[data-group="true"] .public-message-request-actions {
+.public-messages-thread .public-message-request-actions {
   flex:0 0 auto;
   align-items:center;
   justify-content:center;
@@ -131,13 +131,13 @@
   padding:14px 16px max(14px,env(safe-area-inset-bottom));
   background:hsl(var(--background)/.85);
 }
-.public-messages-thread[data-group="true"] .public-message-request-actions button {
+.public-messages-thread .public-message-request-actions button {
   flex:1 1 120px;
   max-width:240px;
   min-height:44px;
   border-radius:22px;
 }
-.public-chat-details[data-group="true"] {
+.public-chat-details {
   width:min(560px,calc(100vw - 32px)) !important;
   max-width:none !important;
   height:min(860px,calc(100dvh - 32px)) !important;
@@ -146,7 +146,7 @@
   gap:0;
   overflow:hidden;
 }
-.public-chat-details[data-group="true"] .public-chat-details-header {
+.public-chat-details .public-chat-details-header {
   display:grid;
   grid-template-columns:44px minmax(0,1fr) 60px;
   align-items:center;
@@ -155,13 +155,13 @@
   padding:8px 16px;
   flex:0 0 auto;
 }
-.public-chat-details[data-group="true"] .public-chat-details-header>span {
+.public-chat-details .public-chat-details-header>span {
   grid-column:2;
   text-align:center;
 }
-.public-chat-details[data-group="true"] .public-chat-details-header>button:first-child { grid-column:1; grid-row:1; }
-.public-chat-details[data-group="true"] .public-chat-details-header>.public-chat-details-done { grid-column:3; grid-row:1; justify-self:end; }
-.public-chat-details[data-group="true"] .public-chat-details-person {
+.public-chat-details .public-chat-details-header>button:first-child { grid-column:1; grid-row:1; }
+.public-chat-details .public-chat-details-header>.public-chat-details-done { grid-column:3; grid-row:1; justify-self:end; }
+.public-chat-details .public-chat-details-person {
   flex:0 0 auto;
   display:flex;
   flex-direction:column;
@@ -169,7 +169,7 @@
   gap:8px;
   padding:16px 24px !important;
 }
-.public-chat-details[data-group="true"] .public-chat-details-person h2 {
+.public-chat-details .public-chat-details-person h2 {
   margin:0;
   width:100%;
   text-align:center;
@@ -181,15 +181,15 @@
   -webkit-box-orient:vertical;
   overflow:hidden;
 }
-.public-chat-details[data-group="true"]:not([data-tab="info"]) .public-chat-details-person {
+.public-chat-details:not([data-tab="info"]) .public-chat-details-person {
   display:none;
 }
-.public-chat-details[data-group="true"] .public-chat-details-tabs {
+.public-chat-details .public-chat-details-tabs {
   flex:0 0 auto;
   margin:0;
   padding:8px 16px 12px;
 }
-.public-chat-details[data-group="true"] .public-group-settings {
+.public-chat-details .public-group-settings {
   display:flex;
   flex:1 1 0%;
   min-height:0;
@@ -199,42 +199,42 @@
   padding:18px 24px max(24px,env(safe-area-inset-bottom));
   overscroll-behavior:contain;
 }
-.public-chat-details[data-group="true"] .public-group-settings .public-group-member {
+.public-chat-details .public-group-settings .public-group-member {
   display:grid;
   grid-template-columns:44px minmax(0,1fr) auto;
   align-items:center;
   gap:8px;
   width:100%;
 }
-.public-chat-details[data-group="true"] .public-group-member-actions {
+.public-chat-details .public-group-member-actions {
   margin:0;
   display:flex;
   align-items:center;
   justify-content:flex-end;
   gap:6px;
 }
-.public-chat-details[data-group="true"] .public-group-member-identity {
+.public-chat-details .public-group-member-identity {
   min-width:0;
   overflow-wrap:anywhere;
 }
 @media(min-width:768px) {
-  .public-messages-thread[data-group="true"] .public-messages-history {
+  .public-messages-thread .public-messages-history {
     padding-inline:max(28px,calc((100% - 880px)/2));
   }
-  .public-messages-thread[data-group="true"] .public-message-group {
+  .public-messages-thread .public-message-group {
     max-width:min(75%,620px);
   }
 }
 @media(max-width:560px) {
-  .public-messages-thread[data-group="true"] .public-messages-thread-header {
+  .public-messages-thread .public-messages-thread-header {
     min-height:96px;
     padding-inline:10px;
     gap:4px;
   }
-  .public-messages-thread[data-group="true"] .public-message-group {
+  .public-messages-thread .public-message-group {
     max-width:88%;
   }
-  .public-chat-details[data-group="true"] {
+  .public-chat-details {
     inset:8px !important;
     transform:none !important;
     width:calc(100vw - 16px) !important;
@@ -242,18 +242,18 @@
     max-height:calc(100dvh - 16px) !important;
     border-radius:24px !important;
   }
-  .public-chat-details[data-group="true"] .public-group-settings {
+  .public-chat-details .public-group-settings {
     padding-inline:16px;
   }
-  .public-chat-details[data-group="true"] .public-group-member-actions button {
+  .public-chat-details .public-group-member-actions button {
     min-height:40px;
   }
 }
 @media(max-width:400px) {
-  .public-chat-details[data-group="true"] .public-group-settings .public-group-member {
+  .public-chat-details .public-group-settings .public-group-member {
     grid-template-columns:44px minmax(0,1fr);
   }
-  .public-chat-details[data-group="true"] .public-group-member-actions {
+  .public-chat-details .public-group-member-actions {
     grid-column:2;
     justify-content:flex-start;
     flex-wrap:wrap;

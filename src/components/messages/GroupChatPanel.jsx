@@ -1,3 +1,4 @@
+import ConversationMuteSwitch from './ConversationMuteSwitch';
 import { groupAvatarLayout } from './groupAvatarLayout';
 import { useEffect, useRef, useState } from 'react';
 import { base44 } from '@/api/base44Client';
@@ -33,7 +34,6 @@ export default function GroupChatPanel({chat,userId,invoke,onChanged,onLeft,busy
   useEffect(()=>{mounted.current=true;return()=>{mounted.current=false;};},[]);
   const isAdmin=Boolean(chat.admin_ids?.includes(userId));
   const pending=chat.invited_ids||[];
-  const muted=Boolean(chat.muted_ids?.includes(userId));
   const term=query.trim().toLocaleLowerCase();
   const searching=isAdmin&&Boolean(term);
   useEffect(()=>{
@@ -88,7 +88,7 @@ export default function GroupChatPanel({chat,userId,invoke,onChanged,onLeft,busy
       <label className="public-group-photo-upload"><Camera size={18}/>Change photo or GIF<input type="file" accept="image/jpeg,image/png,image/webp,image/gif" disabled={working||busy} onChange={event=>{void upload(event.target.files?.[0]);event.target.value='';}} /></label>
       {chat.group_photo&&<button type="button" disabled={working||busy} onClick={()=>void run('group_update',{photo:''})}>Remove photo</button>}
     </div>
-    <button type="button" role="switch" aria-label="Mute group notifications" aria-checked={muted} className="public-group-mute" disabled={working||busy} onClick={()=>void run('group_mute',{enabled:!muted})}><span>Mute notifications</span><span className="public-group-switch" data-on={muted}><i/></span></button>
+    <ConversationMuteSwitch chat={chat} userId={userId} invoke={invoke} onChanged={onChanged} disabled={working||busy} />
     <h3>Members <span className="text-muted-foreground">{chat.participant_ids.length}/20</span></h3>
     <div className="public-group-members">{chat.participant_ids.map((member,index)=>{
       const person=chat.members?.find(person=>person.id===member)||{display_name:chat.participant_names?.[index]||'PUBLIC listener'};

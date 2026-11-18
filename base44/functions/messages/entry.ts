@@ -4,7 +4,9 @@ const rows = page => Array.isArray(page) ? page : page?.items || [];
 const fail = (message, status = 400) => { throw Object.assign(new Error(message), {status}); };
 
 function savedReactions(message) {
-  try { return JSON.parse(message.reactions || '{}') || {}; } catch { return {}; }
+  let saved={};
+  try {const value=JSON.parse(message.reactions||'{}');if(value&&typeof value==='object'&&!Array.isArray(value))saved=value;}catch{}
+  return {...(message.sender_id&&message.sender_reaction?{[message.sender_id]:message.sender_reaction}:{}),...(message.recipient_id&&message.recipient_reaction?{[message.recipient_id]:message.recipient_reaction}:{}),...saved};
 }
 
 function reactionFields(message) {
@@ -16,12 +18,12 @@ function reactionFields(message) {
 }
 
 // Compare-and-swap shared group state so two members cannot overwrite each other.
-async function changeGroup(db, id, uid, compute, allowInvited = false) {
+async function changeConversation(db, id, uid, compute, allowInvited = false) {
   const token = crypto.randomUUID();
   for (let attempt = 0; attempt < 6; attempt++) {
     const current = await db.Conversation.get(id);
-    if (!current?.is_group || !current.participant_ids?.includes(uid)) fail('Conversation unavailable.', 404);
-    if (!allowInvited && current.invited_ids?.includes(uid)) fail('Accept the group invitation first.', 403);
+    if (!current?.dm_enabled || !current.participant_ids?.includes(uid)) fail('Conversation unavailable.', 404);
+    if (!allowInvited && current.is_group && current.invited_ids?.includes(uid)) fail('Accept the group invitation first.', 403);
     const patch = await compute(current);
     if(!Object.keys(patch).length)return current;
     const revision = current.group_revision == null
@@ -81,7 +83,7 @@ Deno.serve(async req => {
         conversation_id:{$in:chats.map(chat=>chat.id)},recipient_id:uid,read:false,
       }, '-created_date', 500)) : [];
       const unreadChats = new Set(unread.map(message=>message.conversation_id));
-      return Response.json({conversations:chats.map(chat=>({...chat,...(chat.is_group&&chat.invited_ids?.includes(uid)?{last_message_text:'Group invitation',background:{type:'none'}}:{}),peer:people.get(peerId(chat))||null,unread:chat.is_group ? !(chat.muted_ids||[]).includes(uid) && chat.last_sender_id!==uid && Date.parse(chat.last_message_at||'')>Date.parse((()=>{try{return JSON.parse(chat.group_reads||'{}')[uid]||'1970-01-01';}catch{return '1970-01-01';}})()) : unreadChats.has(chat.id),members:chat.is_group?chat.participant_ids.map(member=>people.get(member)).filter(Boolean):undefined}))});
+      return Response.json({conversations:chats.map(chat=>({...chat,...(chat.is_group&&chat.invited_ids?.includes(uid)?{last_message_text:'Group invitation',background:{type:'none'}}:{}),peer:people.get(peerId(chat))||null,unread:chat.is_group ? !(chat.muted_ids||[]).includes(uid) && chat.last_sender_id!==uid && Date.parse(chat.last_message_at||'')>Date.parse((()=>{try{return JSON.parse(chat.group_reads||'{}')[uid]||'1970-01-01';}catch{return '1970-01-01';}})()) : !(chat.muted_ids||[]).includes(uid)&&unreadChats.has(chat.id),members:chat.is_group?chat.participant_ids.map(member=>people.get(member)).filter(Boolean):undefined}))});
     }
 
     if (action === 'contacts') {
@@ -154,7 +156,7 @@ Deno.serve(async req => {
     const activeIds=chat.participant_ids.filter(member=>!(chat.invited_ids||[]).includes(member));
     if(chat.is_group && action==='group_respond'){
       if(typeof accept!=='boolean')fail('Choose accept or decline.');
-      await changeGroup(db,id,uid,current=>{
+      await changeConversation(db,id,uid,current=>{
         if(!(current.invited_ids||[]).includes(uid)) {if(accept)return {};fail('No pending invitation.');}
         const active=current.participant_ids.filter(member=>!(current.invited_ids||[]).includes(member));
         return {invited_ids:(current.invited_ids||[]).filter(member=>member!==uid),...(accept&&!active.length?{admin_ids:[uid]}:{}),...(!accept?{participant_ids:current.participant_ids.filter(member=>member!==uid),participant_names:current.participant_names.filter((_,i)=>current.participant_ids[i]!==uid)}:{})};
@@ -170,11 +172,11 @@ Deno.serve(async req => {
       if(name!==undefined){if(typeof name!=='string'||!name.trim()||name.trim().length>80)fail('Choose a group name up to 80 characters.');patch.group_name=name.trim();}
       if(photo!==undefined){if(typeof photo!=='string'||photo.length>4096||photo && !/^https:\/\/media\.base44\.com\//.test(photo))fail('Upload a valid group photo.');patch.group_photo=photo;}
       if(!Object.keys(patch).length)fail('Choose something to change.');
-      await changeGroup(db,id,uid,()=>patch);return Response.json({ok:true});
+      await changeConversation(db,id,uid,()=>patch);return Response.json({ok:true});
     }
-    if(chat.is_group && action==='group_mute'){
+    if(action==='mute'||chat.is_group&&action==='group_mute'){
       if(typeof enabled!=='boolean')fail('Choose a notification setting.');
-      await changeGroup(db,id,uid,current=>({muted_ids:[...(current.muted_ids||[]).filter(member=>member!==uid),...(enabled?[uid]:[])]}));return Response.json({ok:true});
+      await changeConversation(db,id,uid,current=>({muted_ids:[...(current.muted_ids||[]).filter(member=>member!==uid),...(enabled?[uid]:[])]}));return Response.json({ok:true});
     }
     if(chat.is_group && ['group_leave','group_remove','group_admin','group_invite'].includes(action)){
       const target=action==='group_leave'?uid:memberId;
@@ -184,7 +186,7 @@ Deno.serve(async req => {
         profile=rows(await db.PublicProfile.filter({user_id:target,visible:true},'-updated_date',1))[0];
         if(!profile||target===uid||await blocked(target))fail('This person is unavailable.');
       }
-      await changeGroup(db,id,uid,current=>{
+      await changeConversation(db,id,uid,current=>{
         const admins=current.admin_ids||[];
         const pending=current.invited_ids||[];
         const active=current.participant_ids.filter(member=>!pending.includes(member));
@@ -245,7 +247,7 @@ Deno.serve(async req => {
         (photoUrl.hostname === 'media.base44.com' || photoUrl.hostname === 'giphy.com' || photoUrl.hostname.endsWith('.giphy.com')) &&
         !photoUrl.username && !photoUrl.password;
       if (!valid && !validGradient && !validVideo && !validPhoto) fail('Choose a valid conversation background.');
-      if(chat.is_group)await changeGroup(db,id,uid,()=>({background}));else await db.Conversation.update(id, {background});
+      await changeConversation(db,id,uid,()=>({background}));
       const saved = await db.Conversation.get(id);
       if (!saved || saved.id !== id || saved.background?.type !== background.type ||
           (background.type !== 'none' && saved.background?.value !== background.value)) fail('Background could not be saved. Please try again.', 503);
@@ -292,7 +294,6 @@ Deno.serve(async req => {
       };
       const source = await findMessage();
       if (!source || source.conversation_id !== id || (!chat.is_group && source.sender_id !== uid && source.recipient_id !== uid)) fail('Message unavailable.',404);
-      const field = source.sender_id === uid ? 'sender_reaction' : 'recipient_reaction';
       let current = source;
       for (let attempt=0; attempt<3; attempt++) {
         const reactions = {...savedReactions(current), [uid]:emoji};
@@ -310,7 +311,7 @@ Deno.serve(async req => {
         }
         current = await findMessage();
         if (!current || current.conversation_id !== id) fail('Message unavailable.',404);
-        if ((chat.is_group ? savedReactions(current)[uid] : reactionFields(current)[field]) === emoji) {
+        if (savedReactions(current)[uid] === emoji) {
           return Response.json({ok:true,messageId:source.id,...reactionFields(current),reactions:current.reactions});
         }
       }
@@ -340,7 +341,7 @@ Deno.serve(async req => {
       const messages = rows(page);
       const unreadIds = messages.filter(message=>message.recipient_id===uid&&!message.read).map(message=>message.id);
       if (unreadIds.length) await db.Message.updateMany({id:{$in:unreadIds},recipient_id:uid,read:false},{$set:{read:true}});
-      if(chat.is_group){const readAt=messages[0]?.created_date||chat.last_message_at||new Date().toISOString();await changeGroup(db,id,uid,current=>{let reads={};try{reads=JSON.parse(current.group_reads||'{}');}catch{}if(Date.parse(reads[uid]||'')>=Date.parse(readAt))return {};return {group_reads:JSON.stringify({...reads,[uid]:Date.parse(reads[uid]||'')>Date.parse(readAt)?reads[uid]:readAt})};});}
+      if(chat.is_group){const readAt=messages[0]?.created_date||chat.last_message_at||new Date().toISOString();await changeConversation(db,id,uid,current=>{let reads={};try{reads=JSON.parse(current.group_reads||'{}');}catch{}if(Date.parse(reads[uid]||'')>=Date.parse(readAt))return {};return {group_reads:JSON.stringify({...reads,[uid]:Date.parse(reads[uid]||'')>Date.parse(readAt)?reads[uid]:readAt})};});}
       return Response.json({chat:{...chat,peer:profile?publicPerson(profile):null,members:rows(profiles).map(publicPerson)},messages:messages.reverse().map(message=>({...message,...reactionFields(message)}))});
     }
     if (action === 'respond' && chat.dm_status === 'pending' && chat.dm_requester !== uid && typeof accept === 'boolean') {
