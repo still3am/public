@@ -16,6 +16,33 @@
       "type": "string",
       "default": ""
     },
+    "creator_role": {
+      "type": "string",
+      "default": ""
+    },
+    "is_artist": {
+      "type": "boolean",
+      "default": false
+    },
+    "is_public_admin": {
+      "type": "boolean",
+      "default": false
+    },
+    "friends_family_badge": {
+      "type": "boolean",
+      "default": false
+    },
+    "moment_badge": {
+      "type": "string",
+      "default": ""
+    },
+    "profile_background_colors": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "default": []
+    },
     "role": {
       "type": "string",
       "enum": [
