@@ -202,9 +202,9 @@ function useLoungeHostState() {
         });
       }catch{}finally{saving=false;}
     };
-    publish();const timer=setInterval(publish,3500);
+    publish();const timer=setInterval(()=>{if(pRef.current.isPlaying)publish();},5000);
     return()=>{active=false;clearInterval(timer);};
-  },[session?.id]);
+  },[session?.id,p.currentTrack?.id,p.isPlaying]);
 
   // Guests can request the host to skip; the host owns actual playback control.
   useEffect(()=>{
@@ -220,8 +220,9 @@ function useLoungeHostState() {
       }catch{}finally{reading=false;}
     };
     base44.entities.LoungeSession.get(session.id).then(live=>{if(active)lastSeen=Number(live?.skip_request_id)||lastSeen;}).catch(()=>{});
-    const timer=setInterval(poll,2500);
-    return()=>{active=false;clearInterval(timer);};
+    let unsub;try{unsub=base44.entities.LoungeSession.subscribe(poll);}catch{}
+    const timer=setInterval(poll,6000);
+    return()=>{active=false;clearInterval(timer);if(unsub)unsub();};
   },[session?.id]);
 
   // Remove a shared queue row as soon as the host starts it. The song remains
