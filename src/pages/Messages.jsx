@@ -25,6 +25,7 @@ import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover
 import './messages.css';
 import '@/components/messages/conversation-layout.css';
 import '@/components/messages/messages-layout.css';
+import '@/components/messages/message-bubbles.css';
 
 const REACTIONS = ["❤️", "👍", "👎", "😂", "‼️", "❓", "🔥"];
 const REACTION_LABELS = ['Love', 'Like', 'Dislike', 'Laugh', 'Emphasize', 'Question', 'Fire'];
