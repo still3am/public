@@ -1,0 +1,11 @@
+import assert from 'node:assert/strict';
+import {messageSender} from '../src/components/messages/messageSender.js';
+const viewer={id:'me',display_name:'My name',avatar_url:'mine'};
+const chat={participant_ids:['me','friend'],participant_names:['My name','Friend'],peer:{id:'friend',display_name:'Friend',avatar_url:'friend-photo'}};
+assert.equal(messageSender({sender_id:'me'},chat,viewer).display_name,'My name');
+assert.equal(messageSender({sender_id:'friend'},chat,viewer).avatar_url,'friend-photo');
+assert.equal(messageSender({sender_id:'friend'}, {...chat,is_group:true,members:[chat.peer]},viewer).display_name,'Friend');
+assert.equal(messageSender({sender_id:'former',sender_name:'Former member',sender_avatar_url:'saved-photo'},chat,viewer).display_name,'Former member');
+assert.equal(messageSender({sender_id:'former',sender:{id:'former',display_name:'Current name',avatar_url:'current-photo'}},chat,viewer).avatar_url,'current-photo');
+assert.equal(messageSender({sender_id:'missing',sender_name:'Saved name'},chat,viewer).display_name,'Saved name');
+console.log('PASS consistent sender identity for direct, group, own, older, and departed-member messages');
