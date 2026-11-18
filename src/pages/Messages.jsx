@@ -62,7 +62,7 @@ function messageTime(value) {
 }
 
 function PersonAvatar({ person, size = 40 }) {
-  return <span className="public-messages-avatar" style={{ width: size, height: size, "--message-avatar-size":size+"px" }}><Avatar user={person} size={size} motion /></span>;
+  return <span className="public-messages-avatar" style={{ width: size, height: size, "--message-avatar-size": size + "px" }}><Avatar user={person} size={size} motion /></span>;
 }
 
 export default function Messages() {
@@ -72,17 +72,17 @@ export default function Messages() {
 
 function MessagesPage({ user }) {
   const [params, setParams] = useSearchParams();
-  const [viewport,setViewport]=useState(()=>({height:window.visualViewport?.height||window.innerHeight,top:window.visualViewport?.offsetTop||0}));
-  useEffect(()=>{
+  const [viewport, setViewport] = useState(() => ({ height: window.visualViewport?.height || window.innerHeight, top: window.visualViewport?.offsetTop || 0 }));
+  useEffect(() => {
     let frame;
-    const sync=()=>{cancelAnimationFrame(frame);frame=requestAnimationFrame(()=>{const height=window.visualViewport?.height||window.innerHeight,top=window.visualViewport?.offsetTop||0;setViewport(previous=>Math.abs(previous.height-height)<1&&Math.abs(previous.top-top)<1?previous:{height,top});});};
-    window.addEventListener('resize',sync);
-    window.visualViewport?.addEventListener('resize',sync);
-    window.visualViewport?.addEventListener('scroll',sync);
+    const sync = () => {cancelAnimationFrame(frame);frame = requestAnimationFrame(() => {const height = window.visualViewport?.height || window.innerHeight,top = window.visualViewport?.offsetTop || 0;setViewport((previous) => Math.abs(previous.height - height) < 1 && Math.abs(previous.top - top) < 1 ? previous : { height, top });});};
+    window.addEventListener('resize', sync);
+    window.visualViewport?.addEventListener('resize', sync);
+    window.visualViewport?.addEventListener('scroll', sync);
     sync();
-    return()=>{cancelAnimationFrame(frame);window.removeEventListener('resize',sync);window.visualViewport?.removeEventListener('resize',sync);window.visualViewport?.removeEventListener('scroll',sync);};
-  },[]);
-  const viewportStyle={'--messages-viewport-height':viewport.height+'px','--messages-viewport-top':viewport.top+'px','--messages-sheet-top':(viewport.top+Math.max(12,(viewport.height-860)/2))+'px'};
+    return () => {cancelAnimationFrame(frame);window.removeEventListener('resize', sync);window.visualViewport?.removeEventListener('resize', sync);window.visualViewport?.removeEventListener('scroll', sync);};
+  }, []);
+  const viewportStyle = { '--messages-viewport-height': viewport.height + 'px', '--messages-viewport-top': viewport.top + 'px', '--messages-sheet-top': viewport.top + Math.max(12, (viewport.height - 860) / 2) + 'px' };
   const id = params.get('chat');
   const [inbox, setInbox] = useState(null),[loadedThread, setThread] = useState(null),[requests, setRequests] = useState(false);
   const thread = loadedThread?.chat?.id === id ? loadedThread : null;
@@ -480,7 +480,7 @@ function MessagesPage({ user }) {
     if (followLatest.current) jumpToLatest();else
     setShowLatest(true);
   }, [id, lastMessage]);
-  return <main className="public-messages" style={viewportStyle} data-compact={viewport.height<480} data-thread={Boolean(id)} data-composing={composing}>
+  return <main className="public-messages" style={viewportStyle} data-compact={viewport.height < 480} data-thread={Boolean(id)} data-composing={composing}>
     {error && <p role="alert" className="rounded-lg border p-3">{error}</p>}
     <div className="public-messages-layout">
       <aside className="public-messages-inbox">
@@ -541,12 +541,12 @@ function MessagesPage({ user }) {
           }}>
           <>{thread.chat.is_group ? <GroupChatAvatar chat={thread.chat} /> : <PersonAvatar person={peerFor(thread.chat)} />}</>
           <h2>{peerName(thread.chat)}</h2>
-          {thread.chat.is_group&&<span className="public-group-header-count">{thread.chat.participant_ids.length-(thread.chat.invited_ids?.length||0)} members{(thread.chat.invited_ids?.length||0)>0?` · ${thread.chat.invited_ids?.length||0} invited`:""}</span>}
+          {thread.chat.is_group && <span className="public-group-header-count hidden">{thread.chat.participant_ids.length - (thread.chat.invited_ids?.length || 0)} members{(thread.chat.invited_ids?.length || 0) > 0 ? ` · ${thread.chat.invited_ids?.length || 0} invited` : ""}</span>}
         </button>}
-          {thread?.chat&&!groupInvited&&<button type="button" className="public-group-details-button" aria-label="Conversation details" onClick={()=>{setDetailsTab('info');setBackgroundError('');setChatDetailsOpen(true);}}><Info size={21}/></button>}
+          {thread?.chat && !groupInvited && <button type="button" className="public-group-details-button" aria-label="Conversation details" onClick={() => {setDetailsTab('info');setBackgroundError('');setChatDetailsOpen(true);}}><Info size={21} /></button>}
         </header>
         {thread && currentPeer && !groupInvited && <Dialog open={chatDetailsOpen} onOpenChange={setChatDetailsOpen}>
-          <DialogContent className="public-chat-details" style={viewportStyle} data-compact={viewport.height<480} data-group={Boolean(thread.chat.is_group)} data-tab={detailsTab} showClose={false}>
+          <DialogContent className="public-chat-details" style={viewportStyle} data-compact={viewport.height < 480} data-group={Boolean(thread.chat.is_group)} data-tab={detailsTab} showClose={false}>
             <header className="public-chat-details-header">
               <button type="button" aria-label="Close conversation details" onClick={() => setChatDetailsOpen(false)}><ChevronLeft size={22} /></button>
               <span className="public-chat-details-heading">Conversation</span>
@@ -592,7 +592,7 @@ function MessagesPage({ user }) {
               <input ref={backgroundFile} type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" onChange={(event) => {void uploadChatBackground(event.target.files?.[0]);event.target.value = '';}} />
             </section> : detailsTab === 'info' && thread.chat.is_group ? <GroupChatPanel key={id} chat={thread.chat} userId={user?.id} invoke={messages} busy={busy} onChanged={async () => {if (currentChat.current === id) await loadThread(id);await loadInbox();}} onLeft={() => {if (currentChat.current === id) {setChatDetailsOpen(false);setParams({});}void loadInbox();}} /> : detailsTab === 'info' ? <section className="public-chat-info" aria-label="Conversation info">
               <h3>Conversation info</h3>
-              <ConversationMuteSwitch chat={thread.chat} userId={user?.id} invoke={messages} disabled={busy} onChanged={async()=>{if(currentChat.current===id)await loadThread(id);await loadInbox();}} />
+              <ConversationMuteSwitch chat={thread.chat} userId={user?.id} invoke={messages} disabled={busy} onChanged={async () => {if (currentChat.current === id) await loadThread(id);await loadInbox();}} />
               <p>Messages, photos, GIFs, and music shared here stay available to everyone in this conversation.</p>
               <Link to={"/profile/" + encodeURIComponent(currentPeer)} onClick={() => setChatDetailsOpen(false)}><UserRound size={16} aria-hidden="true" /> View {peerName(thread.chat)}’s profile</Link>
             </section> : detailsTab === 'photos' ? <section className="public-chat-shared-items" aria-label="Shared photos and videos">
@@ -669,7 +669,7 @@ function MessagesPage({ user }) {
               <DialogDescription className="sr-only">React or choose an action for this message.</DialogDescription>
               <div className="public-message-reactions" role="group" aria-label="Emoji reactions" aria-busy={savingReaction !== null}>
                 {REACTIONS.map((emoji, index) => {
-                  const selected = ownMessageReaction(activeMenu,user?.id) === emoji;
+                  const selected = ownMessageReaction(activeMenu, user?.id) === emoji;
                   return <button key={emoji} type="button" aria-label={REACTION_LABELS[index]} aria-pressed={selected} data-saving={savingReaction === emoji} disabled={busy} onClick={() => void perform(async () => {
                     setSavingReaction(emoji);
                     let saved;
@@ -727,7 +727,7 @@ function MessagesPage({ user }) {
                 } else setParams({});
               }
               await loadInbox();
-            })}>{accept ? groupInvited?'Join group':'Accept request' : 'Decline'}</button>)}
+            })}>{accept ? groupInvited ? 'Join group' : 'Accept request' : 'Decline'}</button>)}
           </div>}
 
           {canSend && attachment?.lyrics && <LyricDraftPreview track={attachment} onRemove={() => {setAttachment(null);setLyricShare(null);}} disabled={busy} />}
@@ -877,7 +877,7 @@ function messageGifId(message) {
 }
 
 function MessageReactions({ message, userId }) {
-  const reactions=Object.entries(messageReactionMap(message)).map(([key,emoji])=>({key,emoji})).filter(({emoji})=>REACTIONS.includes(emoji));
+  const reactions = Object.entries(messageReactionMap(message)).map(([key, emoji]) => ({ key, emoji })).filter(({ emoji }) => REACTIONS.includes(emoji));
 
   if (!reactions.length) return null;
 
