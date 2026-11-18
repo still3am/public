@@ -830,16 +830,25 @@ function messageGifId(message) {
 }
 
 function MessageReactions({ message, userId }) {
-  const own = message.sender_id === userId ? message.sender_reaction : message.recipient_reaction;
-  const reactions = [message.sender_reaction, message.recipient_reaction].filter((emoji) => REACTIONS.includes(emoji));
+  const reactions = [
+    { emoji: message.sender_reaction, key: "sender" },
+    { emoji: message.recipient_reaction, key: "recipient" },
+  ].filter(({ emoji }) => REACTIONS.includes(emoji));
+
   if (!reactions.length) return null;
+
   return <div className="public-message-reaction-group" role="group" aria-label="Message reactions">
-    {[...new Set(reactions)].map((emoji) => {
-      const count = reactions.filter((value) => value === emoji).length;
+    {reactions.map(({ emoji, key }) => {
+      const mine = key === "sender" ? message.sender_id === userId : message.sender_id !== userId;
       const label = REACTION_LABELS[REACTIONS.indexOf(emoji)];
-      return <span className="public-message-reaction-badge" data-mine={own === emoji} key={emoji} role="img"
-      aria-label={label + ', ' + count + (own === emoji ? ', including you' : '')}>
-        <span aria-hidden="true">{emoji}{count > 1 && <small>{count}</small>}</span>
+      return <span
+        className="public-message-reaction-badge"
+        data-mine={mine}
+        key={key}
+        role="img"
+        aria-label={label + (mine ? ", your reaction" : ", their reaction")}
+      >
+        <span aria-hidden="true">{emoji}</span>
       </span>;
     })}
   </div>;
