@@ -1,3 +1,4 @@
+import GroupChatPanel, { GroupChatAvatar } from '@/components/messages/GroupChatPanel';
 import { getRecentPlays } from '@/lib/recentPlays';
 import MomentGifPicker, { MomentGif } from '@/components/moments/MomentGifPicker';
 import '@/components/moments/moment-tools.css';
@@ -5,7 +6,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react
 import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
-import { ArrowUp, Check, ChevronLeft, ChevronRight, Clapperboard, Copy, Disc3, ExternalLink, Library, Trash2, MessageCircle, Image, ImagePlus, Music2, Palette, Pause, Play, Plus, Reply, Search, ShoppingBag, SquarePen, TextQuote, UserRound, X } from 'lucide-react';
+import { ArrowUp, Check, ChevronLeft, ChevronRight, Clapperboard, Copy, Disc3, ExternalLink, Library, Trash2, Users, MessageCircle, Image, ImagePlus, Music2, Palette, Pause, Play, Plus, Reply, Search, ShoppingBag, SquarePen, TextQuote, UserRound, X } from 'lucide-react';
 import LyricSharePicker from '@/components/LyricSharePicker';
 import LyricCoverGradient from '@/components/LyricCoverGradient';
 import TrackPickerSheet from '@/components/profile/TrackPickerSheet';
@@ -69,6 +70,9 @@ function MessagesPage({ user }) {
   const [inbox, setInbox] = useState(null),[loadedThread, setThread] = useState(null),[requests, setRequests] = useState(false);
   const thread = loadedThread?.chat?.id === id ? loadedThread : null;
   const [menu, setMenu] = useState(null);
+  const [groupMode,setGroupMode]=useState(false);
+  const [groupPeople,setGroupPeople]=useState([]);
+  const [groupName,setGroupName]=useState('');
   const [chatBackgrounds, setChatBackgrounds] = useState(() =>
     user?.message_backgrounds && typeof user.message_backgrounds === 'object' ? user.message_backgrounds : {}
   );
@@ -268,13 +272,14 @@ function MessagesPage({ user }) {
     try {await work();} catch (error) {setError(error.message);} finally {operation.current = false;setBusy(false);}
   }
   const peerName = (chat) => {
+    if(chat?.is_group)return chat.group_name||'Group chat';
     const ids = Array.isArray(chat?.participant_ids) ? chat.participant_ids : [];
     const names = Array.isArray(chat?.participant_names) ? chat.participant_names : [];
     const peerIndex = ids.findIndex((member) => member !== user?.id);
     return chat?.peer?.display_name || names[peerIndex] || 'PUBLIC listener';
   };
   const peerFor = (chat) => chat.peer || inbox?.find((row) => row.id === chat.id)?.peer || { display_name: peerName(chat) };
-  const currentPeer = Array.isArray(thread?.chat?.participant_ids) ? thread.chat.participant_ids.find((member) => member !== user?.id) : null;
+  const currentPeer = thread?.chat?.is_group ? 'group' : Array.isArray(thread?.chat?.participant_ids) ? thread.chat.participant_ids.find((member) => member !== user?.id) : null;
   const activeBackground = id ? thread?.chat?.background || chatBackgrounds[id] || { type: 'none' } : { type: 'none' };
   const backgroundSaveQueue = useRef(Promise.resolve());
   const backgroundSaveVersion = useRef(0);
@@ -384,9 +389,10 @@ function MessagesPage({ user }) {
     void saveChatBackground(legacy);
   }, [id, thread?.chat?.id, thread?.chat?.background, chatBackgrounds]);
 
-  const pending = thread?.chat.dm_status === 'pending';
-  const incoming = pending && thread?.chat.dm_requester !== user?.id;
-  const canSend = thread?.chat.dm_status === 'accepted' || pending && !incoming && !thread.messages.length;
+  const groupInvited=Boolean(thread?.chat?.is_group&&thread.chat.invited_ids?.includes(user?.id));
+  const pending = groupInvited || thread?.chat.dm_status === 'pending';
+  const incoming = groupInvited || pending && thread?.chat.dm_requester !== user?.id;
+  const canSend = !groupInvited && (thread?.chat.dm_status === 'accepted' || pending && !incoming && !thread.messages.length);
   const [composing, setComposing] = useState(Boolean(to || recipient));
   const searchTerm = contactQuery.trim().toLocaleLowerCase();
   const searching = composing && Boolean(searchTerm);
@@ -421,7 +427,7 @@ function MessagesPage({ user }) {
   const scroll = useRef(null);
   const followLatest = useRef(true);
   const [showLatest, setShowLatest] = useState(false);
-  const tabChats = inbox?.filter((chat) => requests === (chat.dm_status === 'pending' && chat.dm_requester !== user?.id) && chat.dm_status !== 'declined' && (chat.last_message_at || chat.dm_requester === user?.id));
+  const tabChats = inbox?.filter((chat) => requests === (chat.is_group ? Boolean(chat.invited_ids?.includes(user?.id)) : chat.dm_status === 'pending' && chat.dm_requester !== user?.id) && chat.dm_status !== 'declined' && (chat.is_group || chat.last_message_at || chat.dm_requester === user?.id));
   const inboxTerm = inboxQuery.trim().toLocaleLowerCase();
   const visibleChats = tabChats?.filter((chat) => !inboxTerm || peerName(chat).toLocaleLowerCase().includes(inboxTerm));
   useEffect(() => {followLatest.current = true;setShowLatest(false);}, [id]);
@@ -449,9 +455,12 @@ function MessagesPage({ user }) {
           <div><h1>Messages</h1><button type="button" aria-label="New message" aria-expanded={composing} onClick={() => {setComposing(!composing);setContactQuery('');setContacts(null);}}><SquarePen size={20} /></button></div>
         </header>
         {composing && <div className="px-4 pb-3">
+          <div className="public-group-compose-tabs"><button aria-pressed={!groupMode} onClick={()=>{setGroupMode(false);setGroupPeople([]);}}>Message</button><button aria-pressed={groupMode} onClick={()=>setGroupMode(true)}><Users size={16}/>New group</button></div>
+          {groupMode&&<div className="public-group-create"><input aria-label="Group name" placeholder="Group name" maxLength={80} value={groupName} onChange={event=>setGroupName(event.target.value)}/><div className="public-group-selected">{groupPeople.map(person=><button key={person.id} onClick={()=>setGroupPeople(previous=>previous.filter(item=>item.id!==person.id))}>{person.name}<X size={13}/></button>)}</div><button disabled={busy||groupPeople.length<2||!groupName.trim()} onClick={()=>void perform(async()=>{const chat=await messages('create_group',{name:groupName,memberIds:groupPeople.map(person=>person.id)});setParams({chat:chat.id});setComposing(false);setGroupMode(false);setGroupPeople([]);setGroupName('');setContactQuery('');setRequests(false);await loadInbox();})}>Create group · {groupPeople.length+1}/20</button><p>Add at least two people. Private accounts and people who aren’t mutual followers receive an invitation.</p></div>}
+
           {(recipient || to) && <button className="mb-3 rounded-lg border px-3 py-2" type="button" disabled={busy} onClick={() => startChat(recipient ? { recipientId: recipient } : { username: to })}>{recipientName ? `Message ${recipientName}` : "Start message"}</button>}
           <input type="search" aria-label="Search people you follow by name" placeholder="Search by name" className="mb-2 w-full rounded-xl border bg-muted px-3 py-2 text-base" maxLength={80} value={contactQuery} onChange={(event) => setContactQuery(event.target.value)} />
-          {matches.map((person) => <button type="button" className="public-messages-row" key={person.id} disabled={busy} onClick={() => startChat({ recipientId: person.id })}>
+          {matches.map((person) => <button type="button" className="public-messages-row" key={person.id} disabled={busy} onClick={() => {if(!groupMode){startChat({recipientId:person.id});return;}setGroupPeople(previous=>previous.some(item=>item.id===person.id)?previous.filter(item=>item.id!==person.id):previous.length<19?[...previous,person]:previous);}} aria-pressed={groupMode?groupPeople.some(item=>item.id===person.id):undefined}>
             <PersonAvatar person={person} />
             <span className="truncate font-semibold">{person.name}</span><ChevronRight size={14} aria-hidden="true" />
           </button>)}
@@ -475,7 +484,7 @@ function MessagesPage({ user }) {
         {visibleChats?.length === 0 && <p className="public-messages-list-empty">{inboxTerm && tabChats?.length ? "No conversations match that name." : requests ? "No message requests." : "No conversations yet. Tap the compose icon to start one."}</p>}
         {visibleChats?.map((chat) =>
         <button key={chat.id} onClick={() => setParams({ chat: chat.id })} aria-current={id === chat.id} className="public-messages-row">
-            <PersonAvatar person={peerFor(chat)} />
+            <>{chat.is_group?<GroupChatAvatar chat={chat}/>:<PersonAvatar person={peerFor(chat)} />}</>
             <span className="min-w-0"><span className="public-messages-row-title"><strong className="truncate">{peerName(chat)}</strong>{chat.last_message_at && <time dateTime={chat.last_message_at}>{messageTime(chat.last_message_at)}</time>}</span><span className="block truncate text-sm opacity-70">{chat.last_message_text || 'New conversation'}</span></span>
             {chat.unread ? <span className="public-messages-dot" aria-label="Unread" /> : <ChevronRight size={14} aria-hidden="true" />}
           </button>
@@ -492,15 +501,15 @@ function MessagesPage({ user }) {
           <button className="public-messages-back" onClick={() => setParams({})} aria-label="Back to inbox"><ChevronLeft size={23} /></button>
           {readError?.id === id ? <p role="alert" className="public-messages-list-empty">{readError.message} <button type="button" className="underline" onClick={() => loadThread(id)}>Retry</button></p> : !thread && <p role="status" className="public-messages-list-empty">Loading conversation…</p>}
         {thread && currentPeer && <button type="button" className="public-messages-peer" aria-label={"Conversation details for " + peerName(thread.chat)} onClick={() => {
-          setDetailsTab('backgrounds');
+          setDetailsTab(thread.chat.is_group?'info':'backgrounds');
           setBackgroundError('');
-          setChatDetailsOpen(true);
+          if(!groupInvited)setChatDetailsOpen(true);
         }}>
-          <PersonAvatar person={peerFor(thread.chat)} />
+          <>{thread.chat.is_group?<GroupChatAvatar chat={thread.chat}/>:<PersonAvatar person={peerFor(thread.chat)} />}</>
           <h2>{peerName(thread.chat)}</h2>
         </button>}
         </header>
-        {thread && currentPeer && <Dialog open={chatDetailsOpen} onOpenChange={setChatDetailsOpen}>
+        {thread && currentPeer && !groupInvited && <Dialog open={chatDetailsOpen} onOpenChange={setChatDetailsOpen}>
           <DialogContent className="public-chat-details" data-tab={detailsTab} showClose={false}>
             <header className="public-chat-details-header">
               <button type="button" aria-label="Close conversation details" onClick={() => setChatDetailsOpen(false)}><ChevronLeft size={22} /></button>
@@ -508,11 +517,11 @@ function MessagesPage({ user }) {
               <button type="button" className="public-chat-details-done" onClick={() => setChatDetailsOpen(false)}>Done</button>
             </header>
             <div className="public-chat-details-person">
-              <PersonAvatar person={peerFor(thread.chat)} size={76} />
+              <>{thread.chat.is_group?<GroupChatAvatar chat={thread.chat} size={76}/>:<PersonAvatar person={peerFor(thread.chat)} size={76} />}</>
               <DialogTitle>{peerName(thread.chat)}</DialogTitle>
-              {peerFor(thread.chat)?.username && <p className="public-chat-details-username">@{String(peerFor(thread.chat).username).replace(/^@/, '')}</p>}
+              {!thread.chat.is_group && peerFor(thread.chat)?.username && <p className="public-chat-details-username">@{String(peerFor(thread.chat).username).replace(/^@/, '')}</p>}
               <DialogDescription>Make this conversation feel like yours.</DialogDescription>
-              <Link to={"/profile/" + encodeURIComponent(currentPeer)} onClick={() => setChatDetailsOpen(false)}>View profile</Link>
+              {!thread.chat.is_group&&<Link to={"/profile/" + encodeURIComponent(currentPeer)} onClick={() => setChatDetailsOpen(false)}>View profile</Link>}
             </div>
             <div className="public-chat-details-tabs" role="tablist" aria-label="Conversation details">
               {[
@@ -525,8 +534,8 @@ function MessagesPage({ user }) {
             </div>
             {detailsTab === 'backgrounds' ? <section className="public-chat-backgrounds" aria-label="Conversation backgrounds">
               <div className="public-chat-background-scroll">
-                <div className="public-chat-panel-heading"><h3>Conversation background</h3><p>Choose a look that both people will see.</p></div>
-                {(savingBackground || uploadingBackground) && <p className="public-chat-background-sync" role="status">{uploadingBackground ? "Uploading your shared photo…" : "Saving for both of you…"}</p>}
+                <div className="public-chat-panel-heading"><h3>Conversation background</h3><p>Choose a look that everyone will see.</p></div>
+                {(savingBackground || uploadingBackground) && <p className="public-chat-background-sync" role="status">{uploadingBackground ? "Uploading your shared photo…" : "Saving for everyone…"}</p>}
                 <div className="public-chat-background-tools">
                   <button type="button" aria-pressed={activeBackground.type === 'none'} disabled={savingBackground || uploadingBackground} onClick={() => void saveChatBackground({ type: 'none' })}>
                     <span className="public-chat-background-sample public-chat-background-none"><X size={22} /></span><span>None</span>
@@ -545,9 +554,9 @@ function MessagesPage({ user }) {
                 <p className="public-chat-background-note">Background changes are shared with everyone in this conversation.</p>
               </div>
               <input ref={backgroundFile} type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" onChange={(event) => { void uploadChatBackground(event.target.files?.[0]);event.target.value = ''; }} />
-            </section> : detailsTab === 'info' ? <section className="public-chat-info" aria-label="Conversation info">
+            </section> : detailsTab === 'info' && thread.chat.is_group ? <GroupChatPanel key={id} chat={thread.chat} userId={user?.id} invoke={messages} busy={busy} onChanged={async()=>{await loadThread(id);await loadInbox();}} onLeft={()=>{setChatDetailsOpen(false);setParams({});void loadInbox();}} /> : detailsTab === 'info' ? <section className="public-chat-info" aria-label="Conversation info">
               <h3>Conversation info</h3>
-              <p>Messages, photos, GIFs, and music shared here stay available to both people in this conversation.</p>
+              <p>Messages, photos, GIFs, and music shared here stay available to everyone in this conversation.</p>
               <Link to={"/profile/" + encodeURIComponent(currentPeer)} onClick={() => setChatDetailsOpen(false)}><UserRound size={16} aria-hidden="true" /> View {peerName(thread.chat)}’s profile</Link>
             </section> : detailsTab === 'photos' ? <section className="public-chat-shared-items" aria-label="Shared photos and videos">
               <h3>Photos &amp; videos</h3>
@@ -566,7 +575,7 @@ function MessagesPage({ user }) {
           loading={false}
           value={{ ...savedPalette, mode: 'custom' }}
           title="Your conversation colors"
-          description="Create a moving gradient for this chat. Your choice is shared with both people."
+          description="Create a moving gradient for this chat. Your choice is shared with everyone."
           availableModes={[["custom", "Custom"], ["off", "No color"]]}
           conversationMode
           onPreview={() => {}}
@@ -605,6 +614,7 @@ function MessagesPage({ user }) {
               openMessageMenu(message, event.currentTarget);
             }}
             onContextMenu={(event) => {event.preventDefault();cancelHold();openMessageMenu(message, event.currentTarget);}}>
+              {thread.chat.is_group&&message.sender_id!==user?.id&&<div className="public-group-sender"><PersonAvatar size={24} person={thread.chat.members?.find(person=>person.id===message.sender_id)||{display_name:message.sender_name}}/><span>{thread.chat.members?.find(person=>person.id===message.sender_id)?.display_name||message.sender_name||'PUBLIC listener'}</span></div>}
               {message.reply_preview && <ReplyQuote preview={message.reply_preview} />}
               {message.track_id && <SharedSong message={message} playing={player.currentTrack?.id === message.track_id && player.isPlaying && (!songData(message)?.lyrics || lyricPlayback.current === message.id)} onPlay={() => void perform(() => playSharedSong(message))} busy={busy} />}
               {message.media_url && !messageGifId(message) && ['image', 'video'].includes(message.media_type) && <ChatMedia key={message.id} chatId={id} message={message} />}
@@ -622,7 +632,7 @@ function MessagesPage({ user }) {
               <DialogDescription className="sr-only">React or choose an action for this message.</DialogDescription>
               <div className="public-message-reactions" role="group" aria-label="Emoji reactions" aria-busy={savingReaction !== null}>
                 {REACTIONS.map((emoji, index) => {
-                  const selected = (activeMenu.sender_id === user?.id ? activeMenu.sender_reaction : activeMenu.recipient_reaction) === emoji;
+                  const selected = (thread.chat.is_group ? (()=>{try{return JSON.parse(activeMenu.reactions||'{}')[user?.id];}catch{return '';}})() : (activeMenu.sender_id === user?.id ? activeMenu.sender_reaction : activeMenu.recipient_reaction)) === emoji;
                   return <button key={emoji} type="button" aria-label={REACTION_LABELS[index]} aria-pressed={selected} data-saving={savingReaction === emoji} disabled={busy} onClick={() => void perform(async () => {
                     setSavingReaction(emoji);
                     let saved;
@@ -635,7 +645,7 @@ function MessagesPage({ user }) {
                     if (currentChat.current === id) {
                       readVersion.current++;
                       setThread((previous) => previous?.chat.id === id ? { ...previous, messages: previous.messages.map((message) => message.id === saved.messageId ? {
-                          ...message, sender_reaction: saved.sender_reaction, recipient_reaction: saved.recipient_reaction
+                          ...message, reactions:saved.reactions, sender_reaction: saved.sender_reaction, recipient_reaction: saved.recipient_reaction
                         } : message) } : previous);
                       setMenu(null);
                     }
@@ -647,7 +657,7 @@ function MessagesPage({ user }) {
               <div className="public-message-menu-preview">{activeMenu.text || (activeMenu.track_id ? 'Shared a song' : messageGifId(activeMenu) ? 'Sent a GIF' : 'Message')}</div>
               <div className="public-message-menu-items">
               {canSend && <button type="button" onClick={() => {
-                  setReply({ id: activeMenu.id, name: activeMenu.sender_id === user?.id ? 'You' : peerName(thread.chat), text: activeMenu.text || (activeMenu.track_id ? 'Shared a song' : messageGifId(activeMenu) ? 'Sent a GIF' : 'Message') });
+                  setReply({ id: activeMenu.id, name: activeMenu.sender_id === user?.id ? 'You' : thread.chat.is_group ? (activeMenu.sender_name||'PUBLIC listener') : peerName(thread.chat), text: activeMenu.text || (activeMenu.track_id ? 'Shared a song' : messageGifId(activeMenu) ? 'Sent a GIF' : 'Message') });
                   setMenu(null);
                   requestAnimationFrame(() => {scroll.current?.querySelector('[data-reply-target="true"]')?.scrollIntoView({ block: "center" });draftInput.current?.focus({ preventScroll: true });});
                 }}><Reply size={17} /> Reply</button>}
@@ -655,7 +665,7 @@ function MessagesPage({ user }) {
               {activeMenu.track_id && <Link to={'/track/' + encodeURIComponent(activeMenu.track_id)} onClick={() => setMenu(null)}><ExternalLink size={17} /> Open song</Link>}
               {activeMenu.track_id && <button type="button" onClick={() => {setMenu(null);void perform(() => playSharedSong(activeMenu));}}>{player.currentTrack?.id === activeMenu.track_id && player.isPlaying ? 'Pause song' : 'Play song'}</button>}
               {activeMenu.sender_id === user?.id && <button type="button" className="text-destructive" disabled={busy} onClick={() => {
-                  if (!window.confirm('Delete this message for both people?')) return;
+                  if (!window.confirm('Delete this message for everyone?')) return;
                   setMenu(null);
                   void perform(async () => {
                     await messages('delete_message', { id, messageId: activeMenu.id });
@@ -671,9 +681,9 @@ function MessagesPage({ user }) {
             </DialogContent>
           </Dialog>}
           {showLatest && <button type="button" className="public-messages-latest" onClick={jumpToLatest}>Jump to latest</button>}
-          {incoming && thread.messages.length > 0 && <div className="flex gap-3 p-3">
+          {incoming && (groupInvited || thread.messages.length > 0) && <div className="flex gap-3 p-3">
             {[true, false].map((accept) => <button className="rounded-lg border px-3 py-2" key={String(accept)} disabled={busy} onClick={() => void perform(async () => {
-              await messages('respond', { id, accept });
+              await messages(groupInvited?'group_respond':'respond', { id, accept });
               if (currentChat.current === id) {
                 if (accept) {
                   await loadThread(id);
@@ -830,16 +840,17 @@ function messageGifId(message) {
 }
 
 function MessageReactions({ message, userId }) {
-  const reactions = [
+  let all;try{all=JSON.parse(message.reactions||'{}');}catch{}
+  const reactions = (all&&Object.values(all).some(Boolean)?Object.entries(all).map(([key,emoji])=>({key,emoji})):[
     { emoji: message.sender_reaction, key: "sender" },
     { emoji: message.recipient_reaction, key: "recipient" },
-  ].filter(({ emoji }) => REACTIONS.includes(emoji));
+  ]).filter(({ emoji }) => REACTIONS.includes(emoji));
 
   if (!reactions.length) return null;
 
   return <div className="public-message-reaction-group" role="group" aria-label="Message reactions">
     {reactions.map(({ emoji, key }) => {
-      const mine = key === "sender" ? message.sender_id === userId : message.sender_id !== userId;
+      const mine = key === "sender" ? message.sender_id === userId : key === "recipient" ? message.sender_id !== userId : key===userId;
       const label = REACTION_LABELS[REACTIONS.indexOf(emoji)];
       return <span
         className="public-message-reaction-badge"
