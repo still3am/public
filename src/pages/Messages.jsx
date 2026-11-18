@@ -903,6 +903,13 @@ function MessagesPage({ user }) {
             <span className="truncate">{selectedMedia.file.name}</span>
             <button type="button" aria-label="Remove attachment" disabled={busy} onClick={() => setMediaDraft(null)}><X size={18} /></button>
           </div>}
+          {canSend && songPicker === "recent" && <RecentlyPlayedPicker
+            onClose={() => setSongPicker(false)}
+            onSelect={(song) => {setAttachment(song);setSongPicker(false);}} />}
+          {canSend && reply && <div className="public-message-reply-draft">
+            <div className="min-w-0"><strong className="block truncate">Replying to {reply.name}</strong><span className="block truncate">{reply.text}</span></div>
+            <button type="button" aria-label="Cancel reply" disabled={busy} onClick={() => setReply(null)}><X size={17} /></button>
+          </div>}
           {sendStage&&sendingChat.current===id&&<p className="public-message-send-status" role="status">{sendStage==='uploading'?'Uploading attachment…':'Sending message…'}</p>}
           {canSend && <form className="public-messages-compose" onSubmit={(event) => {event.preventDefault();void perform(async () => {
               const text = draft.trim();
@@ -988,9 +995,6 @@ function MessagesPage({ user }) {
             <button type="submit" aria-label={sendStage&&sendingChat.current===id?"Sending message":"Send message"} aria-busy={Boolean(sendStage&&sendingChat.current===id)} disabled={!online || busy || !draft.trim() && !attachment && !gif && !selectedMedia}><ArrowUp size={17} /></button>
             </div>
           </form>}
-          {canSend && songPicker === "recent" && <RecentlyPlayedPicker
-            onClose={() => setSongPicker(false)}
-            onSelect={(song) => {setAttachment(song);setSongPicker(false);}} />}
           {pending && !incoming && !canSend && <p className="text-sm">Waiting for them to accept your request.</p>}
         </>}
       </section> : <div className="public-messages-empty"><MessageCircle size={32} aria-hidden="true" /><h2>Your conversations</h2><p>Choose a chat or start a new message.</p><button type="button" onClick={() => setComposing(true)}><SquarePen size={16} /> New message</button></div>}
