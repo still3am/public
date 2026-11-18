@@ -107,6 +107,7 @@ export default function LoungeHostModal({ lounge, onClose }) {
           <MotionGradient colors={songColors} motion="flow" speed={0.72} active={!scanning} className="absolute inset-0" />
           <div className="profile-qr-shade connect-qr-shade" />
         </div>
+        <div className="connect-qr-content">
         <header className="profile-qr-header connect-qr-header">
           <span>Connect</span>
           <button type="button" onClick={onClose} aria-label="Close Connect" className="profile-qr-close"><X size={20} /></button>
@@ -215,6 +216,7 @@ export default function LoungeHostModal({ lounge, onClose }) {
           className="connect-qr-end">
           <Power size={15} /> {ending ? "Ending Connect…" : "End Connect"}
         </button>
+        </div>
       </section>
       {scanning && <QRScannerModal onClose={() => setScanning(false)} />}
     </div>);
