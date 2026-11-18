@@ -1,3 +1,4 @@
+import { messageRunPosition } from '@/components/messages/messageRuns';
 import { messageSender } from '@/components/messages/messageSender';
 import ConversationMuteSwitch from '@/components/messages/ConversationMuteSwitch';
 import { messageReactionMap, ownMessageReaction } from '@/components/messages/messageReactions';
@@ -649,7 +650,7 @@ function MessagesPage({ user }) {
           }}>
             {thread.messages.length === 0 && <p className="public-messages-list-empty">{groupInvited ? 'You have been invited to this group. Accept to see its messages.' : pending ? "Send a message request to start the conversation." : "Send the first message."}</p>}
             <div className="public-messages-stream" ref={messageStream}>
-            {thread.messages.map((message, messageIndex) => <div key={message.id} className="public-message-group" data-own={message.sender_id === user?.id} data-reply-target={reply?.id === message.id} data-time-visible={revealedTimestamp===message.id}
+            {thread.messages.map((message, messageIndex) => <div key={message.id} className="public-message-group" data-own={message.sender_id === user?.id} data-reply-target={reply?.id === message.id} data-time-visible={revealedTimestamp===message.id} data-run-start={messageRunPosition(thread.messages,messageIndex).start} data-run-end={messageRunPosition(thread.messages,messageIndex).end}
             onPointerDown={(event) => {
               if (event.pointerType === 'mouse' || event.target instanceof Element && event.target.closest('button,a')) return;
               cancelHold();
@@ -665,15 +666,18 @@ function MessagesPage({ user }) {
               openMessageMenu(message, event.currentTarget);
             }}
             onContextMenu={(event) => {event.preventDefault();cancelHold();openMessageMenu(message, event.currentTarget);}}>
+              {message.sender_id!==user?.id&&<span className="public-message-avatar-rail">{messageRunPosition(thread.messages,messageIndex).end&&<PersonAvatar size={28} person={messageSender(message,thread.chat,user)} />}</span>}
+              <div className="public-message-body">
+              {message.sender_id!==user?.id&&messageRunPosition(thread.messages,messageIndex).start&&<span className="public-message-author">{messageSender(message,thread.chat,user).display_name}</span>}
+              <div className="public-message-content">
               {message.reply_preview && <ReplyQuote preview={message.reply_preview} />}
               {message.track_id && <SharedSong message={message} playing={player.currentTrack?.id === message.track_id && player.isPlaying && (!songData(message)?.lyrics || lyricPlayback.current === message.id)} onPlay={() => void perform(() => playSharedSong(message))} busy={busy} />}
               {message.media_url && !messageGifId(message) && ['image', 'video'].includes(message.media_type) && <ChatMedia key={message.id} chatId={id} message={message} />}
               {messageGifId(message) && <MomentGif id={messageGifId(message)} label="Shared GIF" />}
               {message.text && <p className="public-message-bubble" data-own={message.sender_id === user?.id}>{message.text}</p>}
               <MessageReactions message={message} userId={user?.id} />
-              <div className="public-message-footer" data-own={message.sender_id===user?.id}>
-                <PersonAvatar size={20} person={messageSender(message,thread.chat,user)} />
-                <div className="public-message-footer-meta"><span className="public-message-sender-name">{messageSender(message,thread.chat,user).display_name}</span>{messageTime(message.created_date)&&<time className="public-message-timestamp" dateTime={message.created_date}>{messageTime(message.created_date)}</time>}</div>
+              </div>
+              {messageTime(message.created_date)&&<time className="public-message-timestamp" dateTime={message.created_date}>{messageTime(message.created_date)}</time>}
               </div>
             </div>)}
             {peerTyping && currentPeer !== user?.id && <div className="public-message-typing" role="status" aria-live="polite" aria-label={peerName(thread.chat) + " is typing"}><span className="public-message-typing-dots" aria-hidden="true"><i /><i /><i /></span></div>}
