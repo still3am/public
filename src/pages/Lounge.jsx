@@ -21,7 +21,7 @@ import {
   X,
   ListMusic,
   Search,
-  Clock, Copy, Users } from
+  Clock, Copy, Users, ChevronUp, ChevronDown, SkipForward } from
 "lucide-react";
 
 export default function Lounge() {
@@ -139,9 +139,9 @@ export default function Lounge() {
         notFound ?
         <div className="text-center py-24">
             <Speaker size={36} className="mx-auto text-foreground/30 mb-3" />
-            <h2 className="text-lg font-extrabold">Lounge not found</h2>
+            <h2 className="text-lg font-extrabold">Connect session not found</h2>
             <p className="text-sm text-foreground/50 mt-1 mb-4">
-              The host may have ended the lounge, or the code is wrong.
+              The host may have ended this Connect session, or the code is wrong.
             </p>
             <Link to="/" className="text-sm font-semibold underline">
               Back home
@@ -165,7 +165,7 @@ export default function Lounge() {
 
           <>
                 <h2 className="text-lg font-extrabold">Declined by host</h2>
-                <p className="text-sm text-foreground/50 mt-1">You weren't let into this lounge.</p>
+                <p className="text-sm text-foreground/50 mt-1">You weren’t approved to join this Connect session.</p>
                 <button
               onClick={() => nav("/")}
               className="mt-4 px-4 py-2 rounded-full bg-foreground text-background text-sm font-semibold">
@@ -178,25 +178,25 @@ export default function Lounge() {
 
         <>
             <header className="lounge-hero">
-              <div className="eyebrow flex items-center gap-2"><Speaker size={14}/> PUBLIC Lounge</div>
+              <div className="eyebrow flex items-center gap-2"><Speaker size={14}/> Connect</div>
               <h1>{session.name || "Good music. Shared company."}</h1>
-              <p>A shared queue, selected by everyone in the room. Hosted by {session.host_name || "Host"}.</p>
+              <p>A shared music queue. Add songs, arrange what’s next, and request a skip together. Hosted by {session.host_name || "Host"}.</p>
               <div className="flex flex-wrap items-center gap-3 mt-5">
-                <button className="chrome-button" onClick={async()=>{try{await copyText(window.location.href);toast({title:"Lounge invite copied"});}catch{toast({title:"Couldn’t copy the lounge invite. Please try again.",variant:"destructive"});}}}><Copy size={15}/> Copy invite</button>
+                <button className="chrome-button" onClick={async()=>{try{await copyText(window.location.href);toast({title:"Connect invite copied"});}catch{toast({title:"Couldn’t copy the Connect invite. Please try again.",variant:"destructive"});}}}><Copy size={15}/> Copy invite</button>
                 <span className="chip"><Users size={14}/>{members.filter(m=>m.status==="approved").length} approved</span>
                 <span className="chip">Code {session.code}</span>
               </div>
             </header>
             <div className="lounge-columns">
             <div>
-            <LoungeQueueList key={session.id} sessionId={session.id} isHost={isHost} />
+            <LoungeQueueList key={session.id} sessionId={session.id} session={session} isHost={isHost} />
 
             </div>
             <aside className="lounge-community">
-              <div className="eyebrow">In this room</div>
-              <h2 className="text-xl font-bold mt-2 mb-4">The listening circle</h2>
+              <div className="eyebrow">Connect session</div>
+              <h2 className="text-xl font-bold mt-2 mb-4">Listeners</h2>
               <div className="space-y-3">{members.filter(m=>m.status==="approved").map(m=><div key={m.id} className="flex items-center gap-3"><div className="w-9 h-9 rounded-full bg-muted grid place-items-center"><Users size={15}/></div><div className="min-w-0"><p className="text-sm font-semibold truncate">{m.name || "Listener"}</p><p className="text-xs text-muted-foreground">{m.role==="host"?"Host":"Guest"}</p></div></div>)}</div>
-              <p className="text-sm text-muted-foreground leading-relaxed mt-5 mb-4">Add something you love. The host controls playback; everyone helps shape the queue.</p>
+              <p className="text-sm text-muted-foreground leading-relaxed mt-5 mb-4">Everyone in this session can add and reorder songs. The host controls playback; guests can request a skip.</p>
             {/* Add to the shared queue */}
             <button
             onClick={() => setPickerOpen(true)}
@@ -206,7 +206,7 @@ export default function Lounge() {
             </button>
 
             <div className="text-[11px] text-foreground/40 text-center">
-              Lounge code <span className="font-bold tracking-widest">{session?.code}</span>
+              Connect code <span className="font-bold tracking-widest">{session?.code}</span>
               {!isHost && ` · hosted by ${session?.host_name || "Host"}`}
             </div>
             </aside></div>
@@ -223,7 +223,7 @@ export default function Lounge() {
         toast(
           ok === false ?
           { title: "Couldn't add track", variant: "destructive" } :
-          { title: "Added to the lounge queue" }
+          { title: "Added to the Connect queue" }
         )
         } />
 
@@ -306,11 +306,11 @@ function GuestQueuePicker({ sessionId, user, onClose, onAdded }) {
   };
 
   return (
-    <div role="dialog" aria-modal="true" aria-label="Add music to lounge" data-public-dialog tabIndex={-1} onKeyDown={event=>{if(event.key==="Escape"){event.stopPropagation();onClose();}}} className="lounge-picker fixed inset-0 z-[70] bg-card text-foreground backdrop-blur-xl flex flex-col animate-[fadeIn_.2s_ease-out]">
+    <div role="dialog" aria-modal="true" aria-label="Add music to Connect" data-public-dialog tabIndex={-1} onKeyDown={event=>{if(event.key==="Escape"){event.stopPropagation();onClose();}}} className="lounge-picker fixed inset-0 z-[70] bg-card text-foreground backdrop-blur-xl flex flex-col animate-[fadeIn_.2s_ease-out]">
       <div className="flex items-center justify-between px-5 pt-[calc(1rem+env(safe-area-inset-top))] pb-3 shrink-0 text-foreground">
         <div className="flex items-center gap-2 min-w-0">
           <ListMusic size={20} className="opacity-80 shrink-0" />
-          <h2 className="text-lg font-bold truncate">Add to the lounge queue</h2>
+          <h2 className="text-lg font-bold truncate">Add to Connect queue</h2>
         </div>
         <button onClick={onClose} className="p-2 -mr-2 rounded-full hover:bg-muted active:scale-90 transition" aria-label="Close">
           <X size={22} />
@@ -322,7 +322,7 @@ function GuestQueuePicker({ sessionId, user, onClose, onAdded }) {
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            aria-label="Find music for the lounge queue" autoFocus placeholder="Search PUBLIC, your library & recent plays"
+            aria-label="Find music for Connect queue" autoFocus placeholder="Search PUBLIC, your library & recent plays"
             className="w-full pl-10 pr-3 py-2.5 rounded-full bg-muted border border-border text-sm placeholder:text-muted-foreground focus:outline-none focus:bg-accent transition text-foreground" />
           
         </div>
@@ -373,7 +373,7 @@ function GuestQueuePicker({ sessionId, user, onClose, onAdded }) {
 
 // ---------------- Live shared queue ----------------
 /** @param {any} props */
-function LoungeQueueList({ sessionId, isHost }) {
+function LoungeQueueList({ sessionId, session, isHost }) {
   const p = usePlayer();
   const {user}=useAuth();
   const { toast } = useToast();
