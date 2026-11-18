@@ -156,8 +156,11 @@
   flex:0 0 auto;
 }
 .public-chat-details[data-group="true"] .public-chat-details-header>span {
+  grid-column:2;
   text-align:center;
 }
+.public-chat-details[data-group="true"] .public-chat-details-header>button:first-child { grid-column:1; grid-row:1; }
+.public-chat-details[data-group="true"] .public-chat-details-header>.public-chat-details-done { grid-column:3; grid-row:1; justify-self:end; }
 .public-chat-details[data-group="true"] .public-chat-details-person {
   flex:0 0 auto;
   display:flex;
