@@ -547,15 +547,15 @@ export default function Profile({ ownProfileTab = false }) {
                       <MapPin size={12} /> {profile.location}
                     </span>
                     }
-                  {profile.created_date &&
-                    <span className="inline-flex items-center gap-1 hidden">
-                      <Calendar size={12} /> Joined{" "}
-                      {new Date(profile.created_date).toLocaleDateString(undefined, {
-                        month: "short",
-                        year: "numeric"
-                      })}
-                    </span>
-                    }
+                  
+
+
+
+
+
+
+
+                    
                 </div>
                   }
 
