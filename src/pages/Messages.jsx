@@ -460,6 +460,10 @@ function MessagesPage({ user }) {
     });
   }
   const scroll = useRef(null);
+  const messageStream=useRef(null);
+  const [revealedTimestamp,setRevealedTimestamp]=useState(null);
+  useEffect(()=>{setRevealedTimestamp(null);},[id]);
+  useEffect(()=>{if(!revealedTimestamp)return;const timer=setTimeout(()=>setRevealedTimestamp(null),3500);return()=>clearTimeout(timer);},[revealedTimestamp]);
   const followLatest = useRef(true);
   const [showLatest, setShowLatest] = useState(false);
   const tabChats = inbox?.filter((chat) => requests === (chat.is_group ? Boolean(chat.invited_ids?.includes(user?.id)) : chat.dm_status === 'pending' && chat.dm_requester !== user?.id) && chat.dm_status !== 'declined' && (chat.is_group || chat.last_message_at || chat.dm_requester === user?.id));
@@ -471,6 +475,15 @@ function MessagesPage({ user }) {
     setShowLatest(false);
     if (scroll.current) scroll.current.scrollTop = scroll.current.scrollHeight;
   }
+  useLayoutEffect(()=>{
+    if(!thread?.chat?.id||!messageStream.current||!scroll.current)return;
+    let frame;
+    const keepLatest=()=>{if(!followLatest.current)return;cancelAnimationFrame(frame);frame=requestAnimationFrame(()=>{if(followLatest.current&&scroll.current)scroll.current.scrollTop=scroll.current.scrollHeight;});};
+    const observer=typeof ResizeObserver==='undefined'?null:new ResizeObserver(keepLatest);
+    observer?.observe(messageStream.current);observer?.observe(scroll.current);
+    keepLatest();
+    return()=>{observer?.disconnect();cancelAnimationFrame(frame);};
+  },[thread?.chat?.id]);
   const lastMessage = Array.isArray(thread?.messages) ? thread.messages.at(-1)?.id : null;
   const conversationMessages = Array.isArray(thread?.messages) ? thread.messages : [];
   const sharedPhotos = conversationMessages.filter((message) => ['image', 'video'].includes(message.media_type) && message.media_url && !messageGifId(message)).slice().reverse();
@@ -635,7 +648,8 @@ function MessagesPage({ user }) {
             if (followLatest.current) setShowLatest(false);
           }}>
             {thread.messages.length === 0 && <p className="public-messages-list-empty">{groupInvited ? 'You have been invited to this group. Accept to see its messages.' : pending ? "Send a message request to start the conversation." : "Send the first message."}</p>}
-            {thread.messages.map((message, messageIndex) => <div key={message.id} className="public-message-group" data-own={message.sender_id === user?.id} data-reply-target={reply?.id === message.id}
+            <div className="public-messages-stream" ref={messageStream}>
+            {thread.messages.map((message, messageIndex) => <div key={message.id} className="public-message-group" data-own={message.sender_id === user?.id} data-reply-target={reply?.id === message.id} data-time-visible={revealedTimestamp===message.id}
             onPointerDown={(event) => {
               if (event.pointerType === 'mouse' || event.target instanceof Element && event.target.closest('button,a')) return;
               cancelHold();
@@ -643,7 +657,7 @@ function MessagesPage({ user }) {
               hold.current = { x, y, timer: setTimeout(() => {hold.current = null;openMessageMenu(message, group);}, 480) };
             }}
             onPointerMove={(event) => {if (hold.current && Math.hypot(event.clientX - hold.current.x, event.clientY - hold.current.y) > 9) cancelHold();}}
-            onPointerCancel={cancelHold} onPointerUp={cancelHold} onPointerLeave={cancelHold}
+            onPointerCancel={cancelHold} onPointerUp={(event)=>{const press=hold.current;if(event.pointerType!=='mouse'&&press&&Math.hypot(event.clientX-press.x,event.clientY-press.y)<9)setRevealedTimestamp(previous=>previous===message.id?null:message.id);cancelHold();}} onPointerLeave={cancelHold}
             tabIndex={0}
             onKeyDown={(event) => {
               if (event.target !== event.currentTarget || !(event.key === 'ContextMenu' || event.shiftKey && event.key === 'F10')) return;
@@ -659,10 +673,11 @@ function MessagesPage({ user }) {
               <MessageReactions message={message} userId={user?.id} />
               <div className="public-message-footer" data-own={message.sender_id===user?.id}>
                 <PersonAvatar size={20} person={messageSender(message,thread.chat,user)} />
-                <div className="public-message-footer-meta"><span className="public-message-sender-name">{messageSender(message,thread.chat,user).display_name}</span>{messageTime(message.created_date)&&<time dateTime={message.created_date}>{messageTime(message.created_date)}</time>}</div>
+                <div className="public-message-footer-meta"><span className="public-message-sender-name">{messageSender(message,thread.chat,user).display_name}</span>{messageTime(message.created_date)&&<time className="public-message-timestamp" dateTime={message.created_date}>{messageTime(message.created_date)}</time>}</div>
               </div>
             </div>)}
             {peerTyping && currentPeer !== user?.id && <div className="public-message-typing" role="status" aria-live="polite" aria-label={peerName(thread.chat) + " is typing"}><span className="public-message-typing-dots" aria-hidden="true"><i /><i /><i /></span></div>}
+            </div>
           </div>
           {activeMenu && <Dialog open onOpenChange={(open) => {if (!open) setMenu(null);}}>
             <DialogContent ref={setMenuPanel} showClose={false} className="public-message-actions public-message-context"

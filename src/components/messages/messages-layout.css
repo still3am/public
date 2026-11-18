@@ -321,3 +321,21 @@
 .public-messages-thread .public-message-footer[data-own="true"]{align-self:flex-end;flex-direction:row-reverse}
 .public-message-footer[data-own="true"] .public-message-footer-meta{justify-content:flex-end;text-align:right}
 @media(max-width:400px){.public-message-footer-meta>.public-message-sender-name{max-width:22ch}.public-message-footer-meta{column-gap:5px}}
+
+/* Anchor short conversations at the composer without hiding overflowing history. */
+.public-messages-thread>.public-messages-history{display:flex;flex-direction:column;justify-content:flex-start;gap:0;scroll-padding-bottom:16px}
+.public-messages-history::before{content:"";display:block;flex:1 0 0;min-height:0;pointer-events:none}
+.public-messages-stream{display:flex;flex:0 0 auto;flex-direction:column;width:100%;min-width:0;gap:6px;box-sizing:border-box}
+.public-messages-stream>.public-message-group{box-sizing:border-box;min-width:0;max-width:88%;align-self:flex-start;flex:0 0 auto}
+.public-messages-stream>.public-message-group[data-own="true"]{align-self:flex-end}
+.public-messages-stream .public-message-bubble{max-width:100%;box-sizing:border-box;text-align:start;overflow-wrap:anywhere}
+.public-messages-stream .public-message-reply-quote{max-width:100%;box-sizing:border-box}
+.public-messages-stream .public-message-footer{position:relative;margin-bottom:17px}
+.public-message-footer-meta>.public-message-timestamp{position:absolute;top:100%;left:29px;right:auto;max-width:calc(100% - 20px);margin-top:1px;font-size:10px;line-height:13px;white-space:nowrap;opacity:0;visibility:hidden;pointer-events:none;transition:opacity 120ms ease}
+.public-message-footer[data-own="true"] .public-message-timestamp{right:29px;left:auto;text-align:right}
+.public-message-group[data-time-visible="true"] .public-message-timestamp,
+.public-message-group:focus-visible .public-message-timestamp,
+.public-message-group:has(:focus-visible) .public-message-timestamp{opacity:.8;visibility:visible}
+@media(hover:hover){.public-message-group:hover .public-message-timestamp{opacity:.8;visibility:visible}}
+@media(min-width:901px){.public-messages-stream>.public-message-group{max-width:min(76%,620px)}}
+@media(prefers-reduced-motion:reduce){.public-message-footer-meta>.public-message-timestamp{transition:none}}
