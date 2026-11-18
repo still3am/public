@@ -1,19 +1,21 @@
+import { groupAvatarLayout } from './groupAvatarLayout';
 import { useEffect, useRef, useState } from 'react';
 import { base44 } from '@/api/base44Client';
 import Avatar from '@/components/Avatar';
 import { useCoverUrl } from '@/hooks/useCoverUrl';
 import { Link } from 'react-router-dom';
-import { Camera, Search, X } from 'lucide-react';
+import { Camera, Search, Users, X } from 'lucide-react';
 
 export function GroupChatAvatar({ chat, size = 40 }) {
   const photo = useCoverUrl(chat.group_photo);
   const [failed,setFailed]=useState(false);
   useEffect(()=>setFailed(false),[photo]);
-  if (photo&&!failed) return <img className="public-group-photo" src={photo} onError={()=>setFailed(true)} alt="" style={{ width:size,height:size }} />;
-  const members=(chat.members||[]).filter(person=>!chat.invited_ids?.includes(person.id)).slice(0,3);
-  const people=members.length?members:[{display_name:chat.group_name||'Group'}];
-  return <span className="public-group-avatar" style={{width:size,height:size}} aria-hidden="true">
-    {people.map((person,index)=><span key={person.id||index} style={{left:people.length===1?0:index*size*.17,top:people.length===1?0:index*size*.14,zIndex:3-index}}><Avatar user={person} showBadge={false} size={people.length===1?size:Math.round(size*.66)} /></span>)}
+  const members=(chat.members||[]).filter(person=>!chat.invited_ids?.includes(person.id)).slice(0,4);
+  const layout=groupAvatarLayout(members.length);
+  return <span className="public-group-portrait" style={{width:size,height:size}} aria-hidden="true">
+    {photo&&!failed ? <img className="public-group-photo" src={photo} onError={()=>setFailed(true)} alt="" /> : members.length ? <span className="public-group-avatar">
+      {members.map((person,index)=>{const slot=layout[index];const diameter=size*slot.size;return <span className="public-group-avatar-cell" key={person.id||index} style={{left:slot.x*100+'%',top:slot.y*100+'%',width:slot.size*100+'%',height:slot.size*100+'%'}}><Avatar user={person} showBadge={false} size={diameter} /></span>;})}
+    </span> : <Users size={Math.max(18,size*.48)} />}
   </span>;
 }
 
@@ -91,13 +93,13 @@ export default function GroupChatPanel({chat,userId,invoke,onChanged,onLeft,busy
     <div className="public-group-members">{chat.participant_ids.map((member,index)=>{
       const person=chat.members?.find(person=>person.id===member)||{display_name:chat.participant_names?.[index]||'PUBLIC listener'};
       return <div className="public-group-member" key={member}>
-        <Avatar user={person} size={36}/><span><Link to={'/profile/'+encodeURIComponent(member)}>{person.display_name}{member===userId?' (you)':''}</Link><small>{pending.includes(member)?'Invitation pending':chat.admin_ids?.includes(member)?'Admin':'Member'}</small></span>
+        <span className="public-group-member-avatar"><Avatar user={person} size={36}/></span><span className="public-group-member-identity"><Link to={'/profile/'+encodeURIComponent(member)}>{person.display_name}{member===userId?' (you)':''}</Link><small>{pending.includes(member)?'Invitation pending':chat.admin_ids?.includes(member)?'Admin':'Member'}</small></span>
         {isAdmin&&member!==userId&&<span className="public-group-member-actions">{!pending.includes(member)&&!chat.admin_ids?.includes(member)&&<button type="button" disabled={working||busy} onClick={()=>void run('group_admin',{memberId:member})}>Make admin</button>}<button type="button" aria-label={(pending.includes(member)?'Cancel invitation for ':'Remove ')+person.display_name} disabled={working||busy} onClick={()=>{if(window.confirm(pending.includes(member)?'Cancel this invitation?':'Remove this person from the group?'))void run('group_remove',{memberId:member});}}><X size={16}/></button></span>}
       </div>;
     })}</div>
     {isAdmin&&chat.participant_ids.length<20&&<div className="public-group-invite">
       <h3>Invite people</h3><label className="public-group-search"><Search size={17}/><input aria-label="Search people to invite" placeholder="Search people you follow" value={query} onChange={event=>setQuery(event.target.value)} /></label>
-      {searching&&contactError?<p role="alert">{contactError} <button type="button" onClick={()=>setRetry(value=>value+1)}>Retry</button></p>:searching&&people===null?<p role="status">Searching…</p>:searching&&!matches.length?<p role="status">No matching people to invite.</p>:searching&&matches.map(person=><button type="button" className="public-group-invite-result" key={person.id} disabled={working||busy} onClick={()=>void run('group_invite',{memberId:person.id})}><Avatar user={person} size={30}/><span>{person.name}</span><span>Invite</span></button>)}
+      {searching&&contactError?<p role="alert">{contactError} <button type="button" onClick={()=>setRetry(value=>value+1)}>Retry</button></p>:searching&&people===null?<p role="status">Searching…</p>:searching&&!matches.length?<p role="status">No matching people to invite.</p>:searching&&matches.map(person=><button type="button" className="public-group-invite-result" key={person.id} disabled={working||busy} onClick={()=>void run('group_invite',{memberId:person.id})}><span className="public-group-invite-avatar"><Avatar user={person} size={30}/></span><span>{person.name}</span><span>Invite</span></button>)}
       <p>New members receive an invitation to accept.</p>
     </div>}
     <button type="button" className="text-destructive" disabled={working||busy} onClick={()=>{if(window.confirm('Leave this group?'))void run('group_leave');}}>Leave group</button>

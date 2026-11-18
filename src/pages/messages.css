@@ -1949,3 +1949,16 @@ html:not(.dark) .public-messages-thread .public-messages-compose {
 @media(max-width:767px){.public-messages[data-composing=true] .public-messages-inbox{display:block}.public-messages[data-composing=true] .public-messages-thread{display:none}.public-group-selected{max-height:110px;overflow:auto}.public-group-member-actions button{min-height:36px}.public-group-settings form{align-items:flex-end}}
 
 .public-messages-thread[data-group=true] .public-message-group>.public-message-reaction-group{position:relative;top:auto;left:auto;align-self:flex-start;margin:0 0 2px 6px;flex-wrap:wrap;gap:0;max-width:100%}.public-messages-thread[data-group=true] .public-message-group:has(>.public-message-reaction-group){margin-block-start:0}.public-messages-thread[data-group=true] .public-message-group[data-own=true]>.public-message-reaction-group{align-self:flex-end;margin-inline:6px}.public-messages-thread[data-group=true] .public-message-reaction-badge{font-size:20px}
+
+/* A fixed circular frame keeps every group portrait clear of names and controls. */
+.public-group-portrait{position:relative;display:grid;place-items:center;flex:0 0 auto;isolation:isolate;overflow:hidden;border-radius:50%;background:hsl(var(--muted));color:hsl(var(--muted-foreground));line-height:0;box-sizing:border-box}
+.public-group-portrait>.public-group-photo{display:block;width:100%;height:100%;max-width:100%;max-height:100%;margin:0;object-fit:cover;object-position:center;border-radius:50%}
+.public-group-portrait>.public-group-avatar{position:absolute;inset:0;display:block;width:100%;height:100%;margin:0;overflow:hidden;border-radius:50%;background:none}
+.public-group-portrait .public-group-avatar-cell{position:absolute;display:block;min-width:0;min-height:0;overflow:hidden;border-radius:50%;box-shadow:none;z-index:auto}
+.public-group-portrait .public-group-avatar-cell>:first-child{display:block;margin:0;max-width:100%;max-height:100%;box-sizing:border-box}
+.public-messages-peer>.public-group-portrait,.public-chat-details-person>.public-group-portrait{justify-self:center;align-self:center;margin-inline:auto}
+.public-group-settings .public-group-member>.public-group-member-avatar{display:grid;place-items:center;position:relative;flex:0 0 44px;width:44px;height:44px;min-width:44px;max-width:44px;margin:0;overflow:visible}
+.public-group-settings .public-group-member>.public-group-member-identity{flex:1 1 100px;min-width:0;line-height:1.4}
+.public-group-invite-result>.public-group-invite-avatar{display:grid;place-items:center;position:relative;flex:0 0 38px;width:38px;height:38px;min-width:38px;opacity:1}
+.public-group-member-avatar>.public-badged-avatar,.public-group-invite-avatar>.public-badged-avatar{display:block;flex:none;position:relative;width:36px;height:36px}.public-group-invite-avatar>.public-badged-avatar{width:30px;height:30px}
+.public-group-settings .public-group-member{gap:8px;align-items:center}.public-group-member-actions{padding-block:2px}.public-messages-peer{row-gap:6px}.public-chat-details-person>.public-group-portrait+h2{margin-top:4px;max-width:100%;overflow-wrap:anywhere}

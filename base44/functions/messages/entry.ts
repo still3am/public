@@ -66,7 +66,7 @@ Deno.serve(async req => {
 
     if (action === 'inbox') {
       const conversations = rows(await db.Conversation.filter({participant_ids:uid, dm_enabled:true}, '-last_message_at', 100));
-      const ids = [...new Set(conversations.flatMap(chat=>chat.participant_ids).filter(member=>member!==uid))];
+      const ids = [...new Set(conversations.flatMap(chat=>chat.participant_ids))];
       const [profiles, blocks] = ids.length ? await Promise.all([
         db.PublicProfile.filter({user_id:{$in:ids},visible:true}, '-updated_date', 200),
         db.Block.filter({$or:[{user_id:uid,blocked_user_id:{$in:ids}},{blocked_user_id:uid,user_id:{$in:ids}}]}, '-created_date', 500),
