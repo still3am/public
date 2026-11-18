@@ -161,9 +161,7 @@ export default function LoungeHostModal({ lounge, onClose }) {
               <div className="connect-approve-all-row"><span>{pending.length} waiting for access</span><button type="button" disabled={approvalBusy} onClick={async () => {setApprovalBusy(true);const count=await approveAll();setApprovalBusy(false);toast(count===pending.length?{title:"Approved "+count+" "+(count===1?"person":"people")}:{title:"Some requests couldn’t be approved",variant:"destructive"});}}>Approve all</button></div>
               {pending.map((m) =>
             <div key={m.id} className="connect-qr-member flex items-center gap-2 px-2 py-2 rounded-xl">
-                  <div className="w-8 h-8 rounded-full bg-white/15 grid place-items-center text-xs font-bold shrink-0">
-                    {(m.name || "?").charAt(0)}
-                  </div>
+                  <Avatar user={{...m,display_name:m.name||"Someone"}} size={34} active={!scanning} />
                   <span className="text-sm truncate flex-1">{m.name || "Someone"}</span>
                   <button
                 onClick={() => approve(m)}
