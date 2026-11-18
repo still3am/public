@@ -1,0 +1,11 @@
+import assert from 'node:assert/strict';
+import {messageReactionBadges,ownMessageReaction} from '../src/components/messages/messageReactions.js';
+const allowed=['❤️','👍','😂','🔥'];
+const message={sender_id:'a',recipient_id:'b',sender_reaction:'❤️',reactions:JSON.stringify({a:'',b:'🔥',c:'🔥',d:'😂'})};
+assert.equal(ownMessageReaction(message,'a'),'','Removing a reaction must override the legacy field');
+const badges=messageReactionBadges(message,'c',allowed);
+assert.deepEqual(badges,[{emoji:'😂',mine:false,people:1},{emoji:'🔥',mine:true,people:2}]);
+assert.equal(badges.length,2,'Repeated emoji types share one visual badge');
+assert.deepEqual(messageReactionBadges({reactions:'bad json'},'a',allowed),[]);
+assert.equal(ownMessageReaction({sender_id:'a',sender_reaction:'👍'},'a'),'👍');
+console.log('PASS stable emoji ordering, duplicate grouping, own-reaction state, removal, and legacy recovery');
