@@ -1,0 +1,126 @@
+/* Sender names above received bubbles; portraits beside the last bubble in a run. */
+.public-messages .public-messages-thread>.public-messages-history {
+  padding-inline:clamp(18px,2.5vw,36px);
+}
+.public-messages-stream { gap:4px; }
+.public-messages .public-messages-stream>.public-message-group {
+  display:flex;
+  flex-direction:row;
+  align-items:flex-end;
+  justify-content:flex-start;
+  gap:8px;
+  width:fit-content;
+  min-width:0;
+  max-width:min(80%,620px);
+  margin:0;
+  padding:0;
+  position:relative;
+}
+.public-messages .public-messages-stream>.public-message-group[data-own="true"] {
+  align-self:flex-end;
+  justify-content:flex-end;
+}
+.public-messages-stream>.public-message-group[data-run-start="true"] { margin-top:10px; }
+.public-messages-stream>.public-message-group[data-run-end="true"] { margin-bottom:15px; }
+.public-message-avatar-rail {
+  position:relative;
+  display:flex;
+  align-items:flex-end;
+  justify-content:center;
+  flex:0 0 32px;
+  width:32px;
+  min-width:32px;
+  min-height:28px;
+  padding:0 2px 2px;
+  box-sizing:border-box;
+  overflow:visible;
+}
+.public-message-avatar-rail>.public-messages-avatar { flex:0 0 28px; border:0; background:none; }
+.public-message-body {
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:4px;
+  flex:0 1 auto;
+  min-width:0;
+  max-width:100%;
+}
+.public-message-group[data-own="false"]>.public-message-body { max-width:calc(100% - 40px); }
+.public-message-group[data-own="true"]>.public-message-body { align-items:flex-end; }
+.public-message-author {
+  display:block;
+  max-width:100%;
+  min-width:0;
+  margin:0 0 1px 8px;
+  padding:1px 5px;
+  border-radius:6px;
+  font-size:11px;
+  font-weight:500;
+  line-height:1.5;
+  color:hsl(var(--muted-foreground));
+  overflow:hidden;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+}
+.public-messages-thread[data-wallpaper="true"] .public-message-author {
+  color:hsl(var(--foreground));
+  background:hsl(var(--background)/.78);
+}
+.public-message-content {
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:4px;
+  width:fit-content;
+  min-width:0;
+  max-width:100%;
+}
+.public-message-group[data-own="true"] .public-message-content { align-items:flex-end; }
+.public-messages-stream .public-message-content>.public-message-bubble {
+  max-width:100%;
+  margin:0;
+  padding:9px 14px;
+  line-height:1.4;
+}
+.public-messages-stream .public-message-content>:is(.moment-comment-gif,.public-message-upload,.public-message-open-media,.public-message-song,.public-message-reply-quote) {
+  max-width:100%;
+  margin:0;
+  flex-shrink:0;
+}
+.public-message-content>.public-message-reaction-group {
+  position:absolute;
+  top:-12px;
+  left:-8px;
+  z-index:2;
+}
+.public-messages .public-messages-stream>.public-message-group:has(.public-message-reaction-group) { margin-top:15px; }
+.public-message-body>.public-message-timestamp {
+  position:absolute;
+  top:100%;
+  left:6px;
+  right:auto;
+  width:max-content;
+  max-width:min(240px,calc(100vw - 48px));
+  margin-top:2px;
+  font-size:10px;
+  line-height:13px;
+  font-variant-numeric:tabular-nums;
+  color:hsl(var(--muted-foreground));
+  opacity:0;
+  visibility:hidden;
+  pointer-events:none;
+  white-space:nowrap;
+}
+.public-message-group[data-own="true"]>.public-message-body>.public-message-timestamp { right:6px; left:auto; }
+.public-message-group[data-time-visible="true"] .public-message-timestamp,
+.public-message-group:focus-visible .public-message-timestamp,
+.public-message-group:has(:focus-visible) .public-message-timestamp { opacity:1; visibility:visible; }
+@media(hover:hover) { .public-message-group:hover .public-message-timestamp { opacity:1; visibility:visible; } }
+@media(max-width:900px) {
+  .public-messages .public-messages-thread>.public-messages-history { padding-inline:max(10px,env(safe-area-inset-left)) max(12px,env(safe-area-inset-right)); }
+  .public-messages .public-messages-stream>.public-message-group { max-width:90%; }
+  .public-message-avatar-rail { flex-basis:30px; width:30px; min-width:30px; }
+  .public-message-group[data-own="false"]>.public-message-body { max-width:calc(100% - 38px); }
+}
