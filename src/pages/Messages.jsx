@@ -1,3 +1,4 @@
+import { messageSender } from '@/components/messages/messageSender';
 import ConversationMuteSwitch from '@/components/messages/ConversationMuteSwitch';
 import { messageReactionMap, ownMessageReaction } from '@/components/messages/messageReactions';
 import GroupChatPanel, { GroupChatAvatar } from '@/components/messages/GroupChatPanel';
@@ -650,7 +651,7 @@ function MessagesPage({ user }) {
               openMessageMenu(message, event.currentTarget);
             }}
             onContextMenu={(event) => {event.preventDefault();cancelHold();openMessageMenu(message, event.currentTarget);}}>
-              {thread.chat.is_group && message.sender_id !== user?.id && <div className="public-group-sender"><PersonAvatar size={24} person={thread.chat.members?.find((person) => person.id === message.sender_id) || { display_name: message.sender_name }} /><span>{thread.chat.members?.find((person) => person.id === message.sender_id)?.display_name || message.sender_name || 'PUBLIC listener'}</span></div>}
+              <div className="public-group-sender" data-own={message.sender_id===user?.id}><PersonAvatar size={24} person={messageSender(message,thread.chat,user)} /><span>{messageSender(message,thread.chat,user).display_name}</span></div>
               {message.reply_preview && <ReplyQuote preview={message.reply_preview} />}
               {message.track_id && <SharedSong message={message} playing={player.currentTrack?.id === message.track_id && player.isPlaying && (!songData(message)?.lyrics || lyricPlayback.current === message.id)} onPlay={() => void perform(() => playSharedSong(message))} busy={busy} />}
               {message.media_url && !messageGifId(message) && ['image', 'video'].includes(message.media_type) && <ChatMedia key={message.id} chatId={id} message={message} />}
@@ -693,7 +694,7 @@ function MessagesPage({ user }) {
               <div className="public-message-menu-preview">{activeMenu.text || (activeMenu.track_id ? 'Shared a song' : messageGifId(activeMenu) ? 'Sent a GIF' : 'Message')}</div>
               <div className="public-message-menu-items">
               {canSend && <button type="button" onClick={() => {
-                  setReply({ id: activeMenu.id, name: activeMenu.sender_id === user?.id ? 'You' : thread.chat.is_group ? activeMenu.sender_name || 'PUBLIC listener' : peerName(thread.chat), text: activeMenu.text || (activeMenu.track_id ? 'Shared a song' : messageGifId(activeMenu) ? 'Sent a GIF' : 'Message') });
+                  setReply({ id: activeMenu.id, name: messageSender(activeMenu,thread.chat,user).display_name, text: activeMenu.text || (activeMenu.track_id ? 'Shared a song' : messageGifId(activeMenu) ? 'Sent a GIF' : 'Message') });
                   setMenu(null);
                   requestAnimationFrame(() => {scroll.current?.querySelector('[data-reply-target="true"]')?.scrollIntoView({ block: "center" });draftInput.current?.focus({ preventScroll: true });});
                 }}><Reply size={17} /> Reply</button>}

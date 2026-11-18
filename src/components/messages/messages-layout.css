@@ -309,3 +309,5 @@
 .public-conversation-mute>p{margin-top:8px;font-size:12px;color:hsl(var(--destructive))}
 .public-conversation-mute button:disabled{opacity:.5}
 .public-messages[data-compact="true"] .public-messages-thread>.public-messages-thread-header{min-height:56px;height:56px}
+
+.public-messages-thread .public-group-sender{max-width:100%;flex-shrink:0}.public-messages-thread .public-group-sender[data-own="true"]{align-self:flex-end;flex-direction:row-reverse;text-align:right}.public-messages-thread .public-group-sender>span:last-child{min-width:0;overflow-wrap:anywhere;line-height:1.35}

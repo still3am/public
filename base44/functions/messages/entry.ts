@@ -333,16 +333,17 @@ Deno.serve(async req => {
     }
 
     if (action === 'read') {
-      const [page, profiles] = await Promise.all([
-        db.Message.filter({conversation_id:id}, '-created_date', 100),
-        db.PublicProfile.filter({user_id:chat.is_group?{$in:chat.participant_ids}:peer,visible:true}, '-updated_date', 25),
-      ]);
-      const profile = rows(profiles)[0];
-      const messages = rows(page);
+      const page=await db.Message.filter({conversation_id:id}, '-created_date', 100);
+      const messages=rows(page);
+      const profileIds=[...new Set([...chat.participant_ids,...messages.map(message=>message.sender_id)].filter(Boolean))];
+      const profiles=await db.PublicProfile.filter({user_id:{$in:profileIds},visible:true}, '-updated_date', 200);
+      const people=new Map();
+      for(const profile of rows(profiles)){if(!people.has(profile.user_id))people.set(profile.user_id,publicPerson(profile));}
+      const profile=people.get(peer);
       const unreadIds = messages.filter(message=>message.recipient_id===uid&&!message.read).map(message=>message.id);
       if (unreadIds.length) await db.Message.updateMany({id:{$in:unreadIds},recipient_id:uid,read:false},{$set:{read:true}});
       if(chat.is_group){const readAt=messages[0]?.created_date||chat.last_message_at||new Date().toISOString();await changeConversation(db,id,uid,current=>{let reads={};try{reads=JSON.parse(current.group_reads||'{}');}catch{}if(Date.parse(reads[uid]||'')>=Date.parse(readAt))return {};return {group_reads:JSON.stringify({...reads,[uid]:Date.parse(reads[uid]||'')>Date.parse(readAt)?reads[uid]:readAt})};});}
-      return Response.json({chat:{...chat,peer:profile?publicPerson(profile):null,members:rows(profiles).map(publicPerson)},messages:messages.reverse().map(message=>({...message,...reactionFields(message)}))});
+      return Response.json({chat:{...chat,peer:profile||null,members:chat.participant_ids.map(member=>people.get(member)).filter(Boolean)},messages:messages.reverse().map(message=>({...message,sender:people.get(message.sender_id)||null,...reactionFields(message)}))});
     }
     if (action === 'respond' && chat.dm_status === 'pending' && chat.dm_requester !== uid && typeof accept === 'boolean') {
       await db.Conversation.update(id,{dm_status:accept?'accepted':'declined'});
@@ -419,7 +420,7 @@ Deno.serve(async req => {
         if(!current?.participant_ids?.includes(uid)||current.invited_ids?.includes(uid))fail('You are no longer an active member of this group.',403);
         recipients=current.participant_ids.filter(member=>!current.invited_ids?.includes(member));
       }
-      await db.Message.create({conversation_id:id,sender_id:uid,recipient_id:chat.is_group?'':peer,recipient_ids:chat.is_group?recipients:[],sender_name:user.display_name||user.full_name||'PUBLIC listener',text:text.trim(),...attachment,...quote,...(requestId?{send_request_id:requestId}:{})});
+      await db.Message.create({conversation_id:id,sender_id:uid,recipient_id:chat.is_group?'':peer,recipient_ids:chat.is_group?recipients:[],sender_name:user.display_name||user.full_name||'PUBLIC listener',sender_avatar_url:user.avatar_url||'',text:text.trim(),...attachment,...quote,...(requestId?{send_request_id:requestId}:{})});
     }
     const latest = rows(await db.Message.filter({conversation_id:id}, '-created_date', 1))[0];
     if (latest) await db.Conversation.update(id,{
