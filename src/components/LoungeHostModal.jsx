@@ -217,7 +217,7 @@ export default function LoungeHostModal({ lounge, onClose }) {
           className="connect-qr-end">
           <Power size={15} /> {ending ? "Ending Connect…" : "End Connect"}
         </button>
-        {user && <div className="connect-host-identity connect-host-footer"><Avatar user={user} size={42} active={!scanning} /><span>{user.display_name || user.full_name || "Host"}</span></div>}
+        {user && <div className="connect-host-identity connect-host-footer"><span>{user.display_name || user.full_name || "Host"}</span></div>}
       </section>
       {scanning && <QRScannerModal onClose={() => setScanning(false)} />}
     </div>);
