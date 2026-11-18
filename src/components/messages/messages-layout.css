@@ -331,7 +331,7 @@
 .public-messages-stream .public-message-bubble{max-width:100%;box-sizing:border-box;text-align:start;overflow-wrap:anywhere}
 .public-messages-stream .public-message-reply-quote{max-width:100%;box-sizing:border-box}
 .public-messages-stream .public-message-footer{position:relative;margin-bottom:17px}
-.public-message-footer-meta>.public-message-timestamp{position:absolute;top:100%;left:29px;right:auto;max-width:calc(100% - 20px);margin-top:1px;font-size:10px;line-height:13px;white-space:nowrap;opacity:0;visibility:hidden;pointer-events:none;transition:opacity 120ms ease}
+.public-message-footer-meta>.public-message-timestamp{position:absolute;top:100%;left:29px;right:auto;width:max-content;max-width:min(240px,calc(100vw - 48px));margin-top:1px;font-size:10px;line-height:13px;white-space:nowrap;opacity:0;visibility:hidden;pointer-events:none;transition:opacity 120ms ease}
 .public-message-footer[data-own="true"] .public-message-timestamp{right:29px;left:auto;text-align:right}
 .public-message-group[data-time-visible="true"] .public-message-timestamp,
 .public-message-group:focus-visible .public-message-timestamp,
