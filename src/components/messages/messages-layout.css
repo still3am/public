@@ -339,3 +339,7 @@
 @media(hover:hover){.public-message-group:hover .public-message-timestamp{opacity:.8;visibility:visible}}
 @media(min-width:901px){.public-messages-stream>.public-message-group{max-width:min(76%,620px)}}
 @media(prefers-reduced-motion:reduce){.public-message-footer-meta>.public-message-timestamp{transition:none}}
+
+.public-messages>.public-messages-connection{flex:0 0 auto;margin:0;padding:9px 16px;font-size:12px;text-align:center;color:hsl(var(--foreground));background:hsl(var(--muted));border-bottom:1px solid hsl(var(--border))}
+.public-messages-thread>.public-message-send-status{flex:0 0 auto;min-height:20px;margin:0;padding:3px 20px 5px;font-size:11px;text-align:right;color:hsl(var(--muted-foreground));background:hsl(var(--background)/.72)}
+.public-message-draft-label{font-weight:600;color:hsl(var(--foreground))}

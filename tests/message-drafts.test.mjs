@@ -1,0 +1,16 @@
+import assert from 'node:assert/strict';
+import {readMessageDrafts,writeMessageDrafts} from '../src/components/messages/messageDrafts.js';
+const saved=new Map();
+const storage={getItem:key=>saved.get(key)||null,setItem:(key,value)=>saved.set(key,value),removeItem:key=>saved.delete(key)};
+writeMessageDrafts(storage,'a',new Map([['chat1','Unsent text'],['chat2','Second draft']]));
+assert.equal(readMessageDrafts(storage,'a').get('chat1'),'Unsent text');
+assert.equal(readMessageDrafts(storage,'a').get('chat2'),'Second draft');
+assert.equal(readMessageDrafts(storage,'b').size,0,'Other accounts never inherit drafts');
+writeMessageDrafts(storage,'a',new Map());
+assert.equal(readMessageDrafts(storage,'a').size,0,'Sending the last draft clears saved text');
+writeMessageDrafts(storage,'a',new Map(Array.from({length:40},(_,i)=>['chat'+i,'text'])));
+assert.equal(readMessageDrafts(storage,'a').size,30);
+saved.set('public:message-drafts:a','invalid json');
+assert.equal(readMessageDrafts(storage,'a').size,0);
+assert.doesNotThrow(()=>writeMessageDrafts({setItem(){throw Error('Blocked');}},'a',new Map([['chat','Text']])));
+console.log('PASS draft recovery, conversation/account separation, cleanup, bounds, and unavailable storage');

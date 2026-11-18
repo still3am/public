@@ -222,6 +222,7 @@ function MessagesPage({ user }) {
   const [error, setError] = useState(''),[busy, setBusy] = useState(false);
   const [inboxError, setInboxError] = useState('');
   const [sendStage,setSendStage]=useState('');
+  const sendingChat=useRef(null);
   const [online,setOnline]=useState(()=>navigator.onLine);
   const [readError, setReadError] = useState(null);
   const inboxPending = useRef(false);
@@ -787,13 +788,14 @@ function MessagesPage({ user }) {
             <span className="truncate">{selectedMedia.file.name}</span>
             <button type="button" aria-label="Remove attachment" disabled={busy} onClick={() => setMediaDraft(null)}><X size={18} /></button>
           </div>}
-          {sendStage&&<p className="public-message-send-status" role="status">{sendStage==='uploading'?'Uploading attachment…':'Sending message…'}</p>}
+          {sendStage&&sendingChat.current===id&&<p className="public-message-send-status" role="status">{sendStage==='uploading'?'Uploading attachment…':'Sending message…'}</p>}
           {canSend && <form className="public-messages-compose" onSubmit={(event) => {event.preventDefault();void perform(async () => {
               const text = draft.trim();
               const trackId = attachment?.id || '',replyId = reply?.id || '',lyrics = attachment?.lyrics || null;
               const lyricKey = JSON.stringify(lyrics);
               if (!text && !trackId && !gif && !selectedMedia) return;
               if(!navigator.onLine)throw Error('You’re offline. Reconnect to send your message.');
+              sendingChat.current=id;
               setSendStage(selectedMedia?'uploading':'sending');
               try {
               let media;
@@ -828,9 +830,10 @@ function MessagesPage({ user }) {
                 setGif((previous) => previous === gif ? "" : previous);
                 setAttachment((previous) => previous?.id === trackId ? null : previous);
                 await loadThread(id);
+                if(window.matchMedia('(pointer: fine)').matches&&document.hasFocus())draftInput.current?.focus({preventScroll:true});
               }
               await loadInbox();
-              } finally {setSendStage('');}
+              } finally {sendingChat.current=null;setSendStage('');}
             });}}>
             <Popover open={Boolean(musicMenu)} onOpenChange={(open) => setMusicMenu(open ? "attachments" : false)}>
               <PopoverTrigger asChild>
@@ -867,7 +870,7 @@ function MessagesPage({ user }) {
                 event.preventDefault();
                 if (!busy && (draft.trim() || attachment || gif || selectedMedia)) event.currentTarget.form?.requestSubmit();
               }} />
-            <button type="submit" aria-label={sendStage?"Sending message":"Send message"} aria-busy={Boolean(sendStage)} disabled={!online || busy || !draft.trim() && !attachment && !gif && !selectedMedia}><ArrowUp size={17} /></button>
+            <button type="submit" aria-label={sendStage&&sendingChat.current===id?"Sending message":"Send message"} aria-busy={Boolean(sendStage&&sendingChat.current===id)} disabled={!online || busy || !draft.trim() && !attachment && !gif && !selectedMedia}><ArrowUp size={17} /></button>
             </div>
           </form>}
           {canSend && songPicker === "recent" && <RecentlyPlayedPicker
