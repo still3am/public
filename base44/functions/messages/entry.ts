@@ -412,7 +412,13 @@ Deno.serve(async req => {
         if (!signed?.signed_url?.startsWith('https://')) fail('Could not verify this attachment.',422);
         Object.assign(attachment,{media_type:media.type,media_url:media.uri});
       }
-      await db.Message.create({conversation_id:id,sender_id:uid,recipient_id:chat.is_group?'':peer,recipient_ids:chat.is_group?activeIds:[],sender_name:user.display_name||user.full_name||'PUBLIC listener',text:text.trim(),...attachment,...quote,...(requestId?{send_request_id:requestId}:{})});
+      let recipients=activeIds;
+      if(chat.is_group){
+        const current=await db.Conversation.get(id);
+        if(!current?.participant_ids?.includes(uid)||current.invited_ids?.includes(uid))fail('You are no longer an active member of this group.',403);
+        recipients=current.participant_ids.filter(member=>!current.invited_ids?.includes(member));
+      }
+      await db.Message.create({conversation_id:id,sender_id:uid,recipient_id:chat.is_group?'':peer,recipient_ids:chat.is_group?recipients:[],sender_name:user.display_name||user.full_name||'PUBLIC listener',text:text.trim(),...attachment,...quote,...(requestId?{send_request_id:requestId}:{})});
     }
     const latest = rows(await db.Message.filter({conversation_id:id}, '-created_date', 1))[0];
     if (latest) await db.Conversation.update(id,{

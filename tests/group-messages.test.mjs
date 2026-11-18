@@ -60,4 +60,34 @@ const dm=await entities.Conversation.create({dm_enabled:true,participant_ids:['a
 assert.equal((await invoke('send',{id:dm.id,text:'Direct message'},'a')).status,200);
 assert.equal(data.Message.at(-1).recipient_id,'b');
 assert.equal((await invoke('read',{id:dm.id},'b')).messages[0].text,'Direct message');
-console.log('PASS group invitations, membership authorization, shared edits, reactions, replies, admin transfer, mute, limits, and DM compatibility');
+// A retry after a lost response must return the original group.
+const retryKey='11111111-1111-4111-8111-111111111111';
+const first=await invoke('create_group',{name:'Retry safe',memberIds:['b','c'],requestId:retryKey},'a');
+const again=await invoke('create_group',{name:'Retry safe',memberIds:['b','c'],requestId:retryKey},'a');
+assert.equal(first.id,again.id);
+// A creator can send the introduction while everyone else has an invitation.
+const allPending=await invoke('create_group',{name:'Invitations',memberIds:['c','d']},'a');
+assert.equal((await invoke('send',{id:allPending.id,text:'Welcome when you join'},'a')).status,200);
+assert.equal((await invoke('read',{id:allPending.id},'d')).messages.length,0);
+const accepts=await Promise.all([invoke('group_respond',{id:allPending.id,accept:true},'c'),invoke('group_respond',{id:allPending.id,accept:true},'d')]);
+assert.ok(accepts.every(result=>result.status===200));
+const concurrent=data.Conversation.find(chat=>chat.id===allPending.id);
+assert.deepEqual(concurrent.invited_ids,[],'parallel accepts must both be preserved');
+const mutes=await Promise.all([invoke('group_mute',{id:allPending.id,enabled:true},'c'),invoke('group_mute',{id:allPending.id,enabled:true},'d')]);
+assert.ok(mutes.every(result=>result.status===200));
+assert.ok(concurrent.muted_ids.includes('c')&&concurrent.muted_ids.includes('d'),'parallel mute preferences must both be preserved');
+const reads=await Promise.all([invoke('read',{id:allPending.id},'c'),invoke('read',{id:allPending.id},'d')]);
+assert.ok(reads.every(result=>result.status===200));
+const readState=JSON.parse(concurrent.group_reads);
+assert.ok(readState.c&&readState.d,'parallel read markers must both be preserved');
+assert.equal((await invoke('group_respond',{id:allPending.id,accept:true},'c')).status,200,'accept retry should be harmless');
+assert.equal((await invoke('group_remove',{id:allPending.id,memberId:'d'},'a')).status,200);
+assert.equal((await invoke('send',{id:allPending.id,text:'Not a member'},'d')).status,404);
+assert.equal((await invoke('set_background',{id:allPending.id,background:{type:'none'}},'d')).status,404);
+assert.equal((await invoke('read',{id:allPending.id},'d')).status,404);
+// The next accepting member becomes admin if the creator leaves before approval.
+const orphan=await invoke('create_group',{name:'Next admin',memberIds:['c','d']},'a');
+assert.equal((await invoke('group_leave',{id:orphan.id},'a')).status,200);
+assert.equal((await invoke('group_respond',{id:orphan.id,accept:true},'c')).status,200);
+assert.deepEqual(data.Conversation.find(chat=>chat.id===orphan.id).admin_ids,['c']);
+console.log('PASS group invitations, membership authorization, shared edits, reactions, replies, admin transfer, mute, limits, DM compatibility, parallel updates, creation retries, pending introductions, and removed-member access');
