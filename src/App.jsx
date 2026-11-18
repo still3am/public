@@ -131,6 +131,7 @@ const AuthenticatedApp = () => {
           <Route path="/artist-dashboard" element={<ArtistDashboard />} />
           <Route path="/my-uploads" element={<MyUploads />} />
           <Route path="/unfinished-uploads" element={<UnfinishedUploads />} />
+          <Route path="/connect/:code" element={<Lounge />} />
           <Route path="/lounge/:code" element={<Lounge />} />
         </Route>
       </Route>
