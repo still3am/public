@@ -131,15 +131,15 @@ export default function LoungeHostModal({ lounge, onClose }) {
         <div className="profile-qr-code connect-qr-code">
           {qrFailed ? <div className="profile-qr-retry"><p>QR code couldn’t load</p><button type="button" onClick={() => {setQrFailed(false);setQrAttempt((value) => value + 1);}}><RefreshCw size={16} />Retry</button></div> : <img key={qrAttempt} src={qrImageUrl(url, 480)} alt="Scan to join this Connect session" width="280" height="280" onError={() => setQrFailed(true)} />}
         </div>
-        <p className="profile-qr-caption connect-qr-caption">Scan to join this Connect session<span>Then add songs to the shared queue.</span></p>
+        <p className="profile-qr-caption connect-qr-caption">Listen together<span>Scan the code or share an invite.</span></p>
         <div className="profile-qr-actions connect-qr-actions">
           <button type="button" className="profile-qr-share" onClick={share}><Share2 size={17} />Share invite</button>
           <button type="button" onClick={copy} aria-label={copied ? "Invite link copied" : "Copy invite link"}>{copied ? <Check size={17} /> : <Copy size={17} />}<span>{copied ? "Copied" : "Copy link"}</span></button>
         </div>
 
         {/* Pending requests */}
-        <section className="connect-approval" aria-label="Connect join approval">
-          <div className="connect-approval-heading"><div><strong>Who can join?</strong><span>Choose how guests enter your shared session.</span></div></div>
+        <details className="connect-approval" aria-label="Connect join approval">
+          <summary><span>Who can join</span><span>{session.join_approval_mode==="auto"?"Everyone with invite":"Ask for approval"}</span></summary>
           <div className="connect-approval-options">
             <button type="button" aria-pressed={(session.join_approval_mode || "manual") === "auto"} disabled={approvalBusy} onClick={async () => {setApprovalBusy(true);const ok=await updateApprovalMode("auto");setApprovalBusy(false);toast(ok?{title:"Anyone with the invite can join"}:{title:"Couldn’t update approval",variant:"destructive"});}}>
               <Check size={15} /><span><b>Approve everyone</b><small>Let invitees join right away</small></span>
@@ -148,10 +148,10 @@ export default function LoungeHostModal({ lounge, onClose }) {
               <Users size={15} /><span><b>Ask for approval</b><small>Review each join request</small></span>
             </button>
           </div>
-        </section>
+        </details>
 
         {/* Pending requests */}
-        <div className="connect-qr-members">
+        {pending.length>0&&<div className="connect-qr-members">
           <div className="flex items-center gap-2 text-[11px] uppercase tracking-wider text-foreground/40 mb-2">
             <Users size={12} /> Join requests {pending.length ? `· ${pending.length}` : ""}
           </div>
@@ -181,12 +181,12 @@ export default function LoungeHostModal({ lounge, onClose }) {
             )}
             </div>
           }
-        </div>
+        </div>}
 
         {/* Approved guests */}
         {approvedGuests.length > 0 &&
-        <div className="mb-4">
-            <div className="text-[11px] uppercase tracking-wider text-white/75 mb-2">In Connect</div>
+        <details className="connect-guest-details">
+            <summary>{approvedGuests.length} {approvedGuests.length===1?"guest":"guests"} connected</summary>
             <div className="flex flex-wrap gap-2">
               {approvedGuests.map((m) =>
             <span
@@ -197,7 +197,7 @@ export default function LoungeHostModal({ lounge, onClose }) {
                 </span>
             )}
             </div>
-          </div>
+          </details>
         }
 
         <button
