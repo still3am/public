@@ -1,3 +1,4 @@
+import { mergeEarlierMessages, mergeLatestMessages } from '@/components/messages/messageHistory';
 import { readMessageDrafts, writeMessageDrafts } from '@/components/messages/messageDrafts';
 import { messageRunPosition } from '@/components/messages/messageRuns';
 import { messageSender } from '@/components/messages/messageSender';
@@ -227,6 +228,10 @@ function MessagesPage({ user }) {
   const [readError, setReadError] = useState(null);
   const inboxPending = useRef(false);
   const readVersion = useRef(0);
+  const olderPending=useRef(false);
+  const pendingScrollAnchor=useRef(null);
+  const [loadingOlder,setLoadingOlder]=useState(false);
+  const [olderError,setOlderError]=useState('');
   const loadInbox = useCallback(async () => {
     if (inboxPending.current) return;
     inboxPending.current = true;
@@ -251,7 +256,8 @@ function MessagesPage({ user }) {
         participant_names: Array.isArray(data.chat.participant_names) ? data.chat.participant_names : []
       };
       const safeMessages = data.messages.filter((message) => message && typeof message.id === 'string');
-      const snapshot={chat:safeChat,messages:safeMessages};
+      const cached=threadCache.current.get(chatId);
+      const snapshot={chat:safeChat,messages:mergeLatestMessages(cached,safeMessages),latestIds:safeMessages.map(message=>message.id),historyCursor:cached&&Object.prototype.hasOwnProperty.call(cached,'historyCursor')?cached.historyCursor:data.nextCursor||null};
       threadCache.current.delete(chatId);threadCache.current.set(chatId,snapshot);
       if(threadCache.current.size>20)threadCache.current.delete(threadCache.current.keys().next().value);
       setThread(snapshot);
@@ -277,13 +283,14 @@ function MessagesPage({ user }) {
     return () => clearInterval(timer);
   }, [loadInbox]);
   useEffect(() => {
+    setOlderError('');setLoadingOlder(false);pendingScrollAnchor.current=null;
     backgroundSaveVersion.current++;setSavingBackground(false);
     setChatDetailsOpen(false);setShowChatColorEditor(false);setShowChatMarketplace(false);setBackgroundError('');
     setThread(threadCache.current.get(id)||null);setGif('');setShowGifs(false);setReply(null);setAttachment(id ? lyricShare : null);setSelectingLyrics(false);setMusicMenu(false);setSongPicker(false);setError('');setReadError(null);
     if (!id) return;
     let pending = false;
     const refresh = async (initial = false) => {
-      if (pending || !initial && (operation.current||document.hidden||!navigator.onLine)) return;
+      if (pending || !initial && (operation.current||olderPending.current||document.hidden||!navigator.onLine)) return;
       pending = true;
       try {await loadThread(id);} finally {pending = false;}
     };
@@ -509,6 +516,34 @@ function MessagesPage({ user }) {
     keepLatest();
     return()=>{observer?.disconnect();cancelAnimationFrame(frame);};
   },[thread?.chat?.id]);
+  async function loadEarlierMessages(){
+    if(olderPending.current||!thread?.historyCursor||!id)return;
+    const chatId=id,cursor=thread.historyCursor;
+    const history=scroll.current;
+    const anchor=history&&[...history.querySelectorAll('[data-message-id]')].find(element=>element.getBoundingClientRect().bottom>=history.getBoundingClientRect().top);
+    const savedAnchor=anchor?{chatId,messageId:anchor.dataset.messageId,top:anchor.getBoundingClientRect().top}:null;
+    olderPending.current=true;readVersion.current++;setLoadingOlder(true);setOlderError('');
+    followLatest.current=false;
+    try{
+      const data=await messages('history',{id:chatId,cursor});
+      if(currentChat.current!==chatId)return;
+      if(!Array.isArray(data.messages))throw Error('Earlier messages could not load.');
+      pendingScrollAnchor.current=savedAnchor;
+      setThread(previous=>{
+        if(previous?.chat?.id!==chatId)return previous;
+        const snapshot={...previous,messages:mergeEarlierMessages(previous.messages,data.messages),historyCursor:data.nextCursor&&data.nextCursor!==cursor?data.nextCursor:null};
+        threadCache.current.set(chatId,snapshot);return snapshot;
+      });
+    }catch(error){if(currentChat.current===chatId)setOlderError(error.message);}
+    finally{olderPending.current=false;if(currentChat.current===chatId)setLoadingOlder(false);}
+  }
+  useLayoutEffect(()=>{
+    const anchor=pendingScrollAnchor.current;
+    if(!anchor||anchor.chatId!==id||!scroll.current)return;
+    const element=[...scroll.current.querySelectorAll('[data-message-id]')].find(element=>element.dataset.messageId===anchor.messageId);
+    if(element)scroll.current.scrollTop+=element.getBoundingClientRect().top-anchor.top;
+    pendingScrollAnchor.current=null;
+  },[id,thread?.messages]);
   const lastMessage = Array.isArray(thread?.messages) ? thread.messages.at(-1)?.id : null;
   const conversationMessages = Array.isArray(thread?.messages) ? thread.messages : [];
   const sharedPhotos = conversationMessages.filter((message) => ['image', 'video'].includes(message.media_type) && message.media_url && !messageGifId(message)).slice().reverse();
@@ -675,7 +710,8 @@ function MessagesPage({ user }) {
           }}>
             {thread.messages.length === 0 && <p className="public-messages-list-empty">{groupInvited ? 'You have been invited to this group. Accept to see its messages.' : pending ? "Send a message request to start the conversation." : "Send the first message."}</p>}
             <div className="public-messages-stream" ref={messageStream}>
-            {thread.messages.map((message, messageIndex) => <div key={message.id} className="public-message-group" data-own={message.sender_id === user?.id} data-reply-target={reply?.id === message.id} data-time-visible={revealedTimestamp===message.id} data-run-start={messageRunPosition(thread.messages,messageIndex).start} data-run-end={messageRunPosition(thread.messages,messageIndex).end}
+            {thread.historyCursor&&<div className="public-message-history-tools"><button type="button" disabled={loadingOlder||!online} onClick={()=>void loadEarlierMessages()}>{loadingOlder?'Loading earlier messages…':'Load earlier messages'}</button>{olderError&&<p role="alert">{olderError}</p>}</div>}
+            {thread.messages.map((message, messageIndex) => <div key={message.id} className="public-message-group" data-message-id={message.id} data-own={message.sender_id === user?.id} data-reply-target={reply?.id === message.id} data-time-visible={revealedTimestamp===message.id} data-run-start={messageRunPosition(thread.messages,messageIndex).start} data-run-end={messageRunPosition(thread.messages,messageIndex).end}
             onPointerDown={(event) => {
               if (event.pointerType === 'mouse' || event.target instanceof Element && event.target.closest('button,a')) return;
               cancelHold();

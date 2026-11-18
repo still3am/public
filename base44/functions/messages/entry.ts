@@ -41,7 +41,7 @@ Deno.serve(async req => {
     const client = createClientFromRequest(req);
     const user = await client.auth.me().catch(() => null);
     if (!user?.id || user.disabled || user.is_blocked) fail('Sign in to use Messages.', 401);
-    const {action, id, username, recipientId, offset, text, trackId, accept, requestId, replyId, messageId, lyrics, gifId, emoji, media, typing, background, memberIds, name, photo, memberId, enabled} = await req.json();
+    const {action, id, username, recipientId, offset, text, trackId, accept, requestId, replyId, messageId, lyrics, gifId, emoji, media, typing, background, memberIds, name, photo, memberId, enabled, cursor} = await req.json();
     const db = client.asServiceRole.entities;
     const uid = user.id;
     const blocked = async peer => rows(await db.Block.filter({
@@ -332,18 +332,21 @@ Deno.serve(async req => {
       return Response.json({ok:true});
     }
 
-    if (action === 'read') {
-      const page=await db.Message.filter({conversation_id:id}, '-created_date', 100);
+    if (action === 'read' || action === 'history') {
+      if(action==='history'&&(typeof cursor!=='string'||!cursor||cursor.length>8192))fail('Choose a valid history page.');
+      const page=await db.Message.filter({conversation_id:id},action==='history'?{cursor,limit:100}:{sort:'-created_date',limit:100});
       const messages=rows(page);
+      if(messages.some(message=>message.conversation_id!==id))fail('This history page belongs to another conversation.',403);
+      const nextCursor=typeof page?.next_cursor==='string'?page.next_cursor:null;
       const profileIds=[...new Set([...chat.participant_ids,...messages.map(message=>message.sender_id)].filter(Boolean))];
       const profiles=await db.PublicProfile.filter({user_id:{$in:profileIds},visible:true}, '-updated_date', 200);
       const people=new Map();
       for(const profile of rows(profiles)){if(!people.has(profile.user_id))people.set(profile.user_id,publicPerson(profile));}
       const profile=people.get(peer);
       const unreadIds = messages.filter(message=>message.recipient_id===uid&&!message.read).map(message=>message.id);
-      if (unreadIds.length) await db.Message.updateMany({id:{$in:unreadIds},recipient_id:uid,read:false},{$set:{read:true}});
-      if(chat.is_group){const readAt=messages[0]?.created_date||chat.last_message_at||new Date().toISOString();await changeConversation(db,id,uid,current=>{let reads={};try{reads=JSON.parse(current.group_reads||'{}');}catch{}if(Date.parse(reads[uid]||'')>=Date.parse(readAt))return {};return {group_reads:JSON.stringify({...reads,[uid]:Date.parse(reads[uid]||'')>Date.parse(readAt)?reads[uid]:readAt})};});}
-      return Response.json({chat:{...chat,peer:profile||null,members:chat.participant_ids.map(member=>people.get(member)).filter(Boolean)},messages:messages.reverse().map(message=>({...message,sender:people.get(message.sender_id)||null,...reactionFields(message)}))});
+      if (action==='read'&&unreadIds.length) await db.Message.updateMany({id:{$in:unreadIds},recipient_id:uid,read:false},{$set:{read:true}});
+      if(action==='read'&&chat.is_group){const readAt=messages[0]?.created_date||chat.last_message_at||new Date().toISOString();await changeConversation(db,id,uid,current=>{let reads={};try{reads=JSON.parse(current.group_reads||'{}');}catch{}if(Date.parse(reads[uid]||'')>=Date.parse(readAt))return {};return {group_reads:JSON.stringify({...reads,[uid]:Date.parse(reads[uid]||'')>Date.parse(readAt)?reads[uid]:readAt})};});}
+      return Response.json({nextCursor,chat:{...chat,peer:profile||null,members:chat.participant_ids.map(member=>people.get(member)).filter(Boolean)},messages:messages.reverse().map(message=>({...message,sender:people.get(message.sender_id)||null,...reactionFields(message)}))});
     }
     if (action === 'respond' && chat.dm_status === 'pending' && chat.dm_requester !== uid && typeof accept === 'boolean') {
       await db.Conversation.update(id,{dm_status:accept?'accepted':'declined'});
