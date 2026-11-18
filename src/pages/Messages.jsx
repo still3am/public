@@ -688,15 +688,15 @@ function MessagesPage({ user }) {
             </section> : detailsTab === 'photos' ? <section className="public-chat-shared-items" aria-label="Shared photos and videos">
               <h3>Photos &amp; videos</h3>
               {sharedPhotos.length ? <div className="public-chat-shared-grid">{sharedPhotos.map((message) => <article key={message.id} className="public-chat-shared-tile"><ChatMedia chatId={id} message={message} /><time dateTime={message.created_date}>{messageTime(message.created_date)}</time></article>)}</div> : (!sharedPages[id+':photos']?.loaded?<p role="status" className="public-chat-shared-empty">Loading shared items…</p>:<p className="public-chat-shared-empty">Photos and videos shared in this conversation will appear here.</p>)}
-              <SharedItemsPaging page={sharedPages[id+':photos']} onMore={()=>void loadSharedItems('photos',true)} onRetry={()=>void loadSharedItems('photos')} />
+              <SharedItemsPaging page={sharedPages[id+':photos']} onMore={()=>void loadSharedItems('photos',true)} onRetry={()=>void loadSharedItems('photos',Boolean(sharedPages[id+':photos']?.cursor))} />
             </section> : detailsTab === 'gifs' ? <section className="public-chat-shared-items" aria-label="Shared GIFs">
               <h3>GIFs</h3>
               {sharedGifs.length ? <div className="public-chat-shared-grid">{sharedGifs.map((message) => <article key={message.id} className="public-chat-shared-tile public-chat-shared-gif"><MomentGif id={messageGifId(message)} label="Shared GIF" /><time dateTime={message.created_date}>{messageTime(message.created_date)}</time></article>)}</div> : (!sharedPages[id+':gifs']?.loaded?<p role="status" className="public-chat-shared-empty">Loading shared items…</p>:<p className="public-chat-shared-empty">GIFs shared in this conversation will appear here.</p>)}
-              <SharedItemsPaging page={sharedPages[id+':gifs']} onMore={()=>void loadSharedItems('gifs',true)} onRetry={()=>void loadSharedItems('gifs')} />
+              <SharedItemsPaging page={sharedPages[id+':gifs']} onMore={()=>void loadSharedItems('gifs',true)} onRetry={()=>void loadSharedItems('gifs',Boolean(sharedPages[id+':gifs']?.cursor))} />
             </section> : <section className="public-chat-shared-items" aria-label="Shared music">
               <h3>Music</h3>
               {sharedMusic.length ? <div className="public-chat-shared-music">{sharedMusic.map((message) => <article key={message.id} className="public-chat-shared-track"><SharedSong message={message} playing={player.currentTrack?.id === message.track_id && player.isPlaying && (!songData(message)?.lyrics || lyricPlayback.current === message.id)} onPlay={() => void perform(() => playSharedSong(message))} busy={busy} /><time dateTime={message.created_date}>{messageTime(message.created_date)}</time></article>)}</div> : (!sharedPages[id+':music']?.loaded?<p role="status" className="public-chat-shared-empty">Loading shared items…</p>:<p className="public-chat-shared-empty">Songs shared in this conversation will appear here.</p>)}
-              <SharedItemsPaging page={sharedPages[id+':music']} onMore={()=>void loadSharedItems('music',true)} onRetry={()=>void loadSharedItems('music')} />
+              <SharedItemsPaging page={sharedPages[id+':music']} onMore={()=>void loadSharedItems('music',true)} onRetry={()=>void loadSharedItems('music',Boolean(sharedPages[id+':music']?.cursor))} />
             </section>}
           </DialogContent>
         </Dialog>}

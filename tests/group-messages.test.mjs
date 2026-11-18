@@ -7,7 +7,15 @@ const data={Conversation:[],Message:[],Block:[],PublicProfile:['a','b','c','d'].
 function match(row,q){return Object.entries(q||{}).every(([key,value])=>{
  if(key==='$or')return value.some(item=>match(row,item));
  const actual=row[key];
- if(value&&typeof value==='object'){if('$in'in value)return Array.isArray(actual)?actual.some(item=>value.$in.includes(item)):value.$in.includes(actual);if('$exists'in value)return (actual!==undefined)===value.$exists;if('$gte'in value)return actual>=value.$gte;}
+ if(value&&typeof value==='object')return Object.entries(value).every(([op,expected])=>{
+   if(op==='$in')return Array.isArray(actual)?actual.some(item=>expected.includes(item)):expected.includes(actual);
+   if(op==='$nin')return !expected.includes(actual);
+   if(op==='$exists')return (actual!==undefined)===expected;
+   if(op==='$gte')return actual>=expected;
+   if(op==='$regex')return typeof actual==='string'&&new RegExp(expected).test(actual);
+   if(op==='$not')return !match({value:actual},{value:expected});
+   return false;
+ });
  return Array.isArray(actual)?actual.includes(value):actual===value;
 });}
 const entities=new Proxy({},{get:(_,entity)=>({
@@ -130,4 +138,18 @@ assert.equal(new Set([...latestPage.messages,...earlierPage.messages].map(messag
 assert.equal((await invoke('history',{id:historyChat.id,cursor:latestPage.nextCursor},'d')).status,404);
 assert.equal((await invoke('history',{id:dm.id,cursor:latestPage.nextCursor},'a')).status,403);
 assert.equal((await invoke('history',{id:historyChat.id,cursor:''},'b')).status,400);
+// Attachment tabs query all messages, not just the conversation's recent window.
+for(let index=0;index<46;index++)data.Message.push({id:'photo'+index,conversation_id:historyChat.id,sender_id:'a',recipient_id:'b',text:'',media_type:'image',media_url:'private/photo'+index,created_date:new Date(1000+index).toISOString()});
+for(let index=0;index<42;index++)data.Message.push({id:'gif'+index,conversation_id:historyChat.id,sender_id:'a',recipient_id:'b',text:'',media_type:'image',media_url:'https://media.giphy.com/media/gif'+index+'/giphy.gif',created_date:new Date(2000+index).toISOString()});
+data.Message.push({id:'old-song',conversation_id:historyChat.id,sender_id:'a',recipient_id:'b',track_id:'song',created_date:new Date(500).toISOString()});
+const photos=await invoke('shared',{id:historyChat.id,kind:'photos'},'b');
+assert.equal(photos.status,200);assert.equal(photos.messages.length,40);assert.ok(photos.nextCursor);
+assert.ok(photos.messages.every(message=>message.media_url.startsWith('private/')));
+const morePhotos=await invoke('shared',{id:historyChat.id,kind:'photos',cursor:photos.nextCursor},'b');
+assert.equal(morePhotos.messages.length,6);
+const gifs=await invoke('shared',{id:historyChat.id,kind:'gifs'},'b');assert.equal(gifs.messages.length,40);
+const music=await invoke('shared',{id:historyChat.id,kind:'music'},'b');assert.equal(music.messages[0].id,'old-song');
+assert.equal((await invoke('shared',{id:historyChat.id,kind:'photos'},'d')).status,404);
+assert.equal((await invoke('shared',{id:historyChat.id,kind:'music',cursor:photos.nextCursor},'b')).status,403);
+assert.equal((await invoke('shared',{id:historyChat.id,kind:'unknown'},'b')).status,400);
 console.log('PASS group invitations, membership authorization, shared edits, reactions, replies, admin transfer, mute, limits, DM compatibility, parallel updates, creation retries, pending introductions, and removed-member access');

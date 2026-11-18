@@ -348,3 +348,7 @@
 .public-message-history-tools>button{min-height:40px;padding:8px 16px;border:1px solid hsl(var(--border));border-radius:20px;background:hsl(var(--background)/.85);color:hsl(var(--foreground));font-size:12px}
 .public-message-history-tools>button:disabled{opacity:.55}.public-message-history-tools>p{max-width:40ch;text-align:center;font-size:12px;color:hsl(var(--destructive))}
 .public-messages-thread>.public-messages-history{overflow-anchor:auto}.public-messages-history::before{overflow-anchor:none}
+
+.public-chat-shared-paging{display:grid;justify-items:center;gap:10px;padding-block:18px 4px;flex-shrink:0}
+.public-chat-shared-paging:empty{display:none}.public-chat-shared-paging>button,.public-chat-shared-paging p>button{min-height:40px;padding:8px 16px;border:1px solid hsl(var(--border));border-radius:20px;color:hsl(var(--foreground));font-size:12px}
+.public-chat-shared-paging button:disabled{opacity:.5}.public-chat-shared-paging>p{font-size:12px;text-align:center;color:hsl(var(--destructive));line-height:1.5}
