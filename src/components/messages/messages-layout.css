@@ -352,3 +352,81 @@
 .public-chat-shared-paging{display:grid;justify-items:center;gap:10px;padding-block:18px 4px;flex-shrink:0}
 .public-chat-shared-paging:empty{display:none}.public-chat-shared-paging>button,.public-chat-shared-paging p>button{min-height:40px;padding:8px 16px;border:1px solid hsl(var(--border));border-radius:20px;color:hsl(var(--foreground));font-size:12px}
 .public-chat-shared-paging button:disabled{opacity:.5}.public-chat-shared-paging>p{font-size:12px;text-align:center;color:hsl(var(--destructive));line-height:1.5}
+
+/* Keep previews inside the visible viewport, including a phone's open keyboard. */
+.public-messages-thread > .public-message-recent {
+  max-height:min(260px,calc(var(--messages-viewport-height,100dvh) * .26));
+  margin:8px clamp(12px,3vw,32px) 0;
+  border-radius:18px;
+  overscroll-behavior:contain;
+  scrollbar-gutter:stable;
+}
+.public-message-recent header {
+  z-index:1;
+  min-height:48px;
+  gap:12px;
+}
+.public-message-recent header h3 { min-width:0; font-size:14px; }
+.public-message-recent header button {
+  flex:0 0 44px;
+  border-radius:50%;
+}
+.public-messages-thread > .public-message-lyric-preview {
+  flex:0 1 auto;
+  min-height:0;
+  max-height:min(260px,calc(var(--messages-viewport-height,100dvh) * .26));
+  overflow:auto;
+  overscroll-behavior:contain;
+}
+.public-messages-compose .public-message-input-pill:is([data-has-gif="true"],[data-has-song="true"]) {
+  max-height:min(300px,calc(var(--messages-viewport-height,100dvh) * .32));
+}
+.public-message-input-pill .public-message-gif-draft .moment-comment-gif {
+  max-height:min(150px,calc(var(--messages-viewport-height,100dvh) * .20));
+}
+.public-messages-thread > .public-message-reply-draft {
+  flex:0 0 auto;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin:8px clamp(12px,3vw,32px) 0;
+  padding:5px 6px 5px 12px;
+  max-height:66px;
+  overflow:hidden;
+  border-radius:12px;
+}
+.public-message-reply-draft > div { flex:1; min-width:0; }
+.public-message-reply-draft strong { font-size:12px; line-height:1.4; }
+.public-message-reply-draft span { font-size:12px; color:hsl(var(--muted-foreground)); }
+.public-message-reply-draft button { flex:0 0 40px; width:40px; height:40px; border-radius:50%; }
+.public-message-reply-draft button:hover { background:hsl(var(--foreground)/.06); }
+.public-chat-details[data-tab] > .public-chat-details-header {
+  grid-template-columns:64px minmax(0,1fr) 64px;
+}
+.public-chat-details-header > button:first-child { justify-self:start; }
+@media(min-width:901px) {
+  .public-messages-inbox-header { position:sticky; top:0; z-index:2; background:hsl(var(--background)); }
+  .public-messages-thread > .public-messages-compose {
+    padding-left:max(24px,calc((100% - 880px)/2)) !important;
+    padding-right:max(24px,calc((100% - 880px)/2)) !important;
+  }
+  .public-messages-thread > :is(.public-message-recent,.public-message-reply-draft) {
+    margin-left:max(24px,calc((100% - 880px)/2));
+    margin-right:max(24px,calc((100% - 880px)/2));
+  }
+}
+@media(max-width:900px) {
+  .public-messages-thread > :is(.public-message-recent,.public-message-reply-draft) {
+    margin-inline:10px;
+  }
+  .public-messages-thread > .public-message-lyric-preview { padding-inline:10px; }
+}
+.public-messages[data-compact="true"] .public-messages-thread > .public-message-recent {
+  max-height:calc(var(--messages-viewport-height,100dvh) * .22);
+}
+.public-messages[data-compact="true"] .public-message-recent header { min-height:40px; }
+.public-messages[data-compact="true"] .public-message-recent-grid button { min-height:48px; }
+.public-messages[data-compact="true"] .public-messages-thread > .public-message-lyric-preview {
+  max-height:calc(var(--messages-viewport-height,100dvh) * .22);
+}
+
