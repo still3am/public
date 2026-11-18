@@ -107,12 +107,12 @@ export default function LoungeHostModal({ lounge, onClose }) {
           <MotionGradient colors={songColors} motion="flow" speed={0.72} active={!scanning} className="absolute inset-0" />
           <div className="profile-qr-shade connect-qr-shade" />
         </div>
-        <div className="connect-qr-content">
         <header className="profile-qr-header connect-qr-header">
           <span>Connect</span>
           <button type="button" onClick={onClose} aria-label="Close Connect" className="profile-qr-close"><X size={20} /></button>
         </header>
 
+        <div className="connect-qr-content">
         <div className="profile-qr-identity connect-qr-identity">
           {songArt ? <img src={songArt} alt="" className="profile-qr-avatar connect-qr-avatar" /> : <div className="profile-qr-avatar connect-qr-avatar connect-qr-placeholder"><Music2 size={25} /></div>}
           <p className="connect-qr-track">
