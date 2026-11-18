@@ -295,7 +295,7 @@ Deno.serve(async req => {
       const source = await findMessage();
       if (!source || source.conversation_id !== id || (!chat.is_group && source.sender_id !== uid && source.recipient_id !== uid)) fail('Message unavailable.',404);
       let current = source;
-      for (let attempt=0; attempt<3; attempt++) {
+      for (let attempt=0; attempt<6; attempt++) {
         const reactions = {...savedReactions(current), [uid]:emoji};
         const match = current.reactions == null
           ? {$or:[{reactions:{$exists:false}},{reactions:null}]}

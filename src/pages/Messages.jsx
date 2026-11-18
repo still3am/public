@@ -3,7 +3,7 @@ import { readMessageDrafts, writeMessageDrafts } from '@/components/messages/mes
 import { messageRunPosition } from '@/components/messages/messageRuns';
 import { messageSender } from '@/components/messages/messageSender';
 import ConversationMuteSwitch from '@/components/messages/ConversationMuteSwitch';
-import { messageReactionMap, ownMessageReaction } from '@/components/messages/messageReactions';
+import { messageReactionBadges, ownMessageReaction } from '@/components/messages/messageReactions';
 import GroupChatPanel, { GroupChatAvatar } from '@/components/messages/GroupChatPanel';
 import { getRecentPlays } from '@/lib/recentPlays';
 import MomentGifPicker, { MomentGif } from '@/components/moments/MomentGifPicker';
@@ -966,20 +966,19 @@ function messageGifId(message) {
 }
 
 function MessageReactions({ message, userId }) {
-  const reactions = Object.entries(messageReactionMap(message)).map(([key, emoji]) => ({ key, emoji })).filter(({ emoji }) => REACTIONS.includes(emoji));
+  const reactions=messageReactionBadges(message,userId,REACTIONS);
 
   if (!reactions.length) return null;
 
   return <div className="public-message-reaction-group" role="group" aria-label="Message reactions">
-    {reactions.map(({ emoji, key }) => {
-      const mine = key === userId;
+    {reactions.map(({ emoji, mine, people }) => {
       const label = REACTION_LABELS[REACTIONS.indexOf(emoji)];
       return <span
         className="public-message-reaction-badge"
         data-mine={mine}
-        key={key}
+        key={emoji}
         role="img"
-        aria-label={label + (mine ? ", your reaction" : ", their reaction")}>
+        aria-label={label + (people>1?`, ${people} people`:"") + (mine ? ", your reaction" : ", their reaction")}>
         
         <span aria-hidden="true">{emoji}</span>
       </span>;
