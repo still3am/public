@@ -185,6 +185,53 @@ function useLoungeHostState() {
     [session?.id]
   );
 
+  // The host publishes playback state so every approved Connect guest sees the current song.
+  useEffect(()=>{
+    if(!session?.id)return;
+    let active=true,saving=false;
+    const publish=async()=>{
+      if(!active||saving)return;
+      saving=true;
+      try{
+        const player=pRef.current;
+        await base44.entities.LoungeSession.update(session.id,{
+          current_track_id:player.currentTrack?.id||"",
+          is_playing:!!player.isPlaying,
+          position_seconds:Math.max(0,Number(player.position)||0),
+          sync_anchor_at:new Date().toISOString(),
+        });
+      }catch{}finally{saving=false;}
+    };
+    publish();const timer=setInterval(publish,3500);
+    return()=>{active=false;clearInterval(timer);};
+  },[session?.id]);
+
+  // Guests can request the host to skip; the host owns actual playback control.
+  useEffect(()=>{
+    if(!session?.id)return;
+    let active=true,reading=false,lastSeen=Number(session.skip_request_id)||0;
+    const poll=async()=>{
+      if(!active||reading||document.hidden)return;
+      reading=true;
+      try{
+        const live=await base44.entities.LoungeSession.get(session.id);
+        const next=Number(live?.skip_request_id)||0;
+        if(next>lastSeen){lastSeen=next;await pRef.current.next();}
+      }catch{}finally{reading=false;}
+    };
+    base44.entities.LoungeSession.get(session.id).then(live=>{if(active)lastSeen=Number(live?.skip_request_id)||lastSeen;}).catch(()=>{});
+    const timer=setInterval(poll,2500);
+    return()=>{active=false;clearInterval(timer);};
+  },[session?.id]);
+
+  // Remove a shared queue row as soon as the host starts it. The song remains
+  // visible in the now-playing area while the shared list contains only what is next.
+  useEffect(()=>{
+    const rowId=p.currentTrack?._loungeRowId;
+    if(!session?.id||!rowId)return;
+    base44.entities.LoungeQueueItem.delete(rowId).catch(()=>{});
+  },[session?.id,p.currentTrack?._loungeRowId]);
+
   // Live member updates so pending requests appear as guests scan the QR.
   useEffect(() => {
     if (!session?.id) return;
