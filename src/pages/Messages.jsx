@@ -39,10 +39,10 @@ async function messages(action, data = {}) {
 function createSendRequestId() {
   if (typeof globalThis.crypto?.randomUUID === 'function') return globalThis.crypto.randomUUID();
   const bytes = new Uint8Array(16);
-  if (typeof globalThis.crypto?.getRandomValues === 'function') globalThis.crypto.getRandomValues(bytes);
-  else for (let index = 0; index < bytes.length; index++) bytes[index] = Math.floor(Math.random() * 256);
-  bytes[6] = (bytes[6] & 0x0f) | 0x40;
-  bytes[8] = (bytes[8] & 0x3f) | 0x80;
+  if (typeof globalThis.crypto?.getRandomValues === 'function') globalThis.crypto.getRandomValues(bytes);else
+  for (let index = 0; index < bytes.length; index++) bytes[index] = Math.floor(Math.random() * 256);
+  bytes[6] = bytes[6] & 0x0f | 0x40;
+  bytes[8] = bytes[8] & 0x3f | 0x80;
   const hex = [...bytes].map((value) => value.toString(16).padStart(2, '0')).join('');
   return hex.slice(0, 8) + '-' + hex.slice(8, 12) + '-' + hex.slice(12, 16) + '-' + hex.slice(16, 20) + '-' + hex.slice(20);
 }
@@ -58,7 +58,7 @@ function messageTime(value) {
 }
 
 function PersonAvatar({ person, size = 40 }) {
-  return <span className="public-messages-avatar" style={{width:size,height:size}}><Avatar user={person} size={size} motion /></span>;
+  return <span className="public-messages-avatar" style={{ width: size, height: size }}><Avatar user={person} size={size} motion /></span>;
 }
 
 export default function Messages() {
@@ -72,12 +72,12 @@ function MessagesPage({ user }) {
   const [inbox, setInbox] = useState(null),[loadedThread, setThread] = useState(null),[requests, setRequests] = useState(false);
   const thread = loadedThread?.chat?.id === id ? loadedThread : null;
   const [menu, setMenu] = useState(null);
-  const [groupMode,setGroupMode]=useState(false);
-  const [groupPeople,setGroupPeople]=useState([]);
-  const [groupName,setGroupName]=useState('');
-  const groupCreationRequest=useRef(null);
+  const [groupMode, setGroupMode] = useState(false);
+  const [groupPeople, setGroupPeople] = useState([]);
+  const [groupName, setGroupName] = useState('');
+  const groupCreationRequest = useRef(null);
   const [chatBackgrounds, setChatBackgrounds] = useState(() =>
-    user?.message_backgrounds && typeof user.message_backgrounds === 'object' ? user.message_backgrounds : {}
+  user?.message_backgrounds && typeof user.message_backgrounds === 'object' ? user.message_backgrounds : {}
   );
   const [chatDetailsOpen, setChatDetailsOpen] = useState(false);
   const [detailsTab, setDetailsTab] = useState('backgrounds');
@@ -156,7 +156,7 @@ function MessagesPage({ user }) {
   const draftInput = useRef(null);
   const [inboxQuery, setInboxQuery] = useState('');
   const player = usePlayer();
-  const [musicMenu, setMusicMenu] = useState(/** @type {false | "attachments" | "music"} */ (false));
+  const [musicMenu, setMusicMenu] = useState(/** @type {false | "attachments" | "music"} */false);
   const [mediaDraft, setMediaDraft] = useState(null);
   const mediaInput = useRef(null);
   const uploadedMedia = useRef(new WeakMap());
@@ -175,7 +175,7 @@ function MessagesPage({ user }) {
     setMediaDraft({ chatId: id, file, type, preview: URL.createObjectURL(file) });
   }
   const [gif, setGif] = useState(""),[showGifs, setShowGifs] = useState(false);
-  const [songPicker, setSongPicker] = useState(/** @type {false | "recent" | "song" | "lyrics"} */ (false));
+  const [songPicker, setSongPicker] = useState(/** @type {false | "recent" | "song" | "lyrics"} */false);
   const [attachment, setAttachment] = useState(null);
   async function playSharedSong(message) {
     const trackId = message.track_id;
@@ -217,7 +217,7 @@ function MessagesPage({ user }) {
       const safeChat = {
         ...data.chat,
         participant_ids: Array.isArray(data.chat.participant_ids) ? data.chat.participant_ids : [],
-        participant_names: Array.isArray(data.chat.participant_names) ? data.chat.participant_names : [],
+        participant_names: Array.isArray(data.chat.participant_names) ? data.chat.participant_names : []
       };
       const safeMessages = data.messages.filter((message) => message && typeof message.id === 'string');
       setThread({ chat: safeChat, messages: safeMessages });
@@ -226,7 +226,7 @@ function MessagesPage({ user }) {
     } catch (error) {
       if (version === readVersion.current && currentChat.current === chatId) {
         setReadError({ id: chatId, message: error.message });
-        if([401,403,404].includes(error.status)){setThread(null);setChatDetailsOpen(false);setShowChatColorEditor(false);setShowChatMarketplace(false);setInbox(previous=>previous?.filter(chat=>chat.id!==chatId)??null);}
+        if ([401, 403, 404].includes(error.status)) {setThread(null);setChatDetailsOpen(false);setShowChatColorEditor(false);setShowChatMarketplace(false);setInbox((previous) => previous?.filter((chat) => chat.id !== chatId) ?? null);}
       }
     }
   }, []);
@@ -280,7 +280,7 @@ function MessagesPage({ user }) {
     try {await work();} catch (error) {setError(error.message);} finally {operation.current = false;setBusy(false);}
   }
   const peerName = (chat) => {
-    if(chat?.is_group)return chat.group_name||'Group chat';
+    if (chat?.is_group) return chat.group_name || 'Group chat';
     const ids = Array.isArray(chat?.participant_ids) ? chat.participant_ids : [];
     const names = Array.isArray(chat?.participant_names) ? chat.participant_names : [];
     const peerIndex = ids.findIndex((member) => member !== user?.id);
@@ -292,29 +292,29 @@ function MessagesPage({ user }) {
   const backgroundSaveQueue = useRef(Promise.resolve());
   const backgroundSaveVersion = useRef(0);
   const parseBackgroundValue = (value) => {
-    try { return JSON.parse(value || ''); } catch { return null; }
+    try {return JSON.parse(value || '');} catch {return null;}
   };
   const gradientWallpaper = activeBackground.type === 'gradient' ? parseBackgroundValue(activeBackground.value) : null;
   const videoWallpaper = activeBackground.type === 'video' ? parseBackgroundValue(activeBackground.value) : null;
-  const backgroundStyle = activeBackground.type === 'color'
-    ? { backgroundImage: 'none', backgroundColor: activeBackground.value }
-    : activeBackground.type === 'photo'
-      ? { backgroundImage: 'url("' + activeBackground.value + '")' }
-      : undefined;
+  const backgroundStyle = activeBackground.type === 'color' ?
+  { backgroundImage: 'none', backgroundColor: activeBackground.value } :
+  activeBackground.type === 'photo' ?
+  { backgroundImage: 'url("' + activeBackground.value + '")' } :
+  undefined;
   // Conversation backgrounds stay independent from profile appearance.
   // Start with no colors until the user adds them in this editor.
   const savedPalette = gradientWallpaper || {
     mode: 'custom',
     colors: [],
     motion: 'flow',
-    speed: 1,
+    speed: 1
   };
   async function saveConversationPalette(value) {
     if (!id || !thread?.chat?.id) throw new Error('Choose a conversation first.');
     const background = value.mode === 'off' ? { type: 'none' } : { type: 'gradient', value: JSON.stringify({
-      colors: value.colors.slice(0, 5), motion: value.motion === 'still' ? 'still' : 'flow',
-      speed: Math.max(0.35, Math.min(1.6, Number(value.speed) || 1)),
-    }) };
+        colors: value.colors.slice(0, 5), motion: value.motion === 'still' ? 'still' : 'flow',
+        speed: Math.max(0.35, Math.min(1.6, Number(value.speed) || 1))
+      }) };
     setSavingBackground(true);
     setBackgroundError('');
     try {
@@ -330,7 +330,7 @@ function MessagesPage({ user }) {
   }
   function chooseMarketBackground(asset) {
     const src = typeof asset === 'string' ? asset : asset?.videoUrl || asset?.gifUrl || asset?.url;
-    if (!src) { setBackgroundError('This marketplace item has no usable media.'); return; }
+    if (!src) {setBackgroundError('This marketplace item has no usable media.');return;}
     if (asset && typeof asset === 'object' && asset.videoUrl) {
       void saveChatBackground({ type: 'video', value: JSON.stringify({ src: asset.videoUrl, poster: asset.url, title: asset.name || 'PUBLIC Market clip' }) });
     } else {
@@ -344,27 +344,27 @@ function MessagesPage({ user }) {
     const version = ++backgroundSaveVersion.current;
     setBackgroundError('');
     setChatBackgrounds((current) => ({ ...current, [chatId]: nextBackground }));
-    setThread((current) => current?.chat?.id === chatId
-      ? { ...current, chat: { ...current.chat, background: nextBackground } }
-      : current);
+    setThread((current) => current?.chat?.id === chatId ?
+    { ...current, chat: { ...current.chat, background: nextBackground } } :
+    current);
     setSavingBackground(true);
     const save = backgroundSaveQueue.current.catch(() => {}).then(() =>
-      messages('set_background', { id: chatId, background: nextBackground })
+    messages('set_background', { id: chatId, background: nextBackground })
     );
     backgroundSaveQueue.current = save;
     try {
       const result = await save;
       if (version === backgroundSaveVersion.current && result?.background) {
-        setThread((current) => current?.chat?.id === chatId
-          ? { ...current, chat: { ...current.chat, background: result.background } }
-          : current);
+        setThread((current) => current?.chat?.id === chatId ?
+        { ...current, chat: { ...current.chat, background: result.background } } :
+        current);
       }
     } catch (saveError) {
       if (version === backgroundSaveVersion.current) {
         setChatBackgrounds((current) => ({ ...current, [chatId]: previous }));
-        setThread((current) => current?.chat?.id === chatId
-          ? { ...current, chat: { ...current.chat, background: previous } }
-          : current);
+        setThread((current) => current?.chat?.id === chatId ?
+        { ...current, chat: { ...current.chat, background: previous } } :
+        current);
         setBackgroundError(saveError.message || 'Could not save this background. Please try again.');
       }
     } finally {
@@ -397,7 +397,7 @@ function MessagesPage({ user }) {
     void saveChatBackground(legacy);
   }, [id, thread?.chat?.id, thread?.chat?.background, chatBackgrounds]);
 
-  const groupInvited=Boolean(thread?.chat?.is_group&&thread.chat.invited_ids?.includes(user?.id));
+  const groupInvited = Boolean(thread?.chat?.is_group && thread.chat.invited_ids?.includes(user?.id));
   const pending = groupInvited || thread?.chat.dm_status === 'pending';
   const incoming = groupInvited || pending && thread?.chat.dm_requester !== user?.id;
   const canSend = !groupInvited && (thread?.chat.dm_status === 'accepted' || pending && !incoming && !thread.messages.length);
@@ -433,14 +433,14 @@ function MessagesPage({ user }) {
     });
   }
   function createGroup() {
-    void perform(async()=>{
-      const name=groupName.trim();
-      const memberIds=groupPeople.map(person=>person.id).sort();
-      const key=JSON.stringify([name,memberIds]);
-      if(!groupCreationRequest.current||groupCreationRequest.current.key!==key)groupCreationRequest.current={key,requestId:createSendRequestId()};
-      const chat=await messages('create_group',{name,memberIds,requestId:groupCreationRequest.current.requestId});
-      groupCreationRequest.current=null;
-      setParams({chat:chat.id});setComposing(false);setGroupMode(false);setGroupPeople([]);setGroupName('');setContactQuery('');setRequests(false);await loadInbox();
+    void perform(async () => {
+      const name = groupName.trim();
+      const memberIds = groupPeople.map((person) => person.id).sort();
+      const key = JSON.stringify([name, memberIds]);
+      if (!groupCreationRequest.current || groupCreationRequest.current.key !== key) groupCreationRequest.current = { key, requestId: createSendRequestId() };
+      const chat = await messages('create_group', { name, memberIds, requestId: groupCreationRequest.current.requestId });
+      groupCreationRequest.current = null;
+      setParams({ chat: chat.id });setComposing(false);setGroupMode(false);setGroupPeople([]);setGroupName('');setContactQuery('');setRequests(false);await loadInbox();
     });
   }
   const scroll = useRef(null);
@@ -474,14 +474,14 @@ function MessagesPage({ user }) {
           <div><h1>Messages</h1><button type="button" aria-label="New message" aria-expanded={composing} onClick={() => {setComposing(!composing);setContactQuery('');setContacts(null);}}><SquarePen size={20} /></button></div>
         </header>
         {composing && <div className="px-4 pb-3">
-          <div className="public-group-compose-tabs"><button aria-pressed={!groupMode} onClick={()=>{setGroupMode(false);setGroupPeople([]);}}>Message</button><button aria-pressed={groupMode} onClick={()=>setGroupMode(true)}><Users size={16}/>New group</button></div>
-          {groupMode&&<div className="public-group-create"><input aria-label="Group name" placeholder="Group name" maxLength={80} value={groupName} onChange={event=>setGroupName(event.target.value)}/><div className="public-group-selected" aria-label="Selected group members">{groupPeople.map(person=><button key={person.id} onClick={()=>setGroupPeople(previous=>previous.filter(item=>item.id!==person.id))}>{person.name}<X size={13}/></button>)}</div><button disabled={busy||groupPeople.length<2||!groupName.trim()} onClick={createGroup}>Create group · {groupPeople.length+1}/20</button><p>Add at least two people. Private accounts and people who aren’t mutual followers receive an invitation.</p></div>}
+          <div className="public-group-compose-tabs"><button aria-pressed={!groupMode} onClick={() => {setGroupMode(false);setGroupPeople([]);}}>Message</button><button aria-pressed={groupMode} onClick={() => setGroupMode(true)}><Users size={16} />New group</button></div>
+          {groupMode && <div className="public-group-create"><input aria-label="Group name" placeholder="Group name" maxLength={80} value={groupName} onChange={(event) => setGroupName(event.target.value)} /><div className="public-group-selected" aria-label="Selected group members">{groupPeople.map((person) => <button key={person.id} onClick={() => setGroupPeople((previous) => previous.filter((item) => item.id !== person.id))}>{person.name}<X size={13} /></button>)}</div><button disabled={busy || groupPeople.length < 2 || !groupName.trim()} onClick={createGroup}>Create group · {groupPeople.length + 1}/20</button><p>Add at least two people. Private accounts and people who aren’t mutual followers receive an invitation.</p></div>}
 
           {!groupMode && (recipient || to) && <button className="mb-3 rounded-lg border px-3 py-2" type="button" disabled={busy} onClick={() => startChat(recipient ? { recipientId: recipient } : { username: to })}>{recipientName ? `Message ${recipientName}` : "Start message"}</button>}
           <input type="search" aria-label="Search people you follow by name" placeholder="Search by name" className="mb-2 w-full rounded-xl border bg-muted px-3 py-2 text-base" maxLength={80} value={contactQuery} onChange={(event) => setContactQuery(event.target.value)} />
-          {matches.map((person) => <button type="button" className="public-messages-row" key={person.id} disabled={busy||groupMode&&groupPeople.length>=19&&!groupPeople.some(item=>item.id===person.id)} onClick={() => {if(!groupMode){startChat({recipientId:person.id});return;}setGroupPeople(previous=>previous.some(item=>item.id===person.id)?previous.filter(item=>item.id!==person.id):previous.length<19?[...previous,person]:previous);}} aria-pressed={groupMode?groupPeople.some(item=>item.id===person.id):undefined}>
+          {matches.map((person) => <button type="button" className="public-messages-row" key={person.id} disabled={busy || groupMode && groupPeople.length >= 19 && !groupPeople.some((item) => item.id === person.id)} onClick={() => {if (!groupMode) {startChat({ recipientId: person.id });return;}setGroupPeople((previous) => previous.some((item) => item.id === person.id) ? previous.filter((item) => item.id !== person.id) : previous.length < 19 ? [...previous, person] : previous);}} aria-pressed={groupMode ? groupPeople.some((item) => item.id === person.id) : undefined}>
             <PersonAvatar person={person} />
-            <span className="truncate font-semibold">{person.name}</span>{groupMode?<span className="public-group-selection-mark" data-selected={groupPeople.some(item=>item.id===person.id)}>{groupPeople.some(item=>item.id===person.id)&&<Check size={14}/>}</span>:<ChevronRight size={14} aria-hidden="true" />}
+            <span className="truncate font-semibold">{person.name}</span>{groupMode ? <span className="public-group-selection-mark" data-selected={groupPeople.some((item) => item.id === person.id)}>{groupPeople.some((item) => item.id === person.id) && <Check size={14} />}</span> : <ChevronRight size={14} aria-hidden="true" />}
           </button>)}
           {searching && contacts && matches.length === 0 && <p role="status" className="text-sm text-muted-foreground">No matching people you follow.</p>}
           {searching && !contacts && !contactError && <p role="status" className="text-sm">Searching…</p>}
@@ -503,7 +503,7 @@ function MessagesPage({ user }) {
         {visibleChats?.length === 0 && <p className="public-messages-list-empty">{inboxTerm && tabChats?.length ? "No conversations match that name." : requests ? "No message requests." : "No conversations yet. Tap the compose icon to start one."}</p>}
         {visibleChats?.map((chat) =>
         <button key={chat.id} onClick={() => {setComposing(false);setParams({ chat: chat.id });}} aria-current={id === chat.id} className="public-messages-row">
-            <>{chat.is_group?<GroupChatAvatar chat={chat}/>:<PersonAvatar person={peerFor(chat)} />}</>
+            <>{chat.is_group ? <GroupChatAvatar chat={chat} /> : <PersonAvatar person={peerFor(chat)} />}</>
             <span className="min-w-0"><span className="public-messages-row-title"><strong className="truncate">{peerName(chat)}</strong>{chat.last_message_at && <time dateTime={chat.last_message_at}>{messageTime(chat.last_message_at)}</time>}</span><span className="block truncate text-sm opacity-70">{chat.last_message_text || 'New conversation'}</span></span>
             {chat.unread ? <span className="public-messages-dot" aria-label="Unread" /> : <ChevronRight size={14} aria-hidden="true" />}
           </button>
@@ -511,20 +511,20 @@ function MessagesPage({ user }) {
       </aside>
       {id ? <section className="public-messages-thread" aria-label="Conversation" data-replying={Boolean(reply)} data-group={Boolean(thread?.chat?.is_group)} data-wallpaper={activeBackground.type !== 'none'} style={backgroundStyle} onKeyDown={(event) => {if (event.key === "Escape" && reply && !busy && !showGifs && !musicMenu && !songPicker) setReply(null);}}>
         {(videoWallpaper?.src || gradientWallpaper?.colors?.length > 0) && <div className="public-chat-wallpaper-layer" aria-hidden="true">
-          {videoWallpaper?.src
-            ? <video src={videoWallpaper.src} poster={videoWallpaper.poster} muted autoPlay loop playsInline />
-            : <MotionGradient colors={gradientWallpaper.colors} motion={gradientWallpaper.motion === 'still' ? 'still' : 'flow'} speed={gradientWallpaper.speed || 1} />}
+          {videoWallpaper?.src ?
+          <video src={videoWallpaper.src} poster={videoWallpaper.poster} muted autoPlay loop playsInline /> :
+          <MotionGradient colors={gradientWallpaper.colors} motion={gradientWallpaper.motion === 'still' ? 'still' : 'flow'} speed={gradientWallpaper.speed || 1} />}
         </div>}
         <header className="public-messages-thread-header">
           {reply && <button type="button" className="public-message-close-reply" aria-label="Cancel reply" disabled={busy} onClick={() => setReply(null)}><X size={23} /></button>}
           <button className="public-messages-back" onClick={() => setParams({})} aria-label="Back to inbox"><ChevronLeft size={23} /></button>
           {readError?.id === id ? <p role="alert" className="public-messages-list-empty">{readError.message} <button type="button" className="underline" onClick={() => loadThread(id)}>Retry</button></p> : !thread && <p role="status" className="public-messages-list-empty">Loading conversation…</p>}
         {thread && currentPeer && <button type="button" className="public-messages-peer" aria-label={"Conversation details for " + peerName(thread.chat)} onClick={() => {
-          setDetailsTab(thread.chat.is_group?'info':'backgrounds');
-          setBackgroundError('');
-          if(!groupInvited)setChatDetailsOpen(true);
-        }}>
-          <>{thread.chat.is_group?<GroupChatAvatar chat={thread.chat}/>:<PersonAvatar person={peerFor(thread.chat)} />}</>
+            setDetailsTab(thread.chat.is_group ? 'info' : 'backgrounds');
+            setBackgroundError('');
+            if (!groupInvited) setChatDetailsOpen(true);
+          }}>
+          <>{thread.chat.is_group ? <GroupChatAvatar chat={thread.chat} /> : <PersonAvatar person={peerFor(thread.chat)} />}</>
           <h2>{peerName(thread.chat)}</h2>
         </button>}
         </header>
@@ -532,24 +532,24 @@ function MessagesPage({ user }) {
           <DialogContent className="public-chat-details" data-tab={detailsTab} showClose={false}>
             <header className="public-chat-details-header">
               <button type="button" aria-label="Close conversation details" onClick={() => setChatDetailsOpen(false)}><ChevronLeft size={22} /></button>
-              <span>Conversation</span>
+              <span className="hidden">Conversation</span>
               <button type="button" className="public-chat-details-done" onClick={() => setChatDetailsOpen(false)}>Done</button>
             </header>
             <div className="public-chat-details-person">
-              <>{thread.chat.is_group?<GroupChatAvatar chat={thread.chat} size={76}/>:<PersonAvatar person={peerFor(thread.chat)} size={76} />}</>
+              <>{thread.chat.is_group ? <GroupChatAvatar chat={thread.chat} size={76} /> : <PersonAvatar person={peerFor(thread.chat)} size={76} />}</>
               <DialogTitle>{peerName(thread.chat)}</DialogTitle>
               {!thread.chat.is_group && peerFor(thread.chat)?.username && <p className="public-chat-details-username">@{String(peerFor(thread.chat).username).replace(/^@/, '')}</p>}
-              <DialogDescription>Make this conversation feel like yours.</DialogDescription>
-              {!thread.chat.is_group&&<Link to={"/profile/" + encodeURIComponent(currentPeer)} onClick={() => setChatDetailsOpen(false)}>View profile</Link>}
+              <DialogDescription className="hidden">Make this conversation feel like yours.</DialogDescription>
+              {!thread.chat.is_group && <Link to={"/profile/" + encodeURIComponent(currentPeer)} onClick={() => setChatDetailsOpen(false)}>View profile</Link>}
             </div>
             <div className="public-chat-details-tabs" role="tablist" aria-label="Conversation details">
               {[
-                ['info', 'Info', <UserRound size={16} aria-hidden="true" />],
-                ['backgrounds', 'Backgrounds', <Palette size={16} aria-hidden="true" />],
-                ['photos', 'Photos', <Image size={16} aria-hidden="true" />],
-                ['gifs', 'GIFs', <Clapperboard size={16} aria-hidden="true" />],
-                ['music', 'Music', <Music2 size={16} aria-hidden="true" />],
-              ].map(([tab, label, icon]) => <button key={tab} type="button" role="tab" aria-selected={detailsTab === tab} aria-label={label} onClick={() => setDetailsTab(tab)}><span className="public-chat-tab-icon">{icon}</span><span className="public-chat-tab-label">{label}</span></button>)}
+              ['info', 'Info', <UserRound size={16} aria-hidden="true" />],
+              ['backgrounds', 'Backgrounds', <Palette size={16} aria-hidden="true" />],
+              ['photos', 'Photos', <Image size={16} aria-hidden="true" />],
+              ['gifs', 'GIFs', <Clapperboard size={16} aria-hidden="true" />],
+              ['music', 'Music', <Music2 size={16} aria-hidden="true" />]].
+              map(([tab, label, icon]) => <button key={tab} type="button" role="tab" aria-selected={detailsTab === tab} aria-label={label} onClick={() => setDetailsTab(tab)}><span className="public-chat-tab-icon">{icon}</span><span className="public-chat-tab-label">{label}</span></button>)}
             </div>
             {detailsTab === 'backgrounds' ? <section className="public-chat-backgrounds" aria-label="Conversation backgrounds">
               <div className="public-chat-background-scroll">
@@ -572,8 +572,8 @@ function MessagesPage({ user }) {
                 {backgroundError && <p className="public-chat-background-error" role="alert">{backgroundError}</p>}
                 <p className="public-chat-background-note">Background changes are shared with everyone in this conversation.</p>
               </div>
-              <input ref={backgroundFile} type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" onChange={(event) => { void uploadChatBackground(event.target.files?.[0]);event.target.value = ''; }} />
-            </section> : detailsTab === 'info' && thread.chat.is_group ? <GroupChatPanel key={id} chat={thread.chat} userId={user?.id} invoke={messages} busy={busy} onChanged={async()=>{if(currentChat.current===id)await loadThread(id);await loadInbox();}} onLeft={()=>{if(currentChat.current===id){setChatDetailsOpen(false);setParams({});}void loadInbox();}} /> : detailsTab === 'info' ? <section className="public-chat-info" aria-label="Conversation info">
+              <input ref={backgroundFile} type="file" accept="image/jpeg,image/png,image/webp" className="sr-only" onChange={(event) => {void uploadChatBackground(event.target.files?.[0]);event.target.value = '';}} />
+            </section> : detailsTab === 'info' && thread.chat.is_group ? <GroupChatPanel key={id} chat={thread.chat} userId={user?.id} invoke={messages} busy={busy} onChanged={async () => {if (currentChat.current === id) await loadThread(id);await loadInbox();}} onLeft={() => {if (currentChat.current === id) {setChatDetailsOpen(false);setParams({});}void loadInbox();}} /> : detailsTab === 'info' ? <section className="public-chat-info" aria-label="Conversation info">
               <h3>Conversation info</h3>
               <p>Messages, photos, GIFs, and music shared here stay available to everyone in this conversation.</p>
               <Link to={"/profile/" + encodeURIComponent(currentPeer)} onClick={() => setChatDetailsOpen(false)}><UserRound size={16} aria-hidden="true" /> View {peerName(thread.chat)}’s profile</Link>
@@ -599,16 +599,16 @@ function MessagesPage({ user }) {
           conversationMode
           onPreview={() => {}}
           onSave={saveConversationPalette}
-          onClose={() => setShowChatColorEditor(false)}
-        />}
+          onClose={() => setShowChatColorEditor(false)} />
+        }
         {showChatMarketplace && <ProfileMarketplace
           user={user}
           backgroundMode
           allowMotion
           busy={savingBackground}
           onClose={() => setShowChatMarketplace(false)}
-          onSelectBackground={chooseMarketBackground}
-        />}
+          onSelectBackground={chooseMarketBackground} />
+        }
         {thread && <>
           <div ref={scroll} className="public-messages-history" aria-label="Conversation messages" onScroll={() => {
             const node = scroll.current;
@@ -619,7 +619,7 @@ function MessagesPage({ user }) {
             {thread.messages.length === 0 && <p className="public-messages-list-empty">{groupInvited ? 'You have been invited to this group. Accept to see its messages.' : pending ? "Send a message request to start the conversation." : "Send the first message."}</p>}
             {thread.messages.map((message) => <div key={message.id} className="public-message-group" data-own={message.sender_id === user?.id} data-reply-target={reply?.id === message.id}
             onPointerDown={(event) => {
-              if (event.pointerType === 'mouse' || (event.target instanceof Element && event.target.closest('button,a'))) return;
+              if (event.pointerType === 'mouse' || event.target instanceof Element && event.target.closest('button,a')) return;
               cancelHold();
               const { clientX: x, clientY: y, currentTarget: group } = event;
               hold.current = { x, y, timer: setTimeout(() => {hold.current = null;openMessageMenu(message, group);}, 480) };
@@ -633,7 +633,7 @@ function MessagesPage({ user }) {
               openMessageMenu(message, event.currentTarget);
             }}
             onContextMenu={(event) => {event.preventDefault();cancelHold();openMessageMenu(message, event.currentTarget);}}>
-              {thread.chat.is_group&&message.sender_id!==user?.id&&<div className="public-group-sender"><PersonAvatar size={24} person={thread.chat.members?.find(person=>person.id===message.sender_id)||{display_name:message.sender_name}}/><span>{thread.chat.members?.find(person=>person.id===message.sender_id)?.display_name||message.sender_name||'PUBLIC listener'}</span></div>}
+              {thread.chat.is_group && message.sender_id !== user?.id && <div className="public-group-sender"><PersonAvatar size={24} person={thread.chat.members?.find((person) => person.id === message.sender_id) || { display_name: message.sender_name }} /><span>{thread.chat.members?.find((person) => person.id === message.sender_id)?.display_name || message.sender_name || 'PUBLIC listener'}</span></div>}
               {message.reply_preview && <ReplyQuote preview={message.reply_preview} />}
               {message.track_id && <SharedSong message={message} playing={player.currentTrack?.id === message.track_id && player.isPlaying && (!songData(message)?.lyrics || lyricPlayback.current === message.id)} onPlay={() => void perform(() => playSharedSong(message))} busy={busy} />}
               {message.media_url && !messageGifId(message) && ['image', 'video'].includes(message.media_type) && <ChatMedia key={message.id} chatId={id} message={message} />}
@@ -651,7 +651,7 @@ function MessagesPage({ user }) {
               <DialogDescription className="sr-only">React or choose an action for this message.</DialogDescription>
               <div className="public-message-reactions" role="group" aria-label="Emoji reactions" aria-busy={savingReaction !== null}>
                 {REACTIONS.map((emoji, index) => {
-                  const selected = (thread.chat.is_group ? (()=>{try{return JSON.parse(activeMenu.reactions||'{}')[user?.id];}catch{return '';}})() : (activeMenu.sender_id === user?.id ? activeMenu.sender_reaction : activeMenu.recipient_reaction)) === emoji;
+                  const selected = (thread.chat.is_group ? (() => {try {return JSON.parse(activeMenu.reactions || '{}')[user?.id];} catch {return '';}})() : activeMenu.sender_id === user?.id ? activeMenu.sender_reaction : activeMenu.recipient_reaction) === emoji;
                   return <button key={emoji} type="button" aria-label={REACTION_LABELS[index]} aria-pressed={selected} data-saving={savingReaction === emoji} disabled={busy} onClick={() => void perform(async () => {
                     setSavingReaction(emoji);
                     let saved;
@@ -664,7 +664,7 @@ function MessagesPage({ user }) {
                     if (currentChat.current === id) {
                       readVersion.current++;
                       setThread((previous) => previous?.chat.id === id ? { ...previous, messages: previous.messages.map((message) => message.id === saved.messageId ? {
-                          ...message, reactions:saved.reactions, sender_reaction: saved.sender_reaction, recipient_reaction: saved.recipient_reaction
+                          ...message, reactions: saved.reactions, sender_reaction: saved.sender_reaction, recipient_reaction: saved.recipient_reaction
                         } : message) } : previous);
                       setMenu(null);
                     }
@@ -676,7 +676,7 @@ function MessagesPage({ user }) {
               <div className="public-message-menu-preview">{activeMenu.text || (activeMenu.track_id ? 'Shared a song' : messageGifId(activeMenu) ? 'Sent a GIF' : 'Message')}</div>
               <div className="public-message-menu-items">
               {canSend && <button type="button" onClick={() => {
-                  setReply({ id: activeMenu.id, name: activeMenu.sender_id === user?.id ? 'You' : thread.chat.is_group ? (activeMenu.sender_name||'PUBLIC listener') : peerName(thread.chat), text: activeMenu.text || (activeMenu.track_id ? 'Shared a song' : messageGifId(activeMenu) ? 'Sent a GIF' : 'Message') });
+                  setReply({ id: activeMenu.id, name: activeMenu.sender_id === user?.id ? 'You' : thread.chat.is_group ? activeMenu.sender_name || 'PUBLIC listener' : peerName(thread.chat), text: activeMenu.text || (activeMenu.track_id ? 'Shared a song' : messageGifId(activeMenu) ? 'Sent a GIF' : 'Message') });
                   setMenu(null);
                   requestAnimationFrame(() => {scroll.current?.querySelector('[data-reply-target="true"]')?.scrollIntoView({ block: "center" });draftInput.current?.focus({ preventScroll: true });});
                 }}><Reply size={17} /> Reply</button>}
@@ -702,7 +702,7 @@ function MessagesPage({ user }) {
           {showLatest && <button type="button" className="public-messages-latest" onClick={jumpToLatest}>Jump to latest</button>}
           {incoming && (groupInvited || thread.messages.length > 0) && <div className="flex gap-3 p-3">
             {[true, false].map((accept) => <button className="rounded-lg border px-3 py-2" key={String(accept)} disabled={busy} onClick={() => void perform(async () => {
-              await messages(groupInvited?'group_respond':'respond', { id, accept });
+              await messages(groupInvited ? 'group_respond' : 'respond', { id, accept });
               if (currentChat.current === id) {
                 if (accept) {
                   await loadThread(id);
@@ -859,25 +859,25 @@ function messageGifId(message) {
 }
 
 function MessageReactions({ message, userId }) {
-  let all;try{all=JSON.parse(message.reactions||'{}');}catch{}
-  const reactions = (all&&Object.values(all).some(Boolean)?Object.entries(all).map(([key,emoji])=>({key,emoji})):[
-    { emoji: message.sender_reaction, key: "sender" },
-    { emoji: message.recipient_reaction, key: "recipient" },
-  ]).filter(({ emoji }) => REACTIONS.includes(emoji));
+  let all;try {all = JSON.parse(message.reactions || '{}');} catch {}
+  const reactions = (all && Object.values(all).some(Boolean) ? Object.entries(all).map(([key, emoji]) => ({ key, emoji })) : [
+  { emoji: message.sender_reaction, key: "sender" },
+  { emoji: message.recipient_reaction, key: "recipient" }]).
+  filter(({ emoji }) => REACTIONS.includes(emoji));
 
   if (!reactions.length) return null;
 
   return <div className="public-message-reaction-group" role="group" aria-label="Message reactions">
     {reactions.map(({ emoji, key }) => {
-      const mine = key === "sender" ? message.sender_id === userId : key === "recipient" ? message.sender_id !== userId : key===userId;
+      const mine = key === "sender" ? message.sender_id === userId : key === "recipient" ? message.sender_id !== userId : key === userId;
       const label = REACTION_LABELS[REACTIONS.indexOf(emoji)];
       return <span
         className="public-message-reaction-badge"
         data-mine={mine}
         key={key}
         role="img"
-        aria-label={label + (mine ? ", your reaction" : ", their reaction")}
-      >
+        aria-label={label + (mine ? ", your reaction" : ", their reaction")}>
+        
         <span aria-hidden="true">{emoji}</span>
       </span>;
     })}
@@ -902,7 +902,7 @@ function ChatMedia({ chatId, message }) {
       setLoading(false);
     }
   }, [chatId, message.id]);
-  useEffect(() => { void open(); }, [open]);
+  useEffect(() => {void open();}, [open]);
   const fail = () => {setUrl('');setError(true);};
   if (url) return image ? <img className="public-message-upload" src={url} alt="Shared photo" onError={fail} /> : <video className="public-message-upload" src={url} controls playsInline preload="metadata" onError={fail} />;
   return <button type="button" className="public-message-open-media" disabled={loading} onClick={() => void open()}>
