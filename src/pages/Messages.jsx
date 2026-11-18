@@ -1,3 +1,4 @@
+import { readMessageDrafts, writeMessageDrafts } from '@/components/messages/messageDrafts';
 import { messageRunPosition } from '@/components/messages/messageRuns';
 import { messageSender } from '@/components/messages/messageSender';
 import ConversationMuteSwitch from '@/components/messages/ConversationMuteSwitch';
@@ -10,7 +11,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react
 import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
-import { ArrowUp, Check, ChevronLeft, ChevronRight, Clapperboard, Copy, Disc3, ExternalLink, Library, Trash2, Users, MessageCircle, Image, ImagePlus, Info, Music2, Palette, Pause, Play, Plus, Reply, Search, ShoppingBag, SquarePen, TextQuote, UserRound, X } from 'lucide-react';
+import { ArrowUp, BellOff, Check, ChevronLeft, ChevronRight, Clapperboard, Copy, Disc3, ExternalLink, Library, Trash2, Users, MessageCircle, Image, ImagePlus, Info, Music2, Palette, Pause, Play, Plus, Reply, Search, ShoppingBag, SquarePen, TextQuote, UserRound, X } from 'lucide-react';
 import LyricSharePicker from '@/components/LyricSharePicker';
 import LyricCoverGradient from '@/components/LyricCoverGradient';
 import TrackPickerSheet from '@/components/profile/TrackPickerSheet';
@@ -87,6 +88,7 @@ function MessagesPage({ user }) {
   }, []);
   const viewportStyle = { '--messages-viewport-height': viewport.height + 'px', '--messages-viewport-top': viewport.top + 'px', '--messages-sheet-top': viewport.top + Math.max(12, (viewport.height - 860) / 2) + 'px' };
   const id = params.get('chat');
+  const threadCache=useRef(new Map());
   const [inbox, setInbox] = useState(null),[loadedThread, setThread] = useState(null),[requests, setRequests] = useState(false);
   const thread = loadedThread?.chat?.id === id ? loadedThread : null;
   const [menu, setMenu] = useState(null);
@@ -163,7 +165,8 @@ function MessagesPage({ user }) {
   const [lyricShare, setLyricShare] = useState(location.state?.lyricShare || null);
   const [selectingLyrics, setSelectingLyrics] = useState(false);
   const lyricPlayback = useRef(null);
-  const [drafts, setDrafts] = useState(() => new Map());
+  const [drafts, setDrafts] = useState(() => {try{return readMessageDrafts(window.sessionStorage,user?.id);}catch{return new Map();}});
+  useEffect(()=>{try{writeMessageDrafts(window.sessionStorage,user?.id,drafts);}catch{}},[drafts,user?.id]);
   const draft = drafts.get(id) || '';
   const draftText = useRef(draft);
   draftText.current = draft;
@@ -192,6 +195,13 @@ function MessagesPage({ user }) {
     setGif('');
     setMediaDraft({ chatId: id, file, type, preview: URL.createObjectURL(file) });
   }
+  useLayoutEffect(()=>{
+    const input=draftInput.current;
+    if(!input)return;
+    const resize=()=>{input.style.height='0px';const maximum=Math.max(44,Math.min(120,viewport.height*.2));input.style.height=Math.max(44,Math.min(input.scrollHeight,maximum))+'px';input.style.overflowY=input.scrollHeight>maximum?'auto':'hidden';};
+    resize();window.addEventListener('resize',resize);
+    return()=>window.removeEventListener('resize',resize);
+  },[draft,id,viewport.height,loadedThread?.chat?.id]);
   const [gif, setGif] = useState(""),[showGifs, setShowGifs] = useState(false);
   const [songPicker, setSongPicker] = useState(/** @type {false | "recent" | "song" | "lyrics"} */false);
   const [attachment, setAttachment] = useState(null);
@@ -211,6 +221,8 @@ function MessagesPage({ user }) {
   const [contacts, setContacts] = useState(null),[contactQuery, setContactQuery] = useState(''),[contactError, setContactError] = useState(false),[retry, setRetry] = useState(0);
   const [error, setError] = useState(''),[busy, setBusy] = useState(false);
   const [inboxError, setInboxError] = useState('');
+  const [sendStage,setSendStage]=useState('');
+  const [online,setOnline]=useState(()=>navigator.onLine);
   const [readError, setReadError] = useState(null);
   const inboxPending = useRef(false);
   const readVersion = useRef(0);
@@ -238,29 +250,39 @@ function MessagesPage({ user }) {
         participant_names: Array.isArray(data.chat.participant_names) ? data.chat.participant_names : []
       };
       const safeMessages = data.messages.filter((message) => message && typeof message.id === 'string');
-      setThread({ chat: safeChat, messages: safeMessages });
+      const snapshot={chat:safeChat,messages:safeMessages};
+      threadCache.current.delete(chatId);threadCache.current.set(chatId,snapshot);
+      if(threadCache.current.size>20)threadCache.current.delete(threadCache.current.keys().next().value);
+      setThread(snapshot);
       setReadError(null);
       setInbox((previous) => previous?.map((chat) => chat.id === chatId ? { ...chat, unread: false } : chat) ?? null);
     } catch (error) {
       if (version === readVersion.current && currentChat.current === chatId) {
         setReadError({ id: chatId, message: error.message });
-        if ([401, 403, 404].includes(error.status)) {setThread(null);setChatDetailsOpen(false);setShowChatColorEditor(false);setShowChatMarketplace(false);setInbox((previous) => previous?.filter((chat) => chat.id !== chatId) ?? null);}
+        if ([401, 403, 404].includes(error.status)) {threadCache.current.delete(chatId);setThread(null);setChatDetailsOpen(false);setShowChatColorEditor(false);setShowChatMarketplace(false);setInbox((previous) => previous?.filter((chat) => chat.id !== chatId) ?? null);}
       }
     }
   }, []);
+  useEffect(()=>{
+    const offline=()=>setOnline(false);
+    const reconnect=()=>{setOnline(true);void loadInbox();if(currentChat.current)void loadThread(currentChat.current);};
+    window.addEventListener('offline',offline);window.addEventListener('online',reconnect);
+    return()=>{window.removeEventListener('offline',offline);window.removeEventListener('online',reconnect);};
+  },[loadInbox,loadThread]);
+  useEffect(()=>{if(loadedThread?.chat?.id)threadCache.current.set(loadedThread.chat.id,loadedThread);},[loadedThread]);
   useEffect(() => {
     void loadInbox();
-    const timer = setInterval(() => void loadInbox(), 15000);
+    const timer = setInterval(() => {if(!document.hidden&&navigator.onLine)void loadInbox();}, 15000);
     return () => clearInterval(timer);
   }, [loadInbox]);
   useEffect(() => {
     backgroundSaveVersion.current++;setSavingBackground(false);
     setChatDetailsOpen(false);setShowChatColorEditor(false);setShowChatMarketplace(false);setBackgroundError('');
-    setThread(null);setGif('');setShowGifs(false);setReply(null);setAttachment(id ? lyricShare : null);setSelectingLyrics(false);setMusicMenu(false);setSongPicker(false);setError('');setReadError(null);
+    setThread(threadCache.current.get(id)||null);setGif('');setShowGifs(false);setReply(null);setAttachment(id ? lyricShare : null);setSelectingLyrics(false);setMusicMenu(false);setSongPicker(false);setError('');setReadError(null);
     if (!id) return;
     let pending = false;
     const refresh = async (initial = false) => {
-      if (pending || !initial && operation.current) return;
+      if (pending || !initial && (operation.current||document.hidden||!navigator.onLine)) return;
       pending = true;
       try {await loadThread(id);} finally {pending = false;}
     };
@@ -272,7 +294,7 @@ function MessagesPage({ user }) {
     if (!id) return;
     let active = true;
     const refreshTyping = async () => {
-      if (!active || typingPollLock.current) return;
+      if (!active || typingPollLock.current||document.hidden||!navigator.onLine) return;
       typingPollLock.current = true;
       try {
         await messages('typing', { id, typing: Boolean(draftText.current.trim()) });
@@ -497,6 +519,7 @@ function MessagesPage({ user }) {
     setShowLatest(true);
   }, [id, lastMessage]);
   return <main className="public-messages" style={viewportStyle} data-compact={viewport.height < 480} data-thread={Boolean(id)} data-composing={composing}>
+    {!online&&<p className="public-messages-connection" role="status">You’re offline. Your draft is kept here.</p>}
     {error && <p role="alert" className="rounded-lg border p-3">{error}</p>}
     <div className="public-messages-layout">
       <aside className="public-messages-inbox">
@@ -535,8 +558,8 @@ function MessagesPage({ user }) {
         {visibleChats?.map((chat) =>
         <button key={chat.id} onClick={() => {setComposing(false);setParams({ chat: chat.id });}} aria-current={id === chat.id} className="public-messages-row">
             <>{chat.is_group ? <GroupChatAvatar chat={chat} /> : <PersonAvatar person={peerFor(chat)} />}</>
-            <span className="min-w-0"><span className="public-messages-row-title"><strong className="truncate">{peerName(chat)}</strong>{chat.last_message_at && <time dateTime={chat.last_message_at}>{messageTime(chat.last_message_at)}</time>}</span><span className="block truncate text-sm opacity-70">{chat.last_message_text || 'New conversation'}</span></span>
-            {chat.unread ? <span className="public-messages-dot" aria-label="Unread" /> : <ChevronRight size={14} aria-hidden="true" />}
+            <span className="min-w-0"><span className="public-messages-row-title"><strong className="truncate">{peerName(chat)}</strong>{chat.last_message_at && <time dateTime={chat.last_message_at}>{messageTime(chat.last_message_at)}</time>}</span><span className="block truncate text-sm opacity-70">{drafts.get(chat.id)?<><strong className="public-message-draft-label">Draft: </strong>{drafts.get(chat.id)}</>:chat.last_message_text || 'New conversation'}</span></span>
+            {chat.unread ? <span className="public-messages-dot" aria-label="Unread" /> : chat.muted_ids?.includes(user?.id)?<BellOff size={14} aria-label="Muted conversation"/>:<ChevronRight size={14} aria-hidden="true" />}
           </button>
         )}
       </aside>
@@ -764,11 +787,15 @@ function MessagesPage({ user }) {
             <span className="truncate">{selectedMedia.file.name}</span>
             <button type="button" aria-label="Remove attachment" disabled={busy} onClick={() => setMediaDraft(null)}><X size={18} /></button>
           </div>}
+          {sendStage&&<p className="public-message-send-status" role="status">{sendStage==='uploading'?'Uploading attachment…':'Sending message…'}</p>}
           {canSend && <form className="public-messages-compose" onSubmit={(event) => {event.preventDefault();void perform(async () => {
               const text = draft.trim();
               const trackId = attachment?.id || '',replyId = reply?.id || '',lyrics = attachment?.lyrics || null;
               const lyricKey = JSON.stringify(lyrics);
               if (!text && !trackId && !gif && !selectedMedia) return;
+              if(!navigator.onLine)throw Error('You’re offline. Reconnect to send your message.');
+              setSendStage(selectedMedia?'uploading':'sending');
+              try {
               let media;
               if (selectedMedia) {
                 const file = selectedMedia.file;
@@ -783,6 +810,7 @@ function MessagesPage({ user }) {
               const existing = pendingSends.current.get(id);
               const requestId = existing?.text === text && existing?.trackId === trackId && existing?.replyId === replyId && existing?.lyricKey === lyricKey && existing?.gifId === gif && existing?.mediaUri === media?.uri ? existing.requestId : createSendRequestId();
               pendingSends.current.set(id, { text, trackId, replyId, lyricKey, gifId: gif, mediaUri: media?.uri, requestId });
+              setSendStage('sending');
               await messages('send', { id, text, trackId, replyId, requestId, lyrics, gifId: gif, media });
               void messages('typing', { id, typing: false }).catch(() => {});
               pendingSends.current.delete(id);
@@ -802,6 +830,7 @@ function MessagesPage({ user }) {
                 await loadThread(id);
               }
               await loadInbox();
+              } finally {setSendStage('');}
             });}}>
             <Popover open={Boolean(musicMenu)} onOpenChange={(open) => setMusicMenu(open ? "attachments" : false)}>
               <PopoverTrigger asChild>
@@ -838,7 +867,7 @@ function MessagesPage({ user }) {
                 event.preventDefault();
                 if (!busy && (draft.trim() || attachment || gif || selectedMedia)) event.currentTarget.form?.requestSubmit();
               }} />
-            <button type="submit" aria-label="Send message" disabled={busy || !draft.trim() && !attachment && !gif && !selectedMedia}><ArrowUp size={17} /></button>
+            <button type="submit" aria-label={sendStage?"Sending message":"Send message"} aria-busy={Boolean(sendStage)} disabled={!online || busy || !draft.trim() && !attachment && !gif && !selectedMedia}><ArrowUp size={17} /></button>
             </div>
           </form>}
           {canSend && songPicker === "recent" && <RecentlyPlayedPicker
