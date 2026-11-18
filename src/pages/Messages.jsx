@@ -6,7 +6,7 @@ import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react
 import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
-import { ArrowUp, Check, ChevronLeft, ChevronRight, Clapperboard, Copy, Disc3, ExternalLink, Library, Trash2, Users, MessageCircle, Image, ImagePlus, Music2, Palette, Pause, Play, Plus, Reply, Search, ShoppingBag, SquarePen, TextQuote, UserRound, X } from 'lucide-react';
+import { ArrowUp, Check, ChevronLeft, ChevronRight, Clapperboard, Copy, Disc3, ExternalLink, Library, Trash2, Users, MessageCircle, Image, ImagePlus, Info, Music2, Palette, Pause, Play, Plus, Reply, Search, ShoppingBag, SquarePen, TextQuote, UserRound, X } from 'lucide-react';
 import LyricSharePicker from '@/components/LyricSharePicker';
 import LyricCoverGradient from '@/components/LyricCoverGradient';
 import TrackPickerSheet from '@/components/profile/TrackPickerSheet';
@@ -19,6 +19,7 @@ import { useCoverUrl } from '@/hooks/useCoverUrl';
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import './messages.css';
+import '@/components/messages/group-chat-layout.css';
 
 const REACTIONS = ["❤️", "👍", "👎", "😂", "‼️", "❓", "🔥"];
 const REACTION_LABELS = ['Love', 'Like', 'Dislike', 'Laugh', 'Emphasize', 'Question', 'Fire'];
@@ -526,10 +527,12 @@ function MessagesPage({ user }) {
           }}>
           <>{thread.chat.is_group ? <GroupChatAvatar chat={thread.chat} /> : <PersonAvatar person={peerFor(thread.chat)} />}</>
           <h2>{peerName(thread.chat)}</h2>
+          {thread.chat.is_group&&<span className="public-group-header-count">{thread.chat.participant_ids.length-(thread.chat.invited_ids?.length||0)} members{(thread.chat.invited_ids?.length||0)>0?` · ${thread.chat.invited_ids?.length||0} invited`:""}</span>}
         </button>}
+          {thread?.chat?.is_group&&!groupInvited&&<button type="button" className="public-group-details-button" aria-label="Group details and members" onClick={()=>{setDetailsTab('info');setBackgroundError('');setChatDetailsOpen(true);}}><Info size={21}/></button>}
         </header>
         {thread && currentPeer && !groupInvited && <Dialog open={chatDetailsOpen} onOpenChange={setChatDetailsOpen}>
-          <DialogContent className="public-chat-details" data-tab={detailsTab} showClose={false}>
+          <DialogContent className="public-chat-details" data-group={Boolean(thread.chat.is_group)} data-tab={detailsTab} showClose={false}>
             <header className="public-chat-details-header">
               <button type="button" aria-label="Close conversation details" onClick={() => setChatDetailsOpen(false)}><ChevronLeft size={22} /></button>
               
@@ -617,7 +620,7 @@ function MessagesPage({ user }) {
             if (followLatest.current) setShowLatest(false);
           }}>
             {thread.messages.length === 0 && <p className="public-messages-list-empty">{groupInvited ? 'You have been invited to this group. Accept to see its messages.' : pending ? "Send a message request to start the conversation." : "Send the first message."}</p>}
-            {thread.messages.map((message) => <div key={message.id} className="public-message-group" data-own={message.sender_id === user?.id} data-reply-target={reply?.id === message.id}
+            {thread.messages.map((message, messageIndex) => <div key={message.id} className="public-message-group" data-own={message.sender_id === user?.id} data-reply-target={reply?.id === message.id}
             onPointerDown={(event) => {
               if (event.pointerType === 'mouse' || event.target instanceof Element && event.target.closest('button,a')) return;
               cancelHold();
@@ -700,7 +703,7 @@ function MessagesPage({ user }) {
             </DialogContent>
           </Dialog>}
           {showLatest && <button type="button" className="public-messages-latest" onClick={jumpToLatest}>Jump to latest</button>}
-          {incoming && (groupInvited || thread.messages.length > 0) && <div className="flex gap-3 p-3">
+          {incoming && (groupInvited || thread.messages.length > 0) && <div className="public-message-request-actions flex gap-3 p-3">
             {[true, false].map((accept) => <button className="rounded-lg border px-3 py-2" key={String(accept)} disabled={busy} onClick={() => void perform(async () => {
               await messages(groupInvited ? 'group_respond' : 'respond', { id, accept });
               if (currentChat.current === id) {
@@ -709,7 +712,7 @@ function MessagesPage({ user }) {
                 } else setParams({});
               }
               await loadInbox();
-            })}>{accept ? 'Accept request' : 'Decline'}</button>)}
+            })}>{accept ? groupInvited?'Join group':'Accept request' : 'Decline'}</button>)}
           </div>}
 
           {canSend && attachment?.lyrics && <LyricDraftPreview track={attachment} onRemove={() => {setAttachment(null);setLyricShare(null);}} disabled={busy} />}
