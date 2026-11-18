@@ -41,7 +41,7 @@ Deno.serve(async req => {
     const client = createClientFromRequest(req);
     const user = await client.auth.me().catch(() => null);
     if (!user?.id || user.disabled || user.is_blocked) fail('Sign in to use Messages.', 401);
-    const {action, id, username, recipientId, offset, text, trackId, accept, requestId, replyId, messageId, lyrics, gifId, emoji, media, typing, background, memberIds, name, photo, memberId, enabled, cursor} = await req.json();
+    const {action, id, username, recipientId, offset, text, trackId, accept, requestId, replyId, messageId, lyrics, gifId, emoji, media, typing, background, memberIds, name, photo, memberId, enabled, cursor, kind} = await req.json();
     const db = client.asServiceRole.entities;
     const uid = user.id;
     const blocked = async peer => rows(await db.Block.filter({
@@ -332,11 +332,16 @@ Deno.serve(async req => {
       return Response.json({ok:true});
     }
 
-    if (action === 'read' || action === 'history') {
+    if (action === 'read' || action === 'history' || action==='shared') {
       if(action==='history'&&(typeof cursor!=='string'||!cursor||cursor.length>8192))fail('Choose a valid history page.');
-      const page=await db.Message.filter({conversation_id:id},action==='history'?{cursor,limit:100}:{sort:'-created_date',limit:100});
+      if(action==='shared'&&(!['photos','gifs','music'].includes(kind)||cursor!=null&&(typeof cursor!=='string'||!cursor||cursor.length>8192)))fail('Choose a valid shared-items page.');
+      const gifPattern='^https://media\\.giphy\\.com/media/';
+      const query={conversation_id:id,...(action==='shared'?kind==='music'?{track_id:{$exists:true,$nin:['',null]}}:kind==='gifs'?{media_type:'image',media_url:{$regex:gifPattern}}:{media_type:{$in:['image','video']},media_url:{$exists:true,$nin:['',null],$not:{$regex:gifPattern}}}:{})};
+      const limit=action==='shared'?40:100;
+      const page=await db.Message.filter(query,cursor&&action!=='read'?{cursor,limit}:{sort:'-created_date',limit});
       const messages=rows(page);
       if(messages.some(message=>message.conversation_id!==id))fail('This history page belongs to another conversation.',403);
+      if(action==='shared'&&messages.some(message=>kind==='music'?!message.track_id:kind==='gifs'?!/^https:\/\/media\.giphy\.com\/media\//.test(message.media_url||''):!['image','video'].includes(message.media_type)||!message.media_url||/^https:\/\/media\.giphy\.com\/media\//.test(message.media_url)))fail('This page belongs to another attachment category.',403);
       const nextCursor=typeof page?.next_cursor==='string'?page.next_cursor:null;
       const profileIds=[...new Set([...chat.participant_ids,...messages.map(message=>message.sender_id)].filter(Boolean))];
       const profiles=await db.PublicProfile.filter({user_id:{$in:profileIds},visible:true}, '-updated_date', 200);
