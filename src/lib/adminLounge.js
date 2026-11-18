@@ -49,7 +49,7 @@ export async function loungeAction(client, entity, method, args, protectedCall) 
         if (!session.is_active) invalid("This lounge has ended.");
         const existing = page(await handler.filter({session_id: sid, user_id: user.id}, "-created_date", 1))[0];
         if (existing) return existing;
-        data = {session_id: sid, user_id: user.id, name: user.display_name || user.full_name || "", role: "host", status: "approved"};
+        data = {session_id: sid, user_id: user.id, name: user.display_name || user.full_name || "", avatar_url:user.avatar_url||"", creator_role:user.creator_role||"", is_artist:user.is_artist===true, is_public_admin:user.is_public_admin===true||user.role==="admin", friends_family_badge:user.friends_family_badge===true, moment_badge:user.moment_badge||"", profile_background_colors:Array.isArray(user.profile_background_colors)?user.profile_background_colors:[], role: "host", status: "approved"};
       } else {
         data = pick(input, ["status"]);
         if (method !== "delete" && !["approved","rejected"].includes(data.status)) invalid("Choose approve or decline.");
