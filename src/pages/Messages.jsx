@@ -555,7 +555,6 @@ function MessagesPage({ user }) {
             <div className="public-chat-details-person">
               <>{thread.chat.is_group ? <GroupChatAvatar chat={thread.chat} size={76} /> : <PersonAvatar person={peerFor(thread.chat)} size={76} />}</>
               <DialogTitle>{peerName(thread.chat)}</DialogTitle>
-              {!thread.chat.is_group && peerFor(thread.chat)?.username && <p className="public-chat-details-username">@{String(peerFor(thread.chat).username).replace(/^@/, '')}</p>}
               
               {!thread.chat.is_group && <Link to={"/profile/" + encodeURIComponent(currentPeer)} onClick={() => setChatDetailsOpen(false)}>View profile</Link>}
             </div>

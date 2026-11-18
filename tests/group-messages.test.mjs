@@ -90,4 +90,22 @@ const orphan=await invoke('create_group',{name:'Next admin',memberIds:['c','d']}
 assert.equal((await invoke('group_leave',{id:orphan.id},'a')).status,200);
 assert.equal((await invoke('group_respond',{id:orphan.id,accept:true},'c')).status,200);
 assert.deepEqual(data.Conversation.find(chat=>chat.id===orphan.id).admin_ids,['c']);
+// Run identical shared-feature checks against a DM and an accepted group.
+data.Track=[{id:'song',title:'Song',artist:'Artist',is_published:true,approval_status:'approved',duration_seconds:180}];
+globalThis.__groupClient.integrations=globalThis.__groupClient.asServiceRole.integrations;
+for(const conversation of [dm.id,first.id]){
+  assert.equal((await invoke('send',{id:conversation,text:'Same message'},'a')).status,200);
+  const message=data.Message.at(-1);
+  assert.equal((await invoke('react',{id:conversation,messageId:message.id,emoji:'👍'},'b')).status,200);
+  assert.equal((await invoke('react',{id:conversation,messageId:message.id,emoji:''},'b')).status,200);
+  assert.equal(JSON.parse(data.Message.find(row=>row.id===message.id).reactions).b,'');
+  assert.equal((await invoke('set_background',{id:conversation,background:{type:'color',value:'#123456'}},'b')).status,200);
+  assert.equal((await invoke('send',{id:conversation,text:'',trackId:'song'},'a')).status,200);
+  assert.equal((await invoke('send',{id:conversation,text:'',trackId:'song',lyrics:{lines:['An original test lyric'],startMs:1000,animated:true}},'a')).status,200);
+  assert.equal((await invoke('send',{id:conversation,text:'',media:{type:'image',uri:'private/test.png'}},'a')).status,200);
+  assert.equal((await invoke('open_media',{id:conversation,messageId:data.Message.at(-1).id},'b')).status,200);
+  assert.equal((await invoke('mute',{id:conversation,enabled:true},'b')).status,200);
+  assert.equal((await invoke('inbox',{},'b')).conversations.find(row=>row.id===conversation).unread,false);
+  assert.equal((await invoke('mute',{id:conversation,enabled:false},'b')).status,200);
+}
 console.log('PASS group invitations, membership authorization, shared edits, reactions, replies, admin transfer, mute, limits, DM compatibility, parallel updates, creation retries, pending introductions, and removed-member access');
