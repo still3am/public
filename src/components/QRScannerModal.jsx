@@ -23,7 +23,7 @@ export default function QRScannerModal({ onClose }) {
     }
 
     const profile = pathname.match(/^\/profile\/([a-zA-Z0-9_-]+)\/?$/i);
-    const connect = pathname.match(/^\/lounge\/([A-Z2-9]{5})\/?$/i);
+    const connect = pathname.match(/^\/(?:connect|lounge)\/([A-Z2-9]{5})\/?$/i);
     if (profile) {
       handledRef.current = true;
       onCloseRef.current?.();
@@ -33,7 +33,7 @@ export default function QRScannerModal({ onClose }) {
     if (connect) {
       handledRef.current = true;
       onCloseRef.current?.();
-      nav(`/lounge/${connect[1].toUpperCase()}`);
+      nav(`/connect/${connect[1].toUpperCase()}`);
       return;
     }
     setError("That QR code isn’t a PUBLIC profile or Connect invite.");
