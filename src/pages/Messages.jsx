@@ -236,6 +236,7 @@ function MessagesPage({ user }) {
     return () => clearInterval(timer);
   }, [loadInbox]);
   useEffect(() => {
+    backgroundSaveVersion.current++;setSavingBackground(false);
     setChatDetailsOpen(false);setShowChatColorEditor(false);setShowChatMarketplace(false);setBackgroundError('');
     setThread(null);setGif('');setShowGifs(false);setReply(null);setAttachment(id ? lyricShare : null);setSelectingLyrics(false);setMusicMenu(false);setSongPicker(false);setError('');setReadError(null);
     if (!id) return;
@@ -474,9 +475,9 @@ function MessagesPage({ user }) {
         </header>
         {composing && <div className="px-4 pb-3">
           <div className="public-group-compose-tabs"><button aria-pressed={!groupMode} onClick={()=>{setGroupMode(false);setGroupPeople([]);}}>Message</button><button aria-pressed={groupMode} onClick={()=>setGroupMode(true)}><Users size={16}/>New group</button></div>
-          {groupMode&&<div className="public-group-create"><input aria-label="Group name" placeholder="Group name" maxLength={80} value={groupName} onChange={event=>setGroupName(event.target.value)}/><div className="public-group-selected">{groupPeople.map(person=><button key={person.id} onClick={()=>setGroupPeople(previous=>previous.filter(item=>item.id!==person.id))}>{person.name}<X size={13}/></button>)}</div><button disabled={busy||groupPeople.length<2||!groupName.trim()} onClick={createGroup}>Create group · {groupPeople.length+1}/20</button><p>Add at least two people. Private accounts and people who aren’t mutual followers receive an invitation.</p></div>}
+          {groupMode&&<div className="public-group-create"><input aria-label="Group name" placeholder="Group name" maxLength={80} value={groupName} onChange={event=>setGroupName(event.target.value)}/><div className="public-group-selected" aria-label="Selected group members">{groupPeople.map(person=><button key={person.id} onClick={()=>setGroupPeople(previous=>previous.filter(item=>item.id!==person.id))}>{person.name}<X size={13}/></button>)}</div><button disabled={busy||groupPeople.length<2||!groupName.trim()} onClick={createGroup}>Create group · {groupPeople.length+1}/20</button><p>Add at least two people. Private accounts and people who aren’t mutual followers receive an invitation.</p></div>}
 
-          {(recipient || to) && <button className="mb-3 rounded-lg border px-3 py-2" type="button" disabled={busy} onClick={() => startChat(recipient ? { recipientId: recipient } : { username: to })}>{recipientName ? `Message ${recipientName}` : "Start message"}</button>}
+          {!groupMode && (recipient || to) && <button className="mb-3 rounded-lg border px-3 py-2" type="button" disabled={busy} onClick={() => startChat(recipient ? { recipientId: recipient } : { username: to })}>{recipientName ? `Message ${recipientName}` : "Start message"}</button>}
           <input type="search" aria-label="Search people you follow by name" placeholder="Search by name" className="mb-2 w-full rounded-xl border bg-muted px-3 py-2 text-base" maxLength={80} value={contactQuery} onChange={(event) => setContactQuery(event.target.value)} />
           {matches.map((person) => <button type="button" className="public-messages-row" key={person.id} disabled={busy||groupMode&&groupPeople.length>=19&&!groupPeople.some(item=>item.id===person.id)} onClick={() => {if(!groupMode){startChat({recipientId:person.id});return;}setGroupPeople(previous=>previous.some(item=>item.id===person.id)?previous.filter(item=>item.id!==person.id):previous.length<19?[...previous,person]:previous);}} aria-pressed={groupMode?groupPeople.some(item=>item.id===person.id):undefined}>
             <PersonAvatar person={person} />
@@ -508,7 +509,7 @@ function MessagesPage({ user }) {
           </button>
         )}
       </aside>
-      {id ? <section className="public-messages-thread" aria-label="Conversation" data-replying={Boolean(reply)} data-wallpaper={activeBackground.type !== 'none'} style={backgroundStyle} onKeyDown={(event) => {if (event.key === "Escape" && reply && !busy && !showGifs && !musicMenu && !songPicker) setReply(null);}}>
+      {id ? <section className="public-messages-thread" aria-label="Conversation" data-replying={Boolean(reply)} data-group={Boolean(thread?.chat?.is_group)} data-wallpaper={activeBackground.type !== 'none'} style={backgroundStyle} onKeyDown={(event) => {if (event.key === "Escape" && reply && !busy && !showGifs && !musicMenu && !songPicker) setReply(null);}}>
         {(videoWallpaper?.src || gradientWallpaper?.colors?.length > 0) && <div className="public-chat-wallpaper-layer" aria-hidden="true">
           {videoWallpaper?.src
             ? <video src={videoWallpaper.src} poster={videoWallpaper.poster} muted autoPlay loop playsInline />
