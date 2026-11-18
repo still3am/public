@@ -731,11 +731,14 @@ function MessagesPage({ user }) {
               {message.sender_id!==user?.id&&messageRunPosition(thread.messages,messageIndex).start&&<span className="public-message-author">{messageSender(message,thread.chat,user).display_name}</span>}
               <div className="public-message-content">
               {message.reply_preview && <ReplyQuote preview={message.reply_preview} />}
+              <div className="public-message-reaction-target">
               {message.track_id && <SharedSong message={message} playing={player.currentTrack?.id === message.track_id && player.isPlaying && (!songData(message)?.lyrics || lyricPlayback.current === message.id)} onPlay={() => void perform(() => playSharedSong(message))} busy={busy} />}
               {message.media_url && !messageGifId(message) && ['image', 'video'].includes(message.media_type) && <ChatMedia key={message.id} chatId={id} message={message} />}
               {messageGifId(message) && <MomentGif id={messageGifId(message)} label="Shared GIF" />}
-              {message.text && <p className="public-message-bubble" data-own={message.sender_id === user?.id}>{message.text}</p>}
+              {!message.track_id&&!message.media_url&&message.text&&<p className="public-message-bubble" data-own={message.sender_id === user?.id}>{message.text}</p>}
               <MessageReactions message={message} userId={user?.id} />
+              </div>
+              {(message.track_id||message.media_url)&&message.text&&<p className="public-message-bubble" data-own={message.sender_id === user?.id}>{message.text}</p>}
               </div>
               {messageTime(message.created_date)&&<time className="public-message-timestamp" dateTime={message.created_date}>{messageTime(message.created_date)}</time>}
               </div>

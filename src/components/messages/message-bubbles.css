@@ -89,7 +89,7 @@
   margin:0;
   flex-shrink:0;
 }
-.public-message-content>.public-message-reaction-group {
+.public-message-reaction-target>.public-message-reaction-group {
   position:absolute;
   top:-12px;
   left:-8px;
@@ -126,16 +126,21 @@
 }
 
 /* Reactions stay on one row and point inward on either side of the conversation. */
-.public-message-content>.public-message-reaction-group{display:flex;flex-wrap:nowrap;width:max-content;max-width:none;align-items:center;top:-12px;left:auto;right:-6px;gap:0;overflow:visible;line-height:1;isolation:isolate}
-.public-message-group[data-own="true"] .public-message-content>.public-message-reaction-group{left:-6px;right:auto;flex-direction:row-reverse}
-.public-message-content>.public-message-reaction-group>.public-message-reaction-badge{flex:0 0 auto;font-size:23px;line-height:1;white-space:nowrap}
+.public-message-reaction-target>.public-message-reaction-group{display:flex;flex-wrap:nowrap;width:max-content;max-width:none;align-items:center;top:-12px;left:auto;right:-6px;gap:0;overflow:visible;line-height:1;isolation:isolate}
+.public-message-group[data-own="true"] .public-message-reaction-target>.public-message-reaction-group{left:-6px;right:auto;flex-direction:row-reverse}
+.public-message-reaction-target>.public-message-reaction-group>.public-message-reaction-badge{flex:0 0 auto;font-size:23px;line-height:1;white-space:nowrap}
 .public-message-group[data-own="true"] .public-message-reaction-badge+.public-message-reaction-badge{margin-left:0;margin-right:-8px}
-.public-message-body:has(>.public-message-author)>.public-message-content:has(>.public-message-reaction-group){margin-top:9px}
+.public-message-body:has(>.public-message-author)>.public-message-content:has(.public-message-reaction-group){margin-top:9px}
 
 /* Music wrappers use the visible card width so corner reactions cannot drift. */
 .public-messages-stream .public-message-body{width:max-content;min-width:0}
 .public-messages-stream .public-message-content{width:max-content;min-width:0;max-width:100%}
-.public-messages-stream .public-message-content>.public-message-music{width:300px;min-width:0;max-width:100%;box-sizing:border-box}
-.public-messages-stream .public-message-content>.public-message-lyric-card{width:380px;min-width:0;max-width:100%;box-sizing:border-box}
+.public-messages-stream .public-message-reaction-target>.public-message-music{width:300px;min-width:0;max-width:100%;box-sizing:border-box}
+.public-messages-stream .public-message-reaction-target>.public-message-lyric-card{width:380px;min-width:0;max-width:100%;box-sizing:border-box}
 .public-message-music>.public-message-song{width:100%;max-width:100%;box-sizing:border-box}
-.public-message-content>.public-message-music,.public-message-content>.public-message-lyric-card{flex:0 0 auto;align-self:inherit}
+.public-message-reaction-target>.public-message-music,.public-message-reaction-target>.public-message-lyric-card{flex:0 0 auto;align-self:inherit}
+
+.public-message-reaction-target{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:4px;width:max-content;min-width:0;max-width:100%}
+.public-message-group[data-own="true"] .public-message-reaction-target{align-items:flex-end}
+.public-message-reaction-target>.public-message-bubble{max-width:100%;margin:0;box-sizing:border-box}
+.public-message-reaction-target>:is(.moment-comment-gif,.public-message-upload,.public-message-open-media){max-width:100%;margin:0;flex-shrink:0}
