@@ -134,3 +134,43 @@
   .connect-qr-content { padding-top:12px; }
 }
 
+/* The close control stays visible while invitation details scroll. */
+.connect-qr-shell > .connect-qr-header {
+  position:relative;
+  z-index:2;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex:0 0 auto;
+  margin:0;
+  padding:16px 20px 8px;
+}
+.connect-qr-header > .profile-qr-close {
+  display:grid;
+  place-items:center;
+  flex:0 0 44px;
+  width:44px;
+  min-width:44px;
+  max-width:44px;
+  height:44px;
+  min-height:44px;
+  max-height:44px;
+  aspect-ratio:1;
+  padding:0;
+  margin:0;
+  border:1px solid rgba(255,255,255,.28);
+  border-radius:50%;
+  background:rgba(0,0,0,.2);
+  color:#fff;
+  line-height:1;
+  cursor:pointer;
+}
+.connect-qr-header > .profile-qr-close > svg {
+  display:block;
+  width:20px;
+  height:20px;
+  margin:0;
+  flex:none;
+}
+.connect-qr-shell > .connect-qr-content { padding-top:8px; }
+
