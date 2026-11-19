@@ -20,7 +20,7 @@
 :is(button,[data-button-variant],a.chrome-button,a.playlist-action,a.upload-primary,a.moment-primary):not([role="switch"]):not([role="checkbox"]):not([role="slider"]):not([data-glass-preserve]):not([style*="background"]):focus-visible{outline:2px solid var(--glass-button-ink,hsl(var(--foreground)));outline-offset:3px}
 :is(button,[data-button-variant],a.chrome-button,a.playlist-action,a.upload-primary,a.moment-primary):not([role="switch"]):not([role="checkbox"]):not([role="slider"]):not([data-glass-preserve]):not([style*="background"]):is([data-button-variant="destructive"],[class*="text-red-"],[class*="text-destructive"]){color:hsl(var(--destructive))!important;border-color:hsl(var(--destructive)/.35)!important}
 button[aria-pressed="true"]:has(svg.lucide-heart){color:#f4728d!important}
-:is(.artist-hero,.artist-feature-card,.full-player-screen,.public-song-art,[data-glass-tone="light"]){
+:is(.artist-hero,.artist-feature-card,.full-player-screen,.profile-qr-shell,.public-song-art,[data-glass-tone="light"]){
  --glass-button-ink:#fff;
  --glass-button-fill:rgb(255 255 255 / .12);
  --glass-button-edge:rgb(255 255 255 / .34);
