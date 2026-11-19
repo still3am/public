@@ -1,0 +1,23 @@
+/* Fixed equal dimensions prevent icon-only navigation controls from stretching. */
+[data-navigation-circle],.public-navigation-circle{
+  width:var(--navigation-circle-size,44px)!important;
+  height:var(--navigation-circle-size,44px)!important;
+  min-width:var(--navigation-circle-size,44px)!important;
+  min-height:var(--navigation-circle-size,44px)!important;
+  max-width:var(--navigation-circle-size,44px)!important;
+  max-height:var(--navigation-circle-size,44px)!important;
+  flex:0 0 var(--navigation-circle-size,44px)!important;
+  aspect-ratio:1!important;
+  box-sizing:border-box!important;
+  border-radius:50%!important;
+  padding:0!important;
+  display:inline-flex;
+  align-items:center!important;
+  justify-content:center!important;
+  place-items:center!important;
+  line-height:1;
+  vertical-align:middle;
+}
+[data-navigation-circle]>svg,.public-navigation-circle>svg{display:block;flex:none;margin:0!important}
+[data-navigation-circle]:focus-visible,.public-navigation-circle:focus-visible{outline:2px solid currentColor;outline-offset:3px}
+[data-navigation-circle]:disabled,.public-navigation-circle:disabled{cursor:default}
