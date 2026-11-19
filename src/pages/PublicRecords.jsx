@@ -300,7 +300,9 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
         {latestTrack && <section className="artist-latest">
           <SectionTitle icon={Disc3}>Featured song</SectionTitle>
           <div className="artist-feature-card">
-          <button className="artist-latest-cover" onClick={() => {if (p.currentTrack?.id === latestTrack.id) p.togglePlay();else p.playTrackAt(mainTracks, mainTracks.findIndex((track) => track.id === latestTrack.id));}} aria-label={(p.currentTrack?.id === latestTrack.id && p.isPlaying ? "Pause " : "Play ") + latestTrack.title}><ArtistArtwork source={latestTrack.cover_art_url} className="w-full h-full object-cover" /><span className="artist-feature-play" aria-hidden="true">{p.currentTrack?.id === latestTrack.id && p.isPlaying ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" />}</span></button>
+          <ArtistArtwork source={latestTrack.cover_art_url} className="artist-feature-background" />
+          <div className="artist-feature-shade" aria-hidden="true" />
+          <button className="artist-latest-cover" onClick={() => {if (p.currentTrack?.id === latestTrack.id) p.togglePlay();else p.playTrackAt(mainTracks, mainTracks.findIndex((track) => track.id === latestTrack.id));}} aria-label={(p.currentTrack?.id === latestTrack.id && p.isPlaying ? "Pause " : "Play ") + latestTrack.title}><span className="artist-feature-play" aria-hidden="true">{p.currentTrack?.id === latestTrack.id && p.isPlaying ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" />}</span></button>
           <div className="artist-feature-copy min-w-0 flex-1">
             <Link to={"/track/" + latestTrack.id} className="artist-latest-title">{latestTrack.title}</Link>
             <p className="text-sm text-muted-foreground mt-1 truncate">{latestDate ? "Added " + latestDate : "In the PUBLIC catalog"}</p>
