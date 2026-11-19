@@ -29,7 +29,7 @@ import { useToast } from "@/components/ui/use-toast";
 import {
   ChevronLeft,
   ChevronRight,
-  MoreHorizontal, Share2, Shuffle, Info, Search,
+  MoreHorizontal, Share2, Shuffle, Info, Search, X,
   Loader2,
   Music,
   Mic2,
@@ -297,12 +297,6 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
           </div>
         </section>
 
-        <nav className="artist-section-nav" aria-label="Artist sections">
-          {topTracks.length > 0 && <a href="#artist-top-songs">Top songs</a>}
-          {mainTracks.length > 0 && <a href="#artist-discography">Songs</a>}
-          {appearanceTracks.length > 0 && <a href="#artist-appearances">Appears on</a>}
-          {hasAbout && <a href="#artist-about">About</a>}
-        </nav>
         <div className="artist-feature-grid">
         {latestTrack && <section className="artist-latest">
           <button className="artist-latest-cover" onClick={() => {if (p.currentTrack?.id === latestTrack.id) p.togglePlay();else p.playTrackAt(mainTracks, mainTracks.findIndex((track) => track.id === latestTrack.id));}} aria-label={(p.currentTrack?.id === latestTrack.id && p.isPlaying ? "Pause " : "Play ") + latestTrack.title}><ArtistArtwork source={latestTrack.cover_art_url} className="w-full h-full object-cover" /><span className="artist-feature-play" aria-hidden="true">{p.currentTrack?.id === latestTrack.id && p.isPlaying ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" />}</span></button>
@@ -339,9 +333,10 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
 
           <div>
             <div className="artist-song-tools">
-              <label className="artist-song-search"><Search size={17} aria-hidden="true" /><input type="search" value={query} onChange={event => setQuery(event.target.value)} placeholder="Search songs" aria-label={"Search songs by " + artist.name} /></label>
+              <label className="artist-song-search"><Search size={17} aria-hidden="true" /><input type="search" value={query} onChange={event => setQuery(event.target.value)} placeholder="Search songs" aria-label={"Search songs by " + artist.name} />{query && <button type="button" className="artist-clear-search" onClick={() => setQuery("")} aria-label="Clear song search"><X size={16} /></button>}</label>
               <select value={sort} onChange={event => setSort(event.target.value)} aria-label="Sort artist songs"><option value="recent">Recently added</option><option value="popular">Most played</option><option value="title">Title</option></select>
             </div>
+          {query.trim() && <p className="artist-search-count" role="status">{visibleTracks.length} {visibleTracks.length === 1 ? "song" : "songs"} found</p>}
           <div id="artist-song-grid" className="artist-catalog-list">
               {!visibleTracks.length && <div className="artist-search-empty" role="status"><Search size={24} aria-hidden="true" /><h3>No songs found</h3><p>Try a different song title.</p><button type="button" className="playlist-action" onClick={() => setQuery("")}>Clear search</button></div>}
               {(songsExpanded || query.trim() ? visibleTracks : visibleTracks.slice(0, songPreviewLimit)).map((track, index) =>
@@ -350,7 +345,7 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
             </div>
           </div>
           }
-          {!query.trim() && visibleTracks.length > songPreviewLimit && <div className="flex items-center justify-between gap-3 mt-5">
+          {!query.trim() && visibleTracks.length > songPreviewLimit && <div className="artist-song-pagination flex items-center justify-between gap-3 mt-5">
             <span className="text-xs text-muted-foreground">{songsExpanded ? visibleTracks.length : songPreviewLimit} of {visibleTracks.length} songs</span>
             <button type="button" aria-expanded={songsExpanded} aria-controls="artist-song-grid" className="playlist-action px-4 py-2.5 text-sm" onClick={() => {
               setSongsExpanded((value) => !value);
