@@ -53,7 +53,7 @@ for(let step=0;step<7;step++){
  assert.match(html,step===6?/Start listening/:step===0?/Let’s go/:/Continue/);
  if(step===1){assert.match(html,/Choose an avatar/);assert.match(html,/Upload a photo/);assert.match(html,/PUBLIC Marketplace/,"onboarding opens the shared avatar marketplace");}
  if(step===2){assert.equal((html.match(/aria-pressed=/g)||[]).length,12,"genres begin with a short selection");assert.match(html,/More genres/);}
- if(step===5){assert.match(html,/Choose profile colors/,"opens the shared PUBLIC color editor");assert.match(html,/Add a profile song/);}
+ if(step===5){assert.match(html,/Choose profile colors/,"opens the shared PUBLIC color editor");assert.doesNotMatch(html,/Add a profile song/,"mood screen stays focused on profile appearance");}
  if(step===6){assert.match(html,/Share my favorite songs/);assert.match(html,/<details/,"additional privacy detail is collapsed");}
 }
 console.log("PASS all seven onboarding screens render; concise genre choices, progressive controls, and completion-aware Settings");
@@ -76,17 +76,10 @@ const pickerHtml=renderToStaticMarkup(React.createElement(picker.default,{title:
 assert.match(pickerHtml,/Allowed song/);assert.doesNotMatch(pickerHtml,/Blocked song/);
 console.log("PASS stale-context Settings completion, account separation and shared picker blocked-user filtering");
 
-const previewSong={id:"preview",title:"My profile song",artist:"Preview artist",cover_art_url:"https://example.test/art.jpg"};
-let songMarkup=renderToStaticMarkup(React.createElement(ui.OnboardingProfileSong,{track:previewSong,onChange(){}}));
-assert.match(songMarkup,/My profile song/);assert.match(songMarkup,/Preview artist/);assert.match(songMarkup,/art.jpg/);assert.match(songMarkup,/Play My profile song/);
-globalThis.__player={currentTrack:previewSong,isPlaying:true};
-songMarkup=renderToStaticMarkup(React.createElement(ui.OnboardingProfileSong,{track:previewSong,onChange(){}}));assert.match(songMarkup,/Pause My profile song/);
-console.log("PASS selected profile song shows real artwork, artist and player state");
-
 storage.set(model.draftKey(current.id),JSON.stringify({uid:current.id,step:5,mode:"auto",profileTrack:"preview"}));
 globalThis.__artColors=["#a02020","#e0a020","#201010"];
 let autoHtml=renderToStaticMarkup(React.createElement(ui.WelcomeFlow,{user:current,onDone(){}}));
-assert.match(autoHtml,/Automatic · From your song/);assert.match(autoHtml,/onboarding-auto-color[^>]*aria-pressed="true"/);
+assert.doesNotMatch(autoHtml,/onboarding-auto-color/,"artwork source control waits for a resolved catalog song");
 assert.deepEqual(globalThis.__gradientColors,globalThis.__artColors,"automatic preview uses extracted artwork palette");
 globalThis.__artColors=[];
 renderToStaticMarkup(React.createElement(ui.WelcomeFlow,{user:current,onDone(){}}));
