@@ -1,90 +1,81 @@
 
-/* PUBLIC track page: one artwork header and responsive listening details. */
-.public-app .desktop-workspace>#main-content.artwork-content:has(.track-redesigned){padding-top:0;padding-bottom:0}
-.public-app .artwork-content .track-page.track-editorial{
- --foreground:0 0% 98%;--muted-foreground:0 0% 76%;--background:240 14% 6%;--card:240 12% 10%;--muted:240 8% 18%;--accent:240 8% 21%;--border:0 0% 100%;--ring:0 0% 100%;
- position:relative;isolation:isolate;clip-path:inset(0);box-sizing:border-box;width:calc(100% + 2 * var(--app-gutter));max-width:none;min-width:0;min-height:100svh;margin:0 calc(-1 * var(--app-gutter));padding:22px var(--app-gutter) 56px;background:var(--release-surface,#15151d);color:#fff;
+/* Track pages share the artist page's full-width header and open content sections. */
+.public-app #main-content.artwork-content:has(.track-artist-layout){padding-top:0}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout{position:relative;isolation:isolate;width:100%;max-width:none;min-width:0;min-height:0;margin:0;padding:0 0 48px;background:transparent;color:hsl(var(--foreground));box-sizing:border-box}
+.public-app.has-player .artwork-content .track-artist-layout{padding-bottom:120px}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .track-detail-content{width:100%;max-width:none;min-width:0;margin:0}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .release-header-full{position:relative;isolation:isolate;display:flex;align-items:flex-end;width:calc(100% + 2 * var(--app-gutter));max-width:none;min-height:clamp(500px,46vw,640px);height:auto;gap:0;margin:0 calc(-1 * var(--app-gutter)) 38px;padding:0;border:0;border-radius:0;background:#1b1b20;color:#fff;text-align:left;overflow:hidden;box-sizing:border-box}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .release-header-full .release-art{position:absolute;inset:0;display:grid;place-items:center;visibility:visible;width:100%;max-width:none;height:100%;aspect-ratio:auto;margin:0;padding:0;grid-area:auto;border:0;border-radius:0;background:linear-gradient(145deg,#55505f,#151518);color:#ffffff40;box-shadow:none;mask-image:none;-webkit-mask-image:none}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .release-art img{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover;object-position:center 35%}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .release-art::after{content:none}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .track-hero-shade{position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,#0003,transparent 30%,#0004 55%,#000d 100%)}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .release-toolbar{position:absolute;z-index:3;inset:22px 24px auto;display:flex;align-items:center;justify-content:space-between;width:auto;min-height:44px;height:auto;margin:0;padding:0;transform:none;pointer-events:auto}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .release-toolbar-actions{display:flex;align-items:center;gap:8px;margin:0;padding:0;border:0;border-radius:0;background:none;backdrop-filter:none}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .release-toolbar .release-round{display:grid;place-items:center;width:44px!important;min-width:44px!important;max-width:44px;height:44px!important;min-height:44px!important;max-height:44px;margin:0;padding:0;border:1px solid #ffffff35;border-radius:50%!important;background:#17171a66;color:#fff;box-shadow:none}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .release-round::before{display:none}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .track-release-info{position:relative;z-index:1;display:grid;grid-template-columns:minmax(0,1fr) auto;gap:0 32px;align-items:end;width:min(1120px,calc(100% - 80px));max-width:none;min-width:0;margin:clamp(320px,34vw,460px) auto 0;padding:0 0 28px;box-sizing:border-box}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .release-header-full h1{position:static;grid-column:1;grid-row:1;margin:0;max-width:none;font-size:clamp(38px,5vw,70px);font-weight:750;line-height:1.08;letter-spacing:-.045em;text-wrap:balance;overflow-wrap:anywhere;color:white;text-shadow:0 2px 18px #0005}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .release-header-full .release-artist{position:static;grid-column:1;grid-row:2;max-width:none;margin:14px 0 0;font-size:20px;font-weight:500;line-height:1.4;color:#ffffffdf}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .release-artist>div{justify-content:flex-start;flex-wrap:wrap}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .release-subtitle{display:flex;grid-column:1;grid-row:3;align-items:center;justify-content:flex-start;flex-wrap:wrap;gap:8px;margin:12px 0 0;font-size:12px;line-height:1.5;color:#ffffffb8}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .release-play-controls{display:flex;grid-column:2;grid-row:1 / span 3;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:10px;width:auto;max-width:none;margin:0}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .release-play-button,.public-app .artwork-content .track-page.track-editorial.track-artist-layout .release-shuffle-button{display:inline-flex;align-items:center;justify-content:center;gap:8px;flex:0 0 auto;width:auto;max-width:none;min-width:116px;height:48px;min-height:48px;max-height:none;margin:0;padding:0 22px;border-radius:999px;box-shadow:none;font-size:14px;font-weight:650}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .release-play-button{border:0;background:#fff;color:#17171a}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .release-shuffle-button{border:1px solid #ffffff45;background:#ffffff18;color:#fff}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .release-shuffle-button[aria-pressed="true"]{border-color:#ffffffbf;background:#ffffff30}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .track-detail-columns{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);align-items:start;gap:36px;min-width:0;max-width:1120px;margin:0 auto 42px}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .track-detail-columns>.track-page-section[aria-label="Song lyrics"]{grid-column:1;grid-row:1;width:100%;min-width:0;max-width:none;margin:0;padding:0;border:0;border-radius:0;background:none;box-sizing:border-box}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .track-detail-columns>.release-credits{grid-column:2;grid-row:1;width:100%;min-width:0;max-width:none;margin:0;padding:0;border:0;border-radius:0;background:none;box-sizing:border-box}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .track-detail-columns>.music-video-section{grid-column:1 / -1;width:100%;min-width:0;margin:0}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout :is(.track-details-title,.track-page-section>h2){margin:0 0 20px;font-size:25px;font-weight:700;line-height:1.25;letter-spacing:-.035em;color:hsl(var(--foreground))}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .track-page-lyrics{font-size:clamp(20px,2vw,26px);font-weight:600;line-height:1.65;letter-spacing:-.025em;color:hsl(var(--foreground)/.85)}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .track-page-section>div>div.flex{justify-content:flex-start}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .track-page-section button{min-height:40px}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .catalog-song-facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 24px;margin:0;padding:0;border:0}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .catalog-song-facts>div{min-width:0}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .catalog-song-facts dt{margin:0;font-size:11px;font-weight:500;line-height:1.5;color:hsl(var(--muted-foreground))}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .catalog-song-facts dd{margin:6px 0 0;font-size:13px;font-weight:550;line-height:1.6;overflow-wrap:anywhere;color:hsl(var(--foreground))}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .track-song-info{margin:0}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .track-info-status{margin:16px 0 0;font-size:12px;line-height:1.6;color:hsl(var(--muted-foreground))}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .track-info-status button{min-height:40px;padding:8px;text-decoration:underline}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .track-detail-content>.track-page-section{max-width:1120px;min-width:0;margin:0 auto 40px;padding:0;border:0;border-radius:0;background:none}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .release-shelf{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x proximity;overscroll-behavior-x:contain;scrollbar-width:none;padding:4px 2px 14px}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .release-shelf-card{flex:0 0 clamp(160px,17vw,205px);min-width:0;scroll-snap-align:start}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .release-shelf::-webkit-scrollbar{display:none}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .release-shelf[data-drag-scroll]{cursor:grab;user-select:none}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .release-shelf[data-dragging]{cursor:grabbing;scroll-snap-type:none}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .music-video-card{overflow:hidden;border-radius:18px}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .music-video-card :is(video,.music-video-poster){width:100%;height:auto;aspect-ratio:16/9;object-fit:cover}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout :is(button,a):focus-visible{outline:2px solid hsl(var(--ring));outline-offset:3px}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .release-header-full :is(button,a):focus-visible{outline-color:white}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout button:disabled{opacity:.5}
+@media(max-width:1099px){
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .track-release-info{grid-template-columns:minmax(0,1fr);gap:0}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .release-play-controls{grid-column:1;grid-row:4;justify-content:flex-start;margin-top:22px}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .track-detail-columns{grid-template-columns:minmax(0,1fr);gap:30px}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .track-detail-columns>.track-page-section[aria-label="Song lyrics"],.public-app .artwork-content .track-page.track-editorial.track-artist-layout .track-detail-columns>.release-credits{grid-column:1;grid-row:auto}
 }
-.public-app.has-player .artwork-content .track-page.track-editorial{padding-bottom:140px}
+@media(max-width:767px){
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .release-header-full{min-height:clamp(500px,135vw,650px);margin-bottom:30px}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .release-toolbar{inset:18px 18px auto}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .release-toolbar-actions{gap:6px}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .track-release-info{width:calc(100% - 40px);margin-top:clamp(320px,85vw,440px);padding-bottom:24px;text-align:center}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .release-header-full h1{font-size:clamp(30px,8vw,44px);line-height:1.15}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .release-header-full .release-artist{margin-top:10px;font-size:18px}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .release-artist>div,.public-app .artwork-content .track-page.track-editorial.track-artist-layout .release-subtitle{justify-content:center}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .release-subtitle{font-size:11px;margin-top:10px}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .release-play-controls{justify-content:center;gap:10px;margin-top:20px}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .release-play-button,.public-app .artwork-content .track-page.track-editorial.track-artist-layout .release-shuffle-button{height:46px;min-height:46px;min-width:116px;padding-inline:18px}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout :is(.track-details-title,.track-page-section>h2){font-size:23px}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .track-detail-columns{gap:28px;margin-bottom:32px}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .track-page-lyrics{font-size:22px}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .release-shelf{gap:14px}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .release-shelf-card{flex-basis:44%}
+}
+@media(max-width:359px){.public-app .artwork-content .track-page.track-editorial.track-artist-layout .catalog-song-facts{grid-template-columns:minmax(0,1fr)}}
+/* Shared atmosphere classes remain available for other release views. */
 .release-atmosphere{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
 .release-motion-gradient{position:absolute!important;inset:0}
 .release-atmosphere-shade{position:absolute;inset:0;background:rgb(0 0 0 / .4)}
-.public-app .track-redesigned .track-detail-content{position:relative;width:100%;max-width:1120px;min-width:0;margin:0 auto}
-.public-app .track-redesigned .release-toolbar{position:relative;inset:auto;transform:none;display:flex;align-items:center;justify-content:space-between;min-height:44px;height:auto;margin:0 0 30px;padding:0;pointer-events:auto}
-.public-app .track-redesigned .release-toolbar-actions{display:flex;align-items:center;gap:8px;padding:0;border:0;background:none;backdrop-filter:none}
-.public-app .track-redesigned .release-toolbar .release-round{display:grid;place-items:center;width:44px!important;height:44px!important;min-width:44px!important;min-height:44px!important;max-width:44px;max-height:44px;padding:0;border:1px solid #ffffff26;border-radius:50%!important;background:#00000020;color:#fff;box-shadow:none}
-.public-app .track-redesigned .release-toolbar .release-round::before{display:none}
-.public-app .artwork-content .track-page.track-redesigned .release-header-full{position:relative;display:grid;grid-template-columns:minmax(240px,340px) minmax(0,1fr);align-items:center;gap:48px;max-width:none;min-height:0;margin:0 0 42px;padding:28px;border:1px solid #ffffff1f;border-radius:28px;background:#00000014;text-align:left;overflow:visible}
-.public-app .artwork-content .track-page.track-redesigned .release-header-full .release-art{position:relative;display:grid;place-items:center;visibility:visible;grid-area:auto;width:100%;height:auto;max-width:none;aspect-ratio:1;margin:0;padding:0;border:0;border-radius:18px;background:#ffffff0d;box-shadow:0 12px 35px #0003;overflow:hidden;mask-image:none;-webkit-mask-image:none}
-.public-app .track-redesigned .release-art img{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:contain}
-.public-app .track-redesigned .release-art::after{content:none}
-.public-app .track-redesigned .track-release-info{position:static;min-width:0;width:100%;margin:0;padding:0}
-.public-app .track-redesigned .track-release-kicker{display:block;margin:0 0 12px;font-size:10px;font-weight:650;letter-spacing:.15em;text-transform:uppercase;color:#ffffff9c}
-.public-app .artwork-content .track-page.track-redesigned .release-header-full h1{position:static;grid-area:auto;margin:0;max-width:none;font-size:clamp(30px,4vw,52px);font-weight:750;line-height:1.08;letter-spacing:-.045em;text-wrap:balance;overflow-wrap:anywhere;color:#fff}
-.public-app .artwork-content .track-page.track-redesigned .release-header-full .release-artist{position:static;grid-area:auto;max-width:none;margin:14px 0 0;font-size:21px;font-weight:500;line-height:1.4;color:#ffffffe0}
-.public-app .track-redesigned .release-artist>div{justify-content:flex-start;flex-wrap:wrap}
-.public-app .artwork-content .track-page.track-redesigned .release-subtitle{display:flex;justify-content:flex-start;align-items:center;flex-wrap:wrap;gap:8px;margin:14px 0 0;font-size:12px;line-height:1.6;color:#ffffffa6}
-.public-app .artwork-content .track-page.track-redesigned .release-play-controls{display:flex;align-items:center;justify-content:flex-start;flex-wrap:wrap;gap:10px;width:100%;max-width:none;margin:26px 0 0}
-.public-app .track-redesigned .release-play-button{display:inline-flex;align-items:center;justify-content:center;gap:8px;flex:0 1 130px;min-width:110px;min-height:48px;height:auto;padding:12px 22px;border:0;border-radius:999px;background:white;color:#17171a;box-shadow:none;font-size:15px;font-weight:700}
-.public-app .track-redesigned .release-save-button{display:inline-flex;align-items:center;justify-content:center;gap:8px;max-width:100%;min-height:48px;padding:11px 16px;border:1px solid #ffffff35;border-radius:999px;background:#ffffff0b;color:white;font-size:13px;font-weight:600}
-.public-app .track-redesigned .release-save-button>svg{flex:none}
-.public-app .track-redesigned .release-save-button[aria-pressed="true"]{background:#ffffff20}
-.public-app .track-redesigned .release-add-button{display:grid;place-items:center;flex:0 0 48px;width:48px;min-width:48px;max-width:48px;height:48px;min-height:48px;max-height:48px;padding:0;border:1px solid #ffffff35;border-radius:50%;background:#ffffff0b;color:white}
-.public-app .track-redesigned .release-add-button[aria-pressed="true"]{background:#ffffff24}
-.public-app .track-redesigned .track-detail-columns{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);align-items:start;gap:24px;margin-bottom:40px}
-.public-app .track-redesigned .track-detail-columns>.track-page-section[aria-label="Song lyrics"]{grid-column:1;grid-row:1;width:100%;max-width:none;min-width:0;margin:0;padding:24px;border:1px solid #ffffff21;border-radius:22px;background:#00000014;box-sizing:border-box}
-.public-app .track-redesigned .track-detail-columns>.release-credits{grid-column:2;grid-row:1;width:100%;max-width:none;min-width:0;margin:0;padding:24px;border:1px solid #ffffff21;border-radius:22px;background:#00000014;box-sizing:border-box}
-.public-app .track-redesigned .track-detail-columns>.music-video-section{grid-column:1/-1;grid-row:auto;width:100%;min-width:0;margin:0}
-.public-app .track-redesigned :is(.track-details-title,.track-page-section>h2){margin:0 0 18px;font-size:23px;font-weight:700;line-height:1.25;letter-spacing:-.03em;color:#fff}
-.public-app .track-redesigned .track-page-lyrics{font-size:clamp(20px,2vw,26px);font-weight:600;line-height:1.65;letter-spacing:-.025em;color:#ffffffeb}
-.public-app .track-redesigned .track-page-section>div>div.flex{justify-content:flex-start}
-.public-app .track-redesigned .track-page-section button{min-height:40px}
-.public-app .track-redesigned .catalog-song-facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 20px;margin:0}
-.public-app .track-redesigned .catalog-song-facts>div{min-width:0}
-.public-app .track-redesigned .catalog-song-facts dt{font-size:11px;line-height:1.5;color:#ffffff9c}
-.public-app .track-redesigned .catalog-song-facts dd{margin:6px 0 0;font-size:13px;font-weight:550;line-height:1.6;color:#ffffffe6;overflow-wrap:anywhere}
-.public-app .track-redesigned .track-song-info{margin-top:0}
-.public-app .track-redesigned .track-info-status{margin:18px 0 0;font-size:12px;line-height:1.6;color:#ffffffa6}
-.public-app .track-redesigned .track-info-status button{min-height:40px;padding:8px;text-decoration:underline}
-.public-app .track-redesigned>.track-detail-content>.track-page-section{margin:0 0 40px;padding:0;border:0;border-radius:0;background:none;min-width:0}
-.public-app .track-redesigned .release-shelf{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x proximity;overscroll-behavior-x:contain;scrollbar-width:none;padding:4px 2px 14px}
-.public-app .track-redesigned .release-shelf-card{flex:0 0 clamp(160px,17vw,205px);min-width:0;scroll-snap-align:start}
-.public-app .track-redesigned .release-shelf::-webkit-scrollbar{display:none}
-.public-app .track-redesigned .release-shelf[data-drag-scroll]{cursor:grab;user-select:none}
-.public-app .track-redesigned .release-shelf[data-dragging]{cursor:grabbing;scroll-snap-type:none}
-.public-app .track-redesigned .music-video-card{overflow:hidden;border-radius:18px}
-.public-app .track-redesigned .music-video-card :is(video,.music-video-poster){width:100%;height:auto;aspect-ratio:16/9;object-fit:cover}
-.public-app .track-redesigned :is(button,a):focus-visible{outline:2px solid white;outline-offset:3px}
-.public-app .track-redesigned button:disabled{opacity:.5}
-@media(max-width:1099px){
-.public-app .artwork-content .track-page.track-redesigned .release-header-full{grid-template-columns:minmax(180px,.85fr) minmax(0,1.2fr);gap:28px;padding:22px}
-.public-app .track-redesigned .track-detail-columns{grid-template-columns:minmax(0,1fr)}
-.public-app .track-redesigned .track-detail-columns>.track-page-section[aria-label="Song lyrics"],.public-app .track-redesigned .track-detail-columns>.release-credits{grid-column:1;grid-row:auto}
-}
-@media(max-width:767px){
-.public-app .artwork-content .track-page.track-editorial{padding-top:16px;padding-bottom:calc(48px + env(safe-area-inset-bottom,0px))}
-.public-app.has-player .artwork-content .track-page.track-editorial{padding-bottom:calc(140px + env(safe-area-inset-bottom,0px))}
-.public-app .track-redesigned .release-toolbar{margin-bottom:22px}
-.public-app .artwork-content .track-page.track-redesigned .release-header-full{display:flex;flex-direction:column;align-items:stretch;gap:24px;margin-bottom:28px;padding:0;border:0;border-radius:0;background:none;text-align:left}
-.public-app .artwork-content .track-page.track-redesigned .release-header-full .release-art{width:min(78vw,320px);max-width:100%;margin:0 auto;border-radius:16px}
-.public-app .artwork-content .track-page.track-redesigned .release-header-full h1{font-size:clamp(27px,7vw,36px);line-height:1.15}
-.public-app .track-redesigned .track-release-kicker{margin-bottom:9px}
-.public-app .artwork-content .track-page.track-redesigned .release-header-full .release-artist{margin-top:10px;font-size:19px}
-.public-app .artwork-content .track-page.track-redesigned .release-subtitle{margin-top:10px;font-size:11px}
-.public-app .artwork-content .track-page.track-redesigned .release-play-controls{margin-top:20px;gap:8px;flex-wrap:nowrap}
-.public-app .track-redesigned .release-play-button{flex:1;min-width:0;padding-inline:16px}
-.public-app .track-redesigned .release-save-button{font-size:12px;padding-inline:12px}
-.public-app .track-redesigned .track-detail-columns{gap:18px;margin-bottom:32px}
-.public-app .track-redesigned .track-detail-columns>.track-page-section[aria-label="Song lyrics"],.public-app .track-redesigned .track-detail-columns>.release-credits{padding:20px;border-radius:18px}
-.public-app .track-redesigned :is(.track-details-title,.track-page-section>h2){font-size:22px}
-.public-app .track-redesigned .track-page-lyrics{font-size:22px}
-.public-app .track-redesigned .release-shelf{gap:14px}
-.public-app .track-redesigned .release-shelf-card{flex-basis:44%}
-}
-@media(max-width:359px){
-.public-app .track-redesigned .release-save-button{font-size:11px;padding-inline:9px}
-.public-app .track-redesigned .release-add-button{flex-basis:44px;width:44px;min-width:44px}
-.public-app .track-redesigned .catalog-song-facts{grid-template-columns:minmax(0,1fr)}
-}
-@media(prefers-reduced-motion:reduce){.public-app .track-redesigned button{transition:none}}
+@media(prefers-reduced-motion:reduce){.public-app .artwork-content .track-page.track-editorial.track-artist-layout button{transition:none}}
 
