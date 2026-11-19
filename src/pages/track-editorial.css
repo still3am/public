@@ -121,4 +121,11 @@
  .public-app .artwork-content .track-page.track-editorial.track-artist-layout .release-header-full.has-release-art .release-art img{object-position:center 30%!important;}
 }
 
+/* Match the artist page: the track hero bleeds across the artwork workspace, not a nested padded card. */
+.public-app .artwork-content .page-surface .track-page.track-editorial.track-artist-layout{padding-inline:0;}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .release-header-full{width:calc(100% + 2 * var(--app-gutter));margin:0 calc(-1 * var(--app-gutter)) 38px;padding:0;border:0;border-radius:0;}
+@media(max-width:767px){
+ .public-app .artwork-content .track-page.track-editorial.track-artist-layout .release-header-full{width:calc(100% + 2 * var(--app-gutter));margin:0 calc(-1 * var(--app-gutter)) 30px;padding:0;border:0;border-radius:0;}
+}
+
 
