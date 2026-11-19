@@ -1,3 +1,4 @@
+import OverflowText from "@/components/OverflowText";
 import {useLongPressMenu} from "@/hooks/useLongPressMenu";
 import { Play, Pause, Check, Music2 } from "lucide-react";
 import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
@@ -52,9 +53,9 @@ export default function TrackCard({ track, selectable = false, selected = false,
 
 function CardMeta({track}) {
   return <>
-    <div className="public-song-title-line"><span className="public-song-title">{track.title || "Untitled song"}</span>
+    <div className="public-song-title-line"><span className="public-song-title"><OverflowText text={track.title || "Untitled song"} /></span>
       {track.explicit && <span className="public-song-explicit" aria-label="Explicit">E</span>}
     </div>
-    <span className="public-song-artist">{track.artist || track.uploader_name || "Unknown artist"}</span>
+    <span className="public-song-artist"><OverflowText text={track.artist || track.uploader_name || "Unknown artist"} /></span>
   </>;
 }
