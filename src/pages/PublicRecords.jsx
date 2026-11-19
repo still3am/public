@@ -303,17 +303,16 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
           <div className="artist-feature-card">
           <button className="artist-latest-cover" onClick={() => {if (p.currentTrack?.id === latestTrack.id) p.togglePlay();else p.playTrackAt(mainTracks, mainTracks.findIndex((track) => track.id === latestTrack.id));}} aria-label={(p.currentTrack?.id === latestTrack.id && p.isPlaying ? "Pause " : "Play ") + latestTrack.title}><ArtistArtwork source={latestTrack.cover_art_url} className="w-full h-full object-cover" /><span className="artist-feature-play" aria-hidden="true">{p.currentTrack?.id === latestTrack.id && p.isPlaying ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" />}</span></button>
           <div className="artist-feature-copy min-w-0 flex-1">
-            <p className="eyebrow text-muted-foreground mb-2">In the spotlight</p>
             <Link to={"/track/" + latestTrack.id} className="artist-latest-title">{latestTrack.title}</Link>
             <p className="text-sm text-muted-foreground mt-1 truncate">{latestDate ? "Added " + latestDate : "In the PUBLIC catalog"}</p>
-            <div className="artist-feature-save"><LibraryButton track={latestTrack} /></div>
+            <div className="artist-feature-save"><LibraryButton track={latestTrack} label className="artist-feature-library-button" /></div>
           </div>
           </div>
         </section>}
 
         {topTracks.length > 0 && <section id="artist-top-songs" className="artist-top-songs">
           <SectionTitle icon={Music} right={<button className="text-xs text-muted-foreground px-2 py-2" onClick={() => {setSongsExpanded(true);requestAnimationFrame(() => document.getElementById("artist-discography")?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" }));}}>All songs <ChevronRight size={14} className="inline" /></button>}>Top Songs</SectionTitle>
-          <div className="artist-top-list" aria-label="Artist top songs">{topTracks.map((track, index) => <TrackRow key={track.id} track={track} index={index} queue={topQueue} queueIndex={index} />)}</div>
+          <div className="artist-top-list" aria-label="Artist top songs">{topTracks.map((track, index) => <TrackRow key={track.id} track={track} index={index} wrapTitle queue={topQueue} queueIndex={index} />)}</div>
         </section>}
 
         </div>
@@ -337,7 +336,7 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
           <div>
           <div id="artist-song-grid" className="artist-catalog-list">
               {(songsExpanded ? visibleTracks : visibleTracks.slice(0, songPreviewLimit)).map((track, index) =>
-                <TrackRow key={track.id} track={track} index={index} queue={visibleTracks} queueIndex={index} />
+                <TrackRow key={track.id} track={track} index={index} wrapTitle queue={visibleTracks} queueIndex={index} />
               )}
             </div>
           </div>
