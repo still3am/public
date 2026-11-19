@@ -37,9 +37,10 @@ export default function ArtistReleaseFollow({name,variant="icon"}){
   finally{lock.current=false;if(alive.current)setBusy(false);}
  }
  const label=error?"Retry following "+name:(followed?"Unfollow ":"Follow ")+name+" for new releases";
- const menu=variant==="menu",loading=busy||!!user&&!ready;
- return <button type="button" disabled={loading} onClick={toggle} role={menu?"menuitemcheckbox":undefined} aria-checked={menu?followed:undefined} aria-pressed={menu?undefined:followed} aria-label={label} title={label} className={menu?"artist-notification-menu-row w-full flex items-center gap-3 px-4 py-3 text-left text-sm text-popover-foreground hover:bg-accent focus-visible:bg-accent disabled:opacity-60":"artist-release-star"}>
+ const menu=variant==="menu",pill=variant==="pill",loading=busy||!!user&&!ready;
+ return <button type="button" disabled={loading} onClick={toggle} role={menu?"menuitemcheckbox":undefined} aria-checked={menu?followed:undefined} aria-pressed={menu?undefined:followed} aria-label={label} title={label} className={menu?"artist-notification-menu-row w-full flex items-center gap-3 px-4 py-3 text-left text-sm text-popover-foreground hover:bg-accent focus-visible:bg-accent disabled:opacity-60":pill?"artist-release-star artist-follow-pill":"artist-release-star"}>
   {loading?<Loader2 size={menu?18:21} className="animate-spin shrink-0"/>:<Star size={menu?18:23} className="shrink-0" fill={followed?"currentColor":"none"} strokeWidth={1.8}/>}
+  {pill&&<span>{loading?"Loading…":error?"Retry":followed?"Following":"Follow"}</span>}
   {menu&&<span className="min-w-0 flex-1">{error?"Retry follow":followed?"Following":"Follow artist"} · {name}</span>}
  </button>;
 }
