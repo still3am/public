@@ -265,9 +265,33 @@ Deno.serve(async req => {
     }
 
     if (action === 'typing_status') {
-      const records = rows(await db.MessageTyping.filter({conversation_id:id,user_id:chat.is_group?{$in:activeIds.filter(member=>member!==uid)}:peer,typing:true}, '-updated_date', 1));
-      const lastUpdate = Date.parse(records[0]?.updated_at||'');
-      return Response.json({typing:Number.isFinite(lastUpdate)&&Date.now()-lastUpdate<5000});
+      const otherIds = chat.is_group ? activeIds.filter(member => member !== uid) : [peer];
+      const records = rows(await db.MessageTyping.filter({
+        conversation_id: id,
+        user_id: { $in: otherIds },
+      }, '-updated_at', 100));
+      const latestByPerson = new Map();
+      for (const record of records) {
+        if (!latestByPerson.has(record.user_id)) latestByPerson.set(record.user_id, record);
+      }
+      const now = Date.now();
+      const typingIds = otherIds.filter(member => {
+        const record = latestByPerson.get(member);
+        const updatedAt = Date.parse(record?.updated_at || '');
+        return record?.typing === true && Number.isFinite(updatedAt) && now - updatedAt < 5000 && updatedAt <= now + 1000;
+      });
+      const profiles = typingIds.length ? rows(await db.PublicProfile.filter({
+        user_id: { $in: typingIds }, visible: true,
+      }, '-updated_date', 100)) : [];
+      const byId = new Map();
+      for (const profile of profiles) {
+        if (!byId.has(profile.user_id)) byId.set(profile.user_id, publicPerson(profile));
+      }
+      const people = typingIds.map(member => byId.get(member) || {
+        id: member,
+        display_name: chat.participant_names?.[chat.participant_ids.indexOf(member)] || 'PUBLIC listener',
+      });
+      return Response.json({ typing: people.length > 0, people });
     }
 
     if (action === 'open_media') {
