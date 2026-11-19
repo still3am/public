@@ -8,17 +8,30 @@ export default function PlaybackSeekSlider({ position, duration, onSeek, showTim
   const [preview, setPreview] = useState(null);
   const dragging = useRef(false);
   const pending = useRef(0);
+  const haptic = useRef({ touch: false, at: 0, step: 0 });
+  const tick = next => {
+    if (!haptic.current.touch || typeof navigator.vibrate !== 'function') return;
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    const step = Math.round(next / limit * 50);
+    const now = performance.now();
+    if (step === haptic.current.step || now - haptic.current.at < 80) return;
+    haptic.current.step = step;
+    haptic.current.at = now;
+    try { navigator.vibrate(5); } catch { /* Unsupported or blocked: seeking still works. */ }
+  };
   const value = clamp(preview ?? position);
   const finish = event => {
     event.stopPropagation();
     if (!dragging.current) return;
     dragging.current = false;
+    haptic.current.touch = false;
     onSeek(clamp(pending.current));
     setPreview(null);
   };
   const cancel = event => {
     event.stopPropagation();
     dragging.current = false;
+    haptic.current.touch = false;
     setPreview(null);
   };
   return <div className="public-playback-seek" data-overlay={overlay} data-dragging={preview !== null} data-disabled={!limit}>
@@ -33,6 +46,7 @@ export default function PlaybackSeekSlider({ position, duration, onSeek, showTim
         onPointerDown={event => {
           event.stopPropagation();
           dragging.current = true;
+          haptic.current = { touch: event.pointerType === 'touch', at: 0, step: Math.round(value / (limit || 1) * 50) };
           pending.current = value;
           setPreview(value);
           event.currentTarget.setPointerCapture(event.pointerId);
@@ -40,7 +54,7 @@ export default function PlaybackSeekSlider({ position, duration, onSeek, showTim
         onChange={event => {
           const next = clamp(event.target.value);
           pending.current = next;
-          if (dragging.current) setPreview(next);
+          if (dragging.current) { setPreview(next); tick(next); }
           else onSeek(next);
         }}
         onPointerUp={finish} onPointerCancel={cancel} onLostPointerCapture={cancel} onBlur={finish} />
