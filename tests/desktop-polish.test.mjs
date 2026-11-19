@@ -22,22 +22,26 @@ sidebar.useSidebarCollapsed().toggle();assert.equal(sidebar.useSidebarCollapsed(
 assert.ok(updates.includes(true)&&updates.includes(false),"player and sidebar receive synchronized events");
 const track={id:"song",title:"Desktop song",artist:"Artist",cover_art_url:"cover.jpg"};
 globalThis.__player={currentTrack:track,queue:[track],currentIndex:0,duration:120,position:30,repeat:"one",shuffle:true,muted:false,volume:.5,mixer:{bass:0,beat:0,vocals:0,treble:0,boost:1}};
+const seek=await load("src/components/PlaybackSeekSlider.jsx",`
+const React=globalThis.__React,{useState,useRef}=React,formatTime=value=>Math.floor((value||0)/60)+":"+String(Math.floor((value||0)%60)).padStart(2,"0");
+`);
+globalThis.__PlaybackSeekSlider=seek.default;
 const bar=await load("src/components/PlayerBar.jsx",`
 const React=globalThis.__React,{useState,useRef,useEffect}=React,usePlayer=()=>globalThis.__player,useToast=()=>({toast(){}}),useSidebarCollapsed=()=>({collapsed:false}),useLocation=()=>({pathname:"/"});
 const useOfflineCoverUrl=(id,url)=>url,useCoverUrl=url=>url,formatTime=value=>Math.floor((value||0)/60)+":"+String(Math.floor((value||0)%60)).padStart(2,"0");
 const Play=()=>null,Pause=Play,SkipBack=Play,SkipForward=Play,Volume2=Play,VolumeX=Play,Repeat=Play,Repeat1=Play,Shuffle=Play,ListMusic=Play,X=Play,SlidersHorizontal=Play;
-const OverflowText=({text})=>React.createElement("span",null,text);
+const PlaybackSeekSlider=globalThis.__PlaybackSeekSlider,OverflowText=({text})=>React.createElement("span",null,text);
 const DeviceConnect=()=>null,PureBadge=()=>null,FullScreenPlayer=()=>null,QueuePanel=FullScreenPlayer,TrackOptionsMenu=FullScreenPlayer,StemMixer=FullScreenPlayer;
 `);
 const html=renderToStaticMarkup(React.createElement(bar.default));
-assert.match(html,/desktop-player-transport/);assert.match(html,/desktop-player-tools/);
-assert.match(html,/desktop-player-volume hidden lg:flex/,"volume is available at laptop breakpoint");
+assert.match(html,/player-dock-transport/);assert.match(html,/player-dock-tools/);
+assert.match(html,/aria-label="Volume"/,"desktop volume control is available");
 assert.match(html,/aria-valuetext="0:30 of 2:00"/);
-assert.match(html,/aria-label="Repeat: one"/);assert.match(html,/aria-pressed="true" title="Shuffle"/);
+assert.match(html,/aria-label="Queue"/);assert.doesNotMatch(html,/aria-label="Repeat|title="Shuffle"/,"playback modes stay in Queue");
 const full=source("src/components/FullScreenPlayer.jsx"),match=full.match(/const onKey = \(e\) => \{([\s\S]*?)\n    \};/);assert.ok(match);
 let actions=[];
 const player={position:30,duration:120,volume:.5,muted:false,seek:n=>actions.push(["seek",n]),setVolume:n=>actions.push(["volume",n]),setMuted:v=>actions.push(["mute",v]),togglePlay:()=>actions.push(["toggle"])};
-const handler=(queue=false)=>new Function("p","showQueue","showMixer","loungeOpen","hasLyrics","setLyricsMode","clampVol","onClose","return e=>{"+match[1]+"};")(player,queue,false,false,false,()=>{},v=>v,()=>{});
+const handler=(queue=false)=>new Function("p","showQueue","showConnect","hasLyrics","setLyricsMode","clampVol","onClose","return e=>{"+match[1]+"};")(player,queue,false,false,()=>{},v=>v,()=>{});
 const event=(code,extra={})=>({code,target:{closest:()=>false},preventDefault(){},...extra});
 handler(true)(event("ArrowDown"));assert.deepEqual(actions,[],"queue keyboard input cannot change underlying volume");
 handler()(event("KeyM",{ctrlKey:true}));handler()(event("Space",{repeat:true}));assert.deepEqual(actions,[],"system shortcuts and held Space are ignored");
