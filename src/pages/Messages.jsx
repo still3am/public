@@ -1117,10 +1117,12 @@ function MessageReactions({ message, userId }) {
   const reactions = messageReactionBadges(message, userId, REACTIONS);
   if (!reactions.length) return null;
   const total = reactions.reduce((sum, reaction) => sum + reaction.people, 0);
+  const badgeCount = total <= 2 ? total : reactions.length;
 
   return <div
     className="public-message-reaction-group"
     data-reaction-total={total}
+    style={{ "--reaction-stack-width": (24 + (badgeCount - 1) * 17) + "px" }}
     role="group"
     aria-label="Message reactions"
   >
