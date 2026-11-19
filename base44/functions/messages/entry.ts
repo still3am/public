@@ -3,6 +3,11 @@ import {createClientFromRequest} from 'npm:@base44/sdk';
 const rows = page => Array.isArray(page) ? page : page?.items || [];
 const fail = (message, status = 400) => { throw Object.assign(new Error(message), {status}); };
 
+function messageReplySnapshot(message) {
+  const fields = ['id', 'sender_id', 'recipient_id', 'sender_name', 'text', 'track_id', 'track', 'media_type', 'media_url'];
+  return Object.fromEntries(fields.filter(field => typeof message[field] === 'string').map(field => [field, message[field]]));
+}
+
 function savedReactions(message) {
   let saved={};
   try {const value=JSON.parse(message.reactions||'{}');if(value&&typeof value==='object'&&!Array.isArray(value))saved=value;}catch{}
@@ -366,6 +371,21 @@ Deno.serve(async req => {
       const messages=rows(page);
       if(messages.some(message=>message.conversation_id!==id))fail('This history page belongs to another conversation.',403);
       if(action==='shared'&&messages.some(message=>kind==='music'?!message.track_id:kind==='gifs'?!/^https:\/\/media\.giphy\.com\/media\//.test(message.media_url||''):!['image','video'].includes(message.media_type)||!message.media_url||/^https:\/\/media\.giphy\.com\/media\//.test(message.media_url)))fail('This page belongs to another attachment category.',403);
+      const replyIds = [...new Set(messages.map(message => message.reply_to_id).filter(Boolean))];
+      const originals = replyIds.length ? rows(await db.Message.filter({
+        conversation_id: id, id: { $in: replyIds },
+      }, '-created_date', 100)) : [];
+      const originalsById = new Map(originals.map(original => [original.id, original]));
+      for (const message of messages) {
+        if (!message.reply_preview) continue;
+        try {
+          const preview = JSON.parse(message.reply_preview);
+          const original = originalsById.get(message.reply_to_id);
+          if (original && !preview.message) {
+            message.reply_preview = JSON.stringify({ ...preview, message: messageReplySnapshot(original) });
+          }
+        } catch { /* Older text-only replies remain readable. */ }
+      }
       const nextCursor=typeof page?.next_cursor==='string'?page.next_cursor:null;
       const profileIds=[...new Set([...chat.participant_ids,...messages.map(message=>message.sender_id)].filter(Boolean))];
       const profiles=await db.PublicProfile.filter({user_id:{$in:profileIds},visible:true}, '-updated_date', 200);
@@ -420,6 +440,7 @@ Deno.serve(async req => {
         quote = {
           reply_to_id:source.id,
           reply_preview:JSON.stringify({
+            message:messageReplySnapshot(source),
             sender_name:source.sender_name||chat.participant_names?.[senderIndex]||'PUBLIC listener',
             text:(source.text || (source.track_id ? 'Shared music' :
               source.media_type === 'video' ? 'Sent a video' :
