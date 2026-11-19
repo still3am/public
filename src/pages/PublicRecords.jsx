@@ -5,6 +5,7 @@ import ArtistAlbums from "@/components/ArtistAlbums";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { shareLink } from "@/lib/shareLink";
 import "./artist-editorial.css";
+import "./artist-sections.css";
 import ArtistReleaseFollow from "@/components/ArtistReleaseFollow";
 import ScrollShelf from "@/components/ScrollShelf";
 import LoadError from '@/components/LoadError';
@@ -269,7 +270,7 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
 
   return (
     <PullToRefresh onRefresh={load}>
-      <div className="artist-page artist-editorial artist-redesigned mx-auto pb-12">
+      <div className="artist-page artist-editorial artist-redesigned artist-sections-v2 mx-auto pb-12">
         {loadError && <LoadError message="This artist page couldn’t refresh." onRetry={load} />}
         <section className="artist-hero">
           <ArtistHeroBackdrop source={artist.cover_art_url || artist.avatar_url || topCover} />
@@ -298,12 +299,15 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
 
         <div className="artist-feature-grid">
         {latestTrack && <section className="artist-latest">
+          <SectionTitle icon={Disc3}>Featured song</SectionTitle>
+          <div className="artist-feature-card">
           <button className="artist-latest-cover" onClick={() => {if (p.currentTrack?.id === latestTrack.id) p.togglePlay();else p.playTrackAt(mainTracks, mainTracks.findIndex((track) => track.id === latestTrack.id));}} aria-label={(p.currentTrack?.id === latestTrack.id && p.isPlaying ? "Pause " : "Play ") + latestTrack.title}><ArtistArtwork source={latestTrack.cover_art_url} className="w-full h-full object-cover" /><span className="artist-feature-play" aria-hidden="true">{p.currentTrack?.id === latestTrack.id && p.isPlaying ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" />}</span></button>
-          <div className="min-w-0 flex-1">
-            <p className="eyebrow text-muted-foreground mb-2">Featured song</p>
+          <div className="artist-feature-copy min-w-0 flex-1">
+            <p className="eyebrow text-muted-foreground mb-2">In the spotlight</p>
             <Link to={"/track/" + latestTrack.id} className="artist-latest-title">{latestTrack.title}</Link>
             <p className="text-sm text-muted-foreground mt-1 truncate">{latestDate ? "Added " + latestDate : "In the PUBLIC catalog"}</p>
-            <div className="mt-2"><LibraryButton track={latestTrack} /></div>
+            <div className="artist-feature-save"><LibraryButton track={latestTrack} /></div>
+          </div>
           </div>
         </section>}
 
@@ -317,8 +321,8 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
         {/* Discography */}
         <section id="artist-discography" className="artist-discography mb-8">
           <SectionTitle icon={Disc3} right={
-          <span className="text-xs font-semibold text-foreground/40 bg-foreground/[0.05] rounded-full px-2.5 py-1">
-              {mainTracks.length}
+          <span className="artist-section-count">
+              {mainTracks.length} {mainTracks.length === 1 ? "song" : "songs"}
             </span>
           }>
             Songs
@@ -354,6 +358,9 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
         </section>}
         {hasAbout && <section id="artist-about" className="artist-about">
           <SectionTitle icon={Mic2}>About {artist.name}</SectionTitle>
+          <div className="artist-about-layout" data-portrait={!!(artist.avatar_url || artist.cover_art_url)}>
+          {(artist.avatar_url || artist.cover_art_url) && <div className="artist-about-portrait"><ArtistArtwork source={artist.avatar_url || artist.cover_art_url} className="artist-about-image" /></div>}
+          <div className="artist-about-content">
           <ArtistAliases artist={artist} onSaved={(aliases) => setArtist((previous) => ({ ...previous, aliases }))} />
           {artist.bio && <CollapsibleText text={artist.bio} className="artist-about-copy selectable-content leading-relaxed" clampClass="max-h-28" />}
           <dl className="artist-facts">
@@ -364,12 +371,13 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
           <ArtistCatalogInfo key={artist.id || artist.name} artist={{...artist,catalogGenres:[...new Set(tracks.map(t=>t.genre).filter(g=>g&&g!=="Other"))].slice(0,4).join(" · ")}}/>
           {socials.length > 0 && <div className="flex flex-wrap gap-2 mt-4">{socials.map((s, i) => <SocialChip key={i} href={s.href} icon={s.icon} label={s.label} />)}</div>}
           {artist.history_text && <div className="mt-6"><h3 className="font-semibold mb-3">History</h3><CollapsibleText text={artist.history_text} className="selectable-content text-sm text-muted-foreground leading-relaxed whitespace-pre-line" /></div>}
+          </div>
+          </div>
         </section>}
         {similarArtists.length > 0 && <section className="artist-similar">
           <SectionTitle icon={Users}>Similar Artists</SectionTitle>
-          <p className="artist-similar-intro">If you like {artist.name}, try these.</p>
           {similarArtists.length > 0 && <ScrollShelf className="artist-similar-list" label="Similar artists">
-            {similarArtists.map((candidate) => <Link className="artist-similar-card" key={candidate.id} to={"/records/" + encodeURIComponent(candidate.id)}><div className="artist-similar-portrait"><ArtistArtwork source={candidate.image} className="artist-similar-image" /></div><span>{candidate.name}</span></Link>)}
+            {similarArtists.map((candidate) => <Link className="artist-similar-card" key={candidate.id} to={"/records/" + encodeURIComponent(candidate.id)}><div className="artist-similar-portrait"><ArtistArtwork source={candidate.image} className="artist-similar-image" /></div><span>{candidate.name}</span>{candidate.genre && <small className="artist-similar-genre">{candidate.genre}</small>}</Link>)}
           </ScrollShelf>}
         </section>}
         {id && <SafetyControls type="artist" id={id} label="artist page" />}
