@@ -183,4 +183,25 @@ for (const [mediaType, mediaUrl, expected] of [
   assert.equal(preview.text, expected);
   assert.equal(preview.sender_name, 'Saved sender name');
 }
+// Concurrent typing identifies each active member and excludes invited people.
+const typingChat = await entities.Conversation.create({
+  dm_enabled: true, is_group: true,
+  participant_ids: ['a', 'b', 'c', 'd'],
+  participant_names: ['A', 'B', 'C', 'D'],
+  invited_ids: ['d'], admin_ids: ['a'], dm_status: 'accepted',
+});
+assert.equal((await invoke('typing', { id: typingChat.id, typing: true }, 'b')).status, 200);
+assert.equal((await invoke('typing', { id: typingChat.id, typing: true }, 'c')).status, 200);
+let typingStatus = await invoke('typing_status', { id: typingChat.id }, 'a');
+assert.equal(typingStatus.typing, true);
+assert.deepEqual(typingStatus.people.map(person => person.id).sort(), ['b', 'c']);
+assert.equal((await invoke('typing', { id: typingChat.id, typing: true }, 'd')).status, 403);
+await invoke('typing', { id: typingChat.id, typing: false }, 'b');
+typingStatus = await invoke('typing_status', { id: typingChat.id }, 'a');
+assert.deepEqual(typingStatus.people.map(person => person.id), ['c']);
+const staleTyping = data.MessageTyping.find(record => record.conversation_id === typingChat.id && record.user_id === 'c');
+staleTyping.updated_at = new Date(Date.now() - 6000).toISOString();
+typingStatus = await invoke('typing_status', { id: typingChat.id }, 'a');
+assert.equal(typingStatus.typing, false);
+assert.deepEqual(typingStatus.people, []);
 console.log('PASS group invitations, membership authorization, shared edits, reactions, replies, admin transfer, mute, limits, DM compatibility, parallel updates, creation retries, pending introductions, and removed-member access');
