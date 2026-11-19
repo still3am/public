@@ -182,6 +182,15 @@ for (const [mediaType, mediaUrl, expected] of [
   const preview = JSON.parse(reply.reply_preview);
   assert.equal(preview.text, expected);
   assert.equal(preview.sender_name, 'Saved sender name');
+  assert.equal(preview.message.id, original.id);
+  assert.equal(preview.message.media_type, mediaType);
+  assert.equal(preview.message.media_url, mediaUrl);
+  assert.equal(preview.message.reply_preview, undefined);
+  // Older replies acquire a media snapshot when their original remains available.
+  reply.reply_preview = JSON.stringify({ sender_name: 'Saved sender name', text: expected });
+  const refreshed = await invoke('read', { id: quoteChat.id }, 'quote-reader');
+  const legacyReply = refreshed.messages.find(message => message.id === reply.id);
+  assert.equal(JSON.parse(legacyReply.reply_preview).message.media_url, mediaUrl);
 }
 // Concurrent typing identifies each active member and excludes invited people.
 const typingChat = await entities.Conversation.create({
