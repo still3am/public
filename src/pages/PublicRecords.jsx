@@ -20,7 +20,6 @@ import SafetyControls from '@/components/SafetyControls';
 import TrackCard from "@/components/TrackCard";
 import PullToRefresh from "@/components/PullToRefresh";
 import ArtistNameEditor from "@/components/ArtistNameEditor";
-import CollapsibleText from "@/components/CollapsibleText";
 import TrackRow from "@/components/TrackRow";
 import LibraryButton from "@/components/LibraryButton";
 import { useCoverUrl } from "@/hooks/useCoverUrl";
@@ -361,15 +360,8 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
           {(artist.avatar_url || artist.cover_art_url) && <div className="artist-about-portrait"><ArtistArtwork source={artist.avatar_url || artist.cover_art_url} className="artist-about-image" /></div>}
           <div className="artist-about-content">
           <ArtistAliases artist={artist} onSaved={(aliases) => setArtist((previous) => ({ ...previous, aliases }))} />
-          {artist.bio && <CollapsibleText text={artist.bio} className="artist-about-copy selectable-content leading-relaxed" clampClass="max-h-28" />}
-          <dl className="artist-facts">
-            {artist.location && <div><dt>From</dt><dd>{artist.location}</dd></div>}
-            {artist.formed_year && <div><dt>Formed</dt><dd>{artist.formed_year}</dd></div>}
-            {artist.members && <div><dt>Members</dt><dd>{artist.members}</dd></div>}
-          </dl>
           <ArtistCatalogInfo key={artist.id || artist.name} artist={{...artist,catalogGenres:[...new Set(tracks.map(t=>t.genre).filter(g=>g&&g!=="Other"))].slice(0,4).join(" · ")}}/>
-          {socials.length > 0 && <div className="flex flex-wrap gap-2 mt-4">{socials.map((s, i) => <SocialChip key={i} href={s.href} icon={s.icon} label={s.label} />)}</div>}
-          {artist.history_text && <div className="mt-6"><h3 className="font-semibold mb-3">History</h3><CollapsibleText text={artist.history_text} className="selectable-content text-sm text-muted-foreground leading-relaxed whitespace-pre-line" /></div>}
+          {socials.length > 0 && <div className="artist-about-links flex flex-wrap gap-2 mt-4">{socials.map((s, i) => <SocialChip key={i} href={s.href} icon={s.icon} label={s.label} />)}</div>}
           </div>
           </div>
         </section>}
