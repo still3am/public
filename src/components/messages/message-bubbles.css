@@ -126,9 +126,9 @@
   position:absolute;
   top:-13px;
   left:auto;
-  right:12px;
+  right:min(12px,calc(100% - var(--reaction-stack-width,24px)));
   bottom:auto;
-  width:max-content;
+  width:var(--reaction-stack-width,24px);
   max-width:none;
   display:flex;
   flex-direction:row;
@@ -137,16 +137,16 @@
   gap:0;
   margin:0;
   padding:0;
-  transform:translateX(55%);
+  transform:none;
   line-height:1;
   z-index:2;
   overflow:visible;
   isolation:isolate;
 }
 .public-message-reaction-target[data-own="true"] > .public-message-reaction-group {
-  left:12px;
+  left:min(12px,calc(100% - var(--reaction-stack-width,24px)));
   right:auto;
-  transform:translateX(-55%);
+  transform:none;
 }
 .public-message-reaction-target > .public-message-reaction-group > .public-message-reaction-badge {
   display:grid;
