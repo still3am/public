@@ -19,6 +19,7 @@ import { usePlayer } from "@/context/PlayerContext";
 import { useLocation } from "react-router-dom";
 import { formatTime } from "@/lib/audio-utils";
 import FullScreenPlayer from "@/components/FullScreenPlayer";
+import PlaybackSeekSlider from "@/components/PlaybackSeekSlider";
 import QueuePanel from "@/components/QueuePanel";
 import TrackOptionsMenu from "@/components/track/TrackOptionsMenu";
 import { useSidebarCollapsed } from "@/hooks/useSidebarCollapsed";
@@ -87,12 +88,11 @@ export default function PlayerBar() {
         collapsed ? "md:left-[68px]" : "md:left-64"}`
         }>
         {/* progress (mobile - thin top accent) */}
-        <div className="desktop-player-progress h-[3px] md:h-6 w-full bg-foreground/[0.06] relative overflow-hidden">
-          <div
-            className="absolute left-0 top-0 h-[3px] bg-foreground/80"
-            style={{ width: `${pct}%` }} />
-
-          <input aria-label="Seek playback" aria-valuetext={formatTime(p.position)+" of "+formatTime(p.duration)} type="range" min="0" max={p.duration||0} step="1" value={Math.min(p.position||0,p.duration||0)} disabled={!p.duration} onChange={e=>p.seek(Number(e.target.value))} className="hidden md:block absolute inset-0 opacity-0 w-full h-full cursor-pointer disabled:cursor-default"/>
+        <div className="md:hidden h-[3px] w-full bg-foreground/[0.06] relative overflow-hidden">
+          <div className="h-full bg-foreground/80" style={{ width: Math.max(0, Math.min(100, pct)) + '%' }} />
+        </div>
+        <div className="hidden md:block px-2">
+          <PlaybackSeekSlider key={t.id} position={p.position} duration={p.duration} onSeek={p.seek} showTimes={false} />
         </div>
 
         <div className="desktop-player-content flex items-center gap-3 px-3 sm:px-5 py-3">
