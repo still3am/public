@@ -39,9 +39,10 @@ export default function ArtistCatalogInfo({ artist }) {
     </div>}
     {!biography && !history && !loading && <p className="artist-biography-empty">A biography hasn’t been added yet.</p>}
     {rows.length > 0 && <div className="artist-detail-facts artist-details-plain"><h3>Artist details</h3>
-       <dl className="catalog-song-facts artist-detail-grid">{rows.map(({label,value}) => <div key={label}>
+      <dl className="catalog-song-facts artist-detail-grid">{rows.map(({label,value}) => <div key={label}>
         <dt>{label}</dt><dd>{Array.isArray(value) ? value.join(" · ") : value}</dd>
-      </div>)}</dl>    </div>}
+      </div>)}</dl>
+    </div>}
     {loading && <p className="artist-about-status" role="status">Loading artist details…</p>}
     {error && <div className="artist-about-status" role="status">Additional details couldn’t load. <button type="button" onClick={() => setRetry(value => value + 1)}>Retry</button></div>}
     {officialWebsite && <a className="artist-official-link" href={officialWebsite} target="_blank" rel="noopener noreferrer">Official website ↗</a>}
