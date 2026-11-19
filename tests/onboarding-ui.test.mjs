@@ -51,7 +51,7 @@ for(let step=0;step<7;step++){
  assert.equal((html.match(/<h2/g)||[]).length,1,"one clear heading per screen");
  assert.match(html,/Setup progress/);
  assert.match(html,step===6?/Start listening/:step===0?/Let’s go/:/Continue/);
- if(step===1){assert.match(html,/Choose an avatar/);assert.match(html,/Upload a photo/);assert.equal((html.match(/aria-label="Choose [^"]+ avatar"/g)||[]).length,AVATAR_PRESETS.length,"onboarding offers the complete gallery");}
+ if(step===1){assert.match(html,/Choose an avatar/);assert.match(html,/Upload a photo/);assert.match(html,/PUBLIC Marketplace/,"onboarding opens the shared avatar marketplace");}
  if(step===2){assert.equal((html.match(/aria-pressed=/g)||[]).length,12,"genres begin with a short selection");assert.match(html,/More genres/);}
  if(step===5){assert.match(html,/Choose profile colors/,"opens the shared PUBLIC color editor");assert.match(html,/Add a profile song/);}
  if(step===6){assert.match(html,/Share my favorite songs/);assert.match(html,/<details/,"additional privacy detail is collapsed");}
