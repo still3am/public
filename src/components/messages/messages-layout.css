@@ -430,3 +430,72 @@
   max-height:calc(var(--messages-viewport-height,100dvh) * .22);
 }
 
+/* Paint the conversation through the phone's safe areas. */
+.public-messages {
+  padding:0 !important;
+}
+.public-messages-inbox {
+  padding-top:env(safe-area-inset-top,0px);
+}
+.public-messages-thread > .public-messages-thread-header {
+  padding-top:calc(10px + env(safe-area-inset-top,0px));
+  min-height:calc(104px + env(safe-area-inset-top,0px));
+  height:calc(104px + env(safe-area-inset-top,0px));
+}
+.public-messages[data-compact="true"] .public-messages-thread > .public-messages-thread-header {
+  padding-top:calc(4px + env(safe-area-inset-top,0px));
+  min-height:calc(56px + env(safe-area-inset-top,0px));
+  height:calc(56px + env(safe-area-inset-top,0px));
+}
+.public-messages-thread[data-wallpaper="true"] > :is(.public-messages-thread-header,.public-messages-compose) {
+  background:transparent;
+  border-color:transparent;
+}
+.public-message-typing-people {
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:12px;
+  flex:0 0 auto;
+  min-width:0;
+  padding:8px 0 10px;
+}
+.public-message-typing-person {
+  display:flex;
+  align-items:flex-end;
+  gap:8px;
+  min-width:0;
+  max-width:100%;
+  padding-left:2px;
+}
+.public-message-typing-person > .public-messages-avatar {
+  flex:0 0 34px;
+  margin:0 2px;
+  border:0;
+  background:transparent;
+}
+.public-message-typing-body {
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  min-width:0;
+  gap:4px;
+}
+.public-message-typing-body > .public-message-author {
+  max-width:40ch;
+  margin:0 0 0 8px;
+  background:transparent;
+}
+.public-message-typing-body > .public-message-typing {
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  flex:0 0 auto;
+  width:58px;
+  min-height:36px;
+  margin:0;
+  padding:8px 12px;
+  box-sizing:border-box;
+  border-radius:18px 18px 18px 6px;
+}
+
