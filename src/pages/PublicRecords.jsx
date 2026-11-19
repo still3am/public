@@ -29,7 +29,7 @@ import { useToast } from "@/components/ui/use-toast";
 import {
   ChevronLeft,
   ChevronRight,
-  MoreHorizontal, Share2, Shuffle, Info, Search, X,
+  MoreHorizontal, Share2, Shuffle, Info,
   Loader2,
   Music,
   Mic2,
@@ -162,12 +162,11 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
     return () => {active = false;};
   }, [artist?.name, tracks]);
   const [loading, setLoading] = useState(true);
-  const [query, setQuery] = useState(""),[sort, setSort] = useState("recent");
   const [songsExpanded, setSongsExpanded] = useState(false);
   const songPreviewLimit = 6;
   const mainTracks = useMemo(() => tracks.filter((track) => artistTrackRole(track, artist?.name) === "lead"), [tracks, artist?.name]);
   const appearanceTracks = useMemo(() => tracks.filter((track) => artistTrackRole(track, artist?.name) === "appearance"), [tracks, artist?.name]);
-  const visibleTracks = useMemo(() => {const term = query.trim().toLowerCase(),list = mainTracks.filter((t) => !term || [t.title, t.artist, t.uploader_name].some((value) => (value || "").toLowerCase().includes(term)));if (sort === "recent") list.sort((a, b) => (Date.parse(b.created_date) || 0) - (Date.parse(a.created_date) || 0));if (sort === "popular") list.sort((a, b) => (b.play_count || 0) - (a.play_count || 0));if (sort === "title") list.sort((a, b) => (a.title || "").localeCompare(b.title || ""));return list;}, [mainTracks, query, sort]);
+  const visibleTracks = useMemo(() => [...mainTracks].sort((a, b) => (Date.parse(b.created_date) || 0) - (Date.parse(a.created_date) || 0)), [mainTracks]);
 
   const loadVersion = useRef(0);
   const [loadError, setLoadError] = useState(false);
@@ -186,7 +185,7 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
   }
 
   useEffect(() => {
-    setArtist(null);setTracks([]);setQuery("");setSort("recent");setSongsExpanded(false);load();
+    setArtist(null);setTracks([]);setSongsExpanded(false);load();
     return () => {loadVersion.current++;};
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, fallbackArtist?.name, user?.id, user?.show_explicit, user?.adult_confirmed]);
@@ -332,20 +331,14 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
             </div> :
 
           <div>
-            <div className="artist-song-tools">
-              <label className="artist-song-search"><Search size={17} aria-hidden="true" /><input type="search" value={query} onChange={event => setQuery(event.target.value)} placeholder="Search songs" aria-label={"Search songs by " + artist.name} />{query && <button type="button" className="artist-clear-search" onClick={() => setQuery("")} aria-label="Clear song search"><X size={16} /></button>}</label>
-              <select value={sort} onChange={event => setSort(event.target.value)} aria-label="Sort artist songs"><option value="recent">Recently added</option><option value="popular">Most played</option><option value="title">Title</option></select>
-            </div>
-          {query.trim() && <p className="artist-search-count" role="status">{visibleTracks.length} {visibleTracks.length === 1 ? "song" : "songs"} found</p>}
           <div id="artist-song-grid" className="artist-catalog-list">
-              {!visibleTracks.length && <div className="artist-search-empty" role="status"><Search size={24} aria-hidden="true" /><h3>No songs found</h3><p>Try a different song title.</p><button type="button" className="playlist-action" onClick={() => setQuery("")}>Clear search</button></div>}
-              {(songsExpanded || query.trim() ? visibleTracks : visibleTracks.slice(0, songPreviewLimit)).map((track, index) =>
+              {(songsExpanded ? visibleTracks : visibleTracks.slice(0, songPreviewLimit)).map((track, index) =>
                 <TrackRow key={track.id} track={track} index={index} queue={visibleTracks} queueIndex={index} />
               )}
             </div>
           </div>
           }
-          {!query.trim() && visibleTracks.length > songPreviewLimit && <div className="artist-song-pagination flex items-center justify-between gap-3 mt-5">
+          {visibleTracks.length > songPreviewLimit && <div className="artist-song-pagination flex items-center justify-between gap-3 mt-5">
             <span className="text-xs text-muted-foreground">{songsExpanded ? visibleTracks.length : songPreviewLimit} of {visibleTracks.length} songs</span>
             <button type="button" aria-expanded={songsExpanded} aria-controls="artist-song-grid" className="playlist-action px-4 py-2.5 text-sm" onClick={() => {
               setSongsExpanded((value) => !value);
