@@ -165,7 +165,7 @@ export default function TrackDetail() {
     <div className="track-page track-editorial release-page mx-auto" style={releaseTheme}>
       <ReleaseAtmosphere theme={releaseTheme} />
       <div className="release-toolbar">
-        <button onClick={() => window.history.state?.idx > 0 ? nav(-1) : nav("/search")} className="release-round" aria-label="Back"><ChevronLeft size={26} /></button>
+        <button data-navigation-circle="" onClick={() => window.history.state?.idx > 0 ? nav(-1) : nav("/search")} className="release-round" aria-label="Back"><ChevronLeft size={26} /></button>
         <div className="release-toolbar-actions">
           <button className="release-round" aria-label="Share song" onClick={async () => {try {const result = await shareTrack(track);if (result === "copied") toast({ title: "Song link copied" });} catch {toast({ title: "Couldn’t share this song. Please try again.", variant: "destructive" });}}}><Share2 size={21} /></button>
           <TrackOptionsMenu track={track} size={22} buttonClassName="release-round" items={ownerItems} />

@@ -707,7 +707,7 @@ function MessagesPage({ user }) {
         </div>}
         <header className="public-messages-thread-header">
           {reply && <button type="button" className="public-message-close-reply" aria-label="Cancel reply" disabled={busy} onClick={() => setReply(null)}><X size={23} /></button>}
-          <button className="public-messages-back" onClick={() => setParams({})} aria-label="Back to inbox"><ChevronLeft size={23} /></button>
+          <button data-navigation-circle="" className="public-messages-back" onClick={() => setParams({})} aria-label="Back to inbox"><ChevronLeft size={23} /></button>
           {readError?.id === id ? <p role="alert" className="public-messages-list-empty">{readError.message} <button type="button" className="underline" onClick={() => loadThread(id)}>Retry</button></p> : !thread && <p role="status" className="public-messages-list-empty">Loading conversation…</p>}
         {thread && currentPeer && <button type="button" className="public-messages-peer" aria-label={"Conversation details for " + peerName(thread.chat)} onClick={() => {
             setDetailsTab('info');
@@ -723,7 +723,7 @@ function MessagesPage({ user }) {
         {thread && currentPeer && !groupInvited && <Dialog open={chatDetailsOpen} onOpenChange={setChatDetailsOpen}>
           <DialogContent className="public-chat-details" style={viewportStyle} data-compact={viewport.height < 480} data-group={Boolean(thread.chat.is_group)} data-tab={detailsTab} showClose={false}>
             <header className="public-chat-details-header">
-              <button type="button" aria-label="Close conversation details" onClick={() => setChatDetailsOpen(false)}><ChevronLeft size={22} /></button>
+              <button data-navigation-circle="" type="button" aria-label="Close conversation details" onClick={() => setChatDetailsOpen(false)}><ChevronLeft size={22} /></button>
               <span className="public-chat-details-heading">Conversation</span>
               <button type="button" className="public-chat-details-done" onClick={() => setChatDetailsOpen(false)}>Done</button>
             </header>

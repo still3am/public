@@ -103,7 +103,7 @@ export default function SongTransitions() {
     <div className="fixed inset-0 bg-background z-[70] flex flex-col text-foreground md:relative md:inset-auto md:z-auto md:max-w-4xl md:mx-auto md:border md:rounded-3xl md:overflow-hidden">
       {/* Top bar */}
       <div className="top-bar-safe flex items-center px-3 pt-2 pb-3 shrink-0">
-        <button
+        <button data-navigation-circle=""
           onClick={back}
           className="tap-target -ml-1 inline-flex items-center gap-1 font-medium hover:opacity-70 transition"
           aria-label="Back">

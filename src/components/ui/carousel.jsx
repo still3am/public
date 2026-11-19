@@ -152,7 +152,7 @@ const CarouselPrevious = React.forwardRef(/** @param {any} props */ ({ className
   const { orientation, scrollPrev, canScrollPrev } = useCarousel()
 
   return (
-    (<Button
+    (<Button data-navigation-circle=""
       ref={ref}
       variant={variant}
       size={size}
@@ -173,7 +173,7 @@ const CarouselNext = React.forwardRef(/** @param {any} props */ ({ className, va
   const { orientation, scrollNext, canScrollNext } = useCarousel()
 
   return (
-    (<Button
+    (<Button data-navigation-circle=""
       ref={ref}
       variant={variant}
       size={size}

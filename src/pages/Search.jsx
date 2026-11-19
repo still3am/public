@@ -220,7 +220,7 @@ export default function Search() {
         genre ?
         <div>
             <div className="flex items-center gap-3 mb-3">
-              <button
+              <button data-navigation-circle=""
               onClick={() => chooseGenre(null)}
               className="tap-target rounded-full hover:bg-foreground/[0.06]"
               aria-label="Back to genres">

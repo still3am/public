@@ -149,9 +149,9 @@ export default function DiscoverPeople({ profileId, active = true, layout = "dec
        </div>
       </div>
       <footer className="discover-deck-controls">
-       <button type="button" disabled={people.length < 2} onClick={() => navigate(-1)} aria-label="Previous person"><ChevronLeft size={18} /></button>
+       <button data-navigation-circle="" type="button" disabled={people.length < 2} onClick={() => navigate(-1)} aria-label="Previous person"><ChevronLeft size={18} /></button>
        <div role="status" aria-live="polite" aria-atomic="true"><strong>{position + 1} <span>/ {people.length}</span></strong><small className="discover-mobile-hint">Swipe to discover</small><small className="discover-desktop-hint">Find your people</small></div>
-       <button type="button" disabled={people.length < 2} onClick={() => navigate(1)} aria-label="Next person"><span className="sr-only">Next</span><ChevronRight size={18} /></button>
+       <button data-navigation-circle="" type="button" disabled={people.length < 2} onClick={() => navigate(1)} aria-label="Next person"><span className="sr-only">Next</span><ChevronRight size={18} /></button>
       </footer>
      </>}
   </section>;

@@ -34,7 +34,7 @@ export default function CommunityPreview(){
  }
  return <div className="community-preview-page">
   <MotionGradient key={selected.id} colors={selected.colors} speed={.65} className="community-preview-background"/>
-  <header className="community-preview-heading"><Link to="/" aria-label="Back to PUBLIC"><ArrowLeft size={20}/></Link><div><h1>Profiles</h1></div></header>
+  <header className="community-preview-heading"><Link data-navigation-circle="" to="/" aria-label="Back to PUBLIC"><ArrowLeft size={20}/></Link><div><h1>Profiles</h1></div></header>
   <div className="community-preview-layout">
    <nav className="community-preview-people" aria-label="Choose a profile">{profiles.map(profile=>{const a=AVATAR_PRESETS.find(row=>row.id===profile.avatar);return <button key={profile.id} type="button" aria-pressed={selected.id===profile.id} onClick={()=>{setParams({profile:profile.id},{replace:true});setError('');}}><Avatar user={{avatar_url:a?.url,display_name:profile.name}} size={48} motion/><span><strong>{profile.name}</strong><small>@{profile.handle}</small></span>{selected.id===profile.id?<Check size={17}/>:<ArrowRight size={17}/>}</button>;})}</nav>
    <section className="community-preview-profile" aria-label={selected.name+' profile'}>

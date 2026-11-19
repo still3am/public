@@ -272,7 +272,7 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
         {loadError && <LoadError message="This artist page couldn’t refresh." onRetry={load} />}
         <section className="artist-hero">
           <ArtistHeroBackdrop source={artist.cover_art_url || artist.avatar_url || topCover} />
-          <button onClick={() => window.history.state?.idx > 0 ? nav(-1) : nav("/search")} className="artist-back" aria-label="Back"><ChevronLeft size={25} /></button>
+          <button data-navigation-circle="" onClick={() => window.history.state?.idx > 0 ? nav(-1) : nav("/search")} className="artist-back" aria-label="Back"><ChevronLeft size={25} /></button>
           <div className="artist-hero-actions">
             <ArtistReleaseFollow key={(user?.id || "guest") + ":" + artist.name} name={artist.name} variant="pill" />
             <DropdownMenu><DropdownMenuTrigger asChild><button type="button" className="artist-more-button" aria-label={"More options for " + artist.name}><MoreHorizontal size={25} /></button></DropdownMenuTrigger>

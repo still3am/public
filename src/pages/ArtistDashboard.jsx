@@ -139,7 +139,7 @@ export default function ArtistDashboard() {
     <div className="max-w-4xl mx-auto">
       {/* Header */}
       <div className="flex items-center gap-3 mb-6">
-        <Link
+        <Link data-navigation-circle=""
           to="/artist-registration"
           className="w-9 h-9 rounded-full border border-border grid place-items-center shrink-0 hover:bg-foreground/5 transition"
           aria-label="Back to profile">

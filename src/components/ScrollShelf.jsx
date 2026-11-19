@@ -78,8 +78,8 @@ export default function ScrollShelf({children,className="",label="Music shelf",p
   event.preventDefault();
   event.currentTarget.scrollLeft=start.left-dx;
  };
- const previous=<button key="previous" type="button" className={paged?"shelf-page-arrow":undefined} disabled={state.start} aria-label={"Previous "+label} onClick={()=>move(-1)}><ChevronLeft size={17}/></button>;
- const next=<button key="next" type="button" className={paged?"shelf-page-arrow":undefined} disabled={state.end} aria-label={"Next "+label} onClick={()=>move(1)}><ChevronRight size={17}/></button>;
+ const previous=<button data-navigation-circle="" key="previous" type="button" className={paged?"shelf-page-arrow":undefined} disabled={state.start} aria-label={"Previous "+label} onClick={()=>move(-1)}><ChevronLeft size={17}/></button>;
+ const next=<button data-navigation-circle="" key="next" type="button" className={paged?"shelf-page-arrow":undefined} disabled={state.end} aria-label={"Next "+label} onClick={()=>move(1)}><ChevronRight size={17}/></button>;
  const dotsStart=Math.max(0,Math.min(state.index-3,state.count-7));
  const dots=paged?<div key="pages" className="shelf-page-dots" aria-label={label+" pages"}>{Array.from({length:Math.min(7,state.count)},(_,offset)=>{const index=dotsStart+offset;return <button key={index} type="button" aria-label={"Show item "+(index+1)+" in "+label} aria-pressed={index===state.index} onClick={()=>goTo(index)}><span/></button>;})}</div>:null;
  const controls=<div className={paged?"paged-shelf-controls":"desktop-shelf-controls"} hidden={!state.overflow}>{paged?[previous,dots,next]:[previous,next]}</div>;
