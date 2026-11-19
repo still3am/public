@@ -102,6 +102,7 @@ export default function FullScreenPlayer({ onClose }) {
     const onKey = (e) => {
       if (e.metaKey || e.ctrlKey || e.altKey || e.defaultPrevented || e.target?.closest?.("button,a,input,textarea,select,[contenteditable=true],[role=menu],[data-public-menu]")) return;
       if (e.repeat && e.code === "Space") return;
+      if (showQueue || showConnect) return;
       switch (e.code) {
         case "Space":
           e.preventDefault();
@@ -138,7 +139,7 @@ export default function FullScreenPlayer({ onClose }) {
     };
     window.addEventListener("keydown", onKey);
     return () => window.removeEventListener("keydown", onKey);
-  }, [p, onClose, hasLyrics]);
+  }, [p, onClose, hasLyrics, showQueue, showConnect]);
 
   // Lock the background page while the full-screen player is open so the drag-
   // to-dismiss gesture can't scroll / overscroll the Home feed behind it.
