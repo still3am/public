@@ -15,7 +15,7 @@ const Link="a",Loader2=()=>null,Mic2=Loader2,LoadError=Loader2,PullToRefresh="di
 const artist=await load("src/pages/PublicRecords.jsx",common+`
 const useParams=()=>({id:"artist"}),useNavigate=()=>()=>{},useToast=()=>({toast(){}}),usePlayer=()=>globalThis.__player,useAuth=()=>({user:null});
 const base44={},getArtists=async()=>[],getPublishedTracks=async()=>[],fetchArtistTracks=async()=>[],artistTrackRole=t=>t.artist==="Artist"?"lead":"appearance",useCoverUrl=url=>url;
-const ArtistCatalogInfo="artist-info",ArtistReleaseFollow=()=>null,ArtistAliases=()=>null,ArtistAlbums=()=>null,DropdownMenu="div",DropdownMenuTrigger="button",DropdownMenuContent="div",DropdownMenuItem="button",MoreHorizontal=()=>null,Share2=MoreHorizontal,Shuffle=MoreHorizontal,Info=MoreHorizontal,Search=MoreHorizontal;
+const ArtistCatalogInfo="artist-info",ArtistReleaseFollow=()=>null,ArtistAliases=()=>null,ArtistAlbums=()=>null,DropdownMenu="div",DropdownMenuTrigger="button",DropdownMenuContent="div",DropdownMenuItem="button",MoreHorizontal=()=>null,Share2=MoreHorizontal,Shuffle=MoreHorizontal,Info=MoreHorizontal,Search=MoreHorizontal,X=MoreHorizontal;
 const SafetyControls=()=>null,TrackCard=SafetyControls,TrackRow=SafetyControls,ArtistNameEditor=SafetyControls,CollapsibleText=SafetyControls,LibraryButton=SafetyControls,ScrollShelf="section";
 const ChevronLeft=Mic2,ChevronRight=Mic2,Music=Mic2,Sparkles=Mic2,Globe=Mic2,Calendar=Mic2,Users=Mic2,MapPin=Mic2,Disc3=Mic2,Headphones=Mic2,Play=Mic2,Pause=Mic2,ExternalLink=Mic2;
 `);
