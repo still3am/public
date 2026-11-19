@@ -29,7 +29,7 @@ import { useToast } from "@/components/ui/use-toast";
 import {
   ChevronLeft,
   ChevronRight,
-  MoreHorizontal, Share2, Shuffle, Info,
+  MoreHorizontal, Share2, Shuffle, Info, Search,
   Loader2,
   Music,
   Mic2,
@@ -322,12 +322,18 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
               <p className="text-sm text-foreground/50">No lead-artist songs are listed yet. Featured songs are shown in Appears On.</p>
             </div> :
 
+          <div>
+            <div className="artist-song-tools">
+              <label className="artist-song-search"><Search size={17} aria-hidden="true" /><input type="search" value={query} onChange={event => setQuery(event.target.value)} placeholder="Search songs" aria-label={"Search songs by " + artist.name} /></label>
+              <select value={sort} onChange={event => setSort(event.target.value)} aria-label="Sort artist songs"><option value="recent">Recently added</option><option value="popular">Most played</option><option value="title">Title</option></select>
+            </div>
           <div id="artist-song-grid" className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4">
               {!visibleTracks.length && <div className="collection-empty col-span-full"><h2>No matching songs</h2><button className="playlist-action" onClick={() => setQuery("")}>Show all songs</button></div>}
               {(songsExpanded || query.trim() ? visibleTracks : visibleTracks.slice(0, songPreviewLimit)).map((t) =>
             <TrackCard key={t.id} track={t} queue={visibleTracks} />
             )}
             </div>
+          </div>
           }
           {!query.trim() && visibleTracks.length > songPreviewLimit && <div className="flex items-center justify-between gap-3 mt-5">
             <span className="text-xs text-muted-foreground">{songsExpanded ? visibleTracks.length : songPreviewLimit} of {visibleTracks.length} songs</span>
