@@ -58,4 +58,17 @@ globalThis.__player.currentTrack=null;tree=renderDetail({...tracks[0],created_da
 all(tree,n=>n.props?.className==="release-play-button")[0].props.onClick();assert.equal(calls.at(-1).queue[0].id,"song1");
 assert.equal(all(tree,n=>n.props?.className==="track-detail-columns")[0].props.children.filter(Boolean).length,2,"lyrics and credits remain available");
 assert.equal(all(tree,n=>n.type==="img").length,0,"missing artwork uses the fallback");
+globalThis.__player.setShuffle=value=>calls.push(["shuffle",value]);
+globalThis.__player.currentTrack=null;globalThis.__player.shuffle=false;
+tree=renderDetail(tracks[0]);
+await all(tree,n=>n.props?.className==="release-add-button release-shuffle-button")[0].props.onClick();
+assert.deepEqual(calls.at(-2),["shuffle",true]);
+assert.deepEqual(calls.at(-1).queue.map(track=>track.id),["song1","song2"],"Shuffle queues the current song and artist tracks");
+globalThis.__player.currentTrack=tracks[0];globalThis.__player.shuffle=true;
+tree=renderDetail(tracks[0]);const beforeToggle=calls.length;
+await all(tree,n=>n.props?.className==="release-add-button release-shuffle-button")[0].props.onClick();
+assert.equal(calls.length,beforeToggle+1,"changing shuffle on the active song does not restart it");
+assert.deepEqual(calls.at(-1),["shuffle",false]);
+globalThis.__player.currentTrack=null;values[6]=[];index=0;tree=detail.default();
+assert.equal(all(tree,n=>n.props?.className==="release-add-button release-shuffle-button")[0].props.disabled,true,"shuffle is unavailable when there is only one song");
 console.log("PASS artist and track playback, recommendation shelves, missing-content states and desktop alphabet");
