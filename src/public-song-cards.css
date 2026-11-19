@@ -8,7 +8,7 @@
 .public-song-art-fallback{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;width:100%;height:100%;padding:16px;box-sizing:border-box;color:hsl(var(--foreground)/.45)}
 .public-song-art-fallback>span{font-size:10px;text-align:center}
 .public-song-art-shade{position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,#0002,transparent 30%,transparent 60%,#0004);z-index:1}
-.public-app .public-song-card .public-song-play{position:absolute;z-index:2;right:10px;bottom:10px;display:grid;place-items:center;width:42px;height:42px;min-width:42px;min-height:42px;padding:0;border-radius:50%;color:white}
+.public-app .public-song-card .public-song-play{position:absolute;z-index:2;right:10px;bottom:10px;display:grid;place-items:center;width:44px;height:44px;min-width:44px;min-height:44px;padding:0;border-radius:50%;color:white}
 .public-app .public-song-card .public-song-menu{position:absolute;z-index:3;top:8px;right:8px}
 .public-app .public-song-card .public-song-menu-button{display:grid;place-items:center;width:36px;height:36px;min-width:36px;min-height:36px;padding:0;border-radius:50%}
 .public-song-art{--glass-button-ink:#fff;--glass-button-fill:rgb(255 255 255 / .14);--glass-button-edge:rgb(255 255 255 / .38)}
@@ -28,6 +28,12 @@
 .public-app .public-song-row .song-row-credit{font-size:12px;line-height:1.5}
 .public-app :is(.shared-song,.moment-song-card,.public-message-song,.queue-upcoming-row){border-color:hsl(var(--foreground)/.12);background-color:hsl(var(--background)/.12);box-shadow:inset 0 1px 0 hsl(var(--foreground)/.04)}
 @media(hover:hover){.public-app .music-card.public-song-card:hover{transform:none;border-color:hsl(var(--foreground)/.25);background:hsl(var(--foreground)/.035)}}
-@media(max-width:639px){.public-app .music-card.public-song-card{padding:6px;border-radius:17px}.public-app .public-song-card .public-song-art{border-radius:12px}.public-app .public-song-card .public-song-copy{padding:10px 3px 4px}.public-app .public-song-card .public-song-play{right:8px;bottom:8px;width:38px;height:38px;min-width:38px;min-height:38px}.public-song-duration{left:8px;bottom:9px;font-size:9px}.public-song-title{font-size:12px}}
+@media(max-width:639px){.public-app .music-card.public-song-card{padding:6px;border-radius:17px}.public-app .public-song-card .public-song-art{border-radius:12px}.public-app .public-song-card .public-song-copy{padding:10px 3px 4px}.public-app .public-song-card .public-song-play{right:8px;bottom:8px;width:44px;height:44px;min-width:44px;min-height:44px}.public-song-duration{left:8px;bottom:9px;font-size:9px}.public-song-title{font-size:12px}}
 @keyframes public-card-bars{to{transform:scaleY(.4)}}
 @media(prefers-reduced-motion:reduce){.public-song-playing>i{animation:none}.public-app .music-card.public-song-card{transition:none}}
+.public-app .profile-rotation .rotation-card{border:1px solid hsl(var(--foreground)/.1);border-radius:20px;background:hsl(var(--background)/.14);box-shadow:0 4px 18px #00000008;overflow:hidden}
+.public-app .profile-rotation .rotation-art{border-radius:14px;overflow:hidden}
+.public-app .profile-rotation .rotation-caption{padding:12px 8px}
+.public-app .profile-rotation .rotation-caption>strong{font-size:13px;line-height:1.4}
+.public-app .profile-rotation .rotation-caption>span{font-size:11px;line-height:1.5;margin-top:6px}
+
