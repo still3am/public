@@ -108,24 +108,5 @@
 .public-app .artwork-content .track-page.track-editorial.track-artist-layout .release-header-full.has-release-art .release-art{visibility:visible;width:100%;height:100%;max-width:none;margin:0;border-radius:0}
 .public-app .artwork-content .track-page.track-editorial.track-artist-layout .release-header-full .release-art img{position:absolute;inset:0;display:block;width:100%;height:100%;max-width:none;object-fit:cover;object-position:center}
 
-/* Break the track hero out of the padded content column so the cover reaches both screen edges. */
-.public-app .artwork-content .track-page.track-editorial.track-artist-layout .release-header-full{position:relative;display:flex;width:100vw;max-width:none;min-height:clamp(500px,46vw,640px);height:auto;margin:0 calc(50% - 50vw) 38px;padding:0;border:0;border-radius:0;overflow:hidden;isolation:isolate;background:#17171a;}
-.public-app .artwork-content .track-page.track-editorial.track-artist-layout .release-header-full.has-release-art .release-art{position:absolute!important;inset:0!important;z-index:0!important;display:block!important;visibility:visible!important;width:100%!important;height:100%!important;max-width:none!important;aspect-ratio:auto!important;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;overflow:hidden!important;}
-.public-app .artwork-content .track-page.track-editorial.track-artist-layout .release-header-full.has-release-art .release-art img{position:absolute!important;inset:0!important;display:block!important;visibility:visible!important;width:100%!important;height:100%!important;max-width:none!important;max-height:none!important;object-fit:cover!important;object-position:center 30%!important;}
-.public-app .artwork-content .track-page.track-editorial.track-artist-layout .release-header-full .track-hero-shade{z-index:1;}
-.public-app .artwork-content .track-page.track-editorial.track-artist-layout .release-header-full .track-release-info{z-index:2;}
-.public-app .artwork-content .track-page.track-editorial.track-artist-layout .release-header-full .release-toolbar{z-index:3;}
-@media(max-width:767px){
- .public-app .artwork-content .track-page.track-editorial.track-artist-layout .release-header-full{width:100vw;min-height:clamp(500px,135vw,650px);margin:0 calc(50% - 50vw) 30px;padding:0;border-radius:0;}
- .public-app .artwork-content .track-page.track-editorial.track-artist-layout .release-header-full.has-release-art .release-art{inset:0!important;width:100%!important;height:100%!important;border-radius:0!important;}
- .public-app .artwork-content .track-page.track-editorial.track-artist-layout .release-header-full.has-release-art .release-art img{object-position:center 30%!important;}
-}
-
-/* Match the artist page: the track hero bleeds across the artwork workspace, not a nested padded card. */
-.public-app .artwork-content .page-surface .track-page.track-editorial.track-artist-layout{padding-inline:0;}
-.public-app .artwork-content .track-page.track-editorial.track-artist-layout .release-header-full{width:calc(100% + 2 * var(--app-gutter));margin:0 calc(-1 * var(--app-gutter)) 38px;padding:0;border:0;border-radius:0;}
-@media(max-width:767px){
- .public-app .artwork-content .track-page.track-editorial.track-artist-layout .release-header-full{width:calc(100% + 2 * var(--app-gutter));margin:0 calc(-1 * var(--app-gutter)) 30px;padding:0;border:0;border-radius:0;}
-}
 
 
