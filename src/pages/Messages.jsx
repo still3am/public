@@ -186,6 +186,7 @@ function MessagesPage({ user }) {
   const [drafts, setDrafts] = useState(() => {try{return readMessageDrafts(window.sessionStorage,user?.id);}catch{return new Map();}});
   useEffect(()=>{try{writeMessageDrafts(window.sessionStorage,user?.id,drafts);}catch{}},[drafts,user?.id]);
   const draft = drafts.get(id) || '';
+  const lastTypedAt = useRef(0);
   const draftText = useRef(draft);
   draftText.current = draft;
   const typingMisses = useRef(0);
@@ -323,7 +324,9 @@ function MessagesPage({ user }) {
       if (!active || typingPollLock.current||document.hidden||!navigator.onLine) return;
       typingPollLock.current = true;
       try {
-        await messages('typing', { id, typing: Boolean(draftText.current.trim()) });
+        const typing = Boolean(draftText.current.trim()) &&
+          document.activeElement === draftInput.current && Date.now() - lastTypedAt.current < 5000;
+        await messages('typing', { id, typing });
         const result = await messages('typing_status', { id });
         if (active) {
           if (result.typing) {typingMisses.current = 0;setPeerTyping(true);} else
@@ -337,7 +340,11 @@ function MessagesPage({ user }) {
     setPeerTyping(false);
     void refreshTyping();
     const timer = setInterval(refreshTyping, 2500);
-    return () => {active = false;clearInterval(timer);};
+    return () => {
+      active = false;
+      clearInterval(timer);
+      if (navigator.onLine) void messages('typing', { id, typing: false }).catch(() => {});
+    };
   }, [id]);
   async function perform(work) {
     if (operation.current) return;
@@ -508,7 +515,9 @@ function MessagesPage({ user }) {
     void loadFollowedPeople().catch(() => {if (active) setContactError(true);});
     return () => {active = false;};
   }, [searching, contacts, retry]);
-  const matches = searching && contacts ? contacts.filter((person) => person.name.toLocaleLowerCase().includes(searchTerm)) : [];
+  const matches = searching && contacts ? contacts.filter((person) => [person.name, person.display_name, person.username].some(value =>
+    typeof value === 'string' && value.toLocaleLowerCase().includes(searchTerm.replace(/^@/, ''))
+  )) : [];
   function startChat(target) {
     void perform(async () => {
       const chat = await messages('start', target);
@@ -620,7 +629,7 @@ function MessagesPage({ user }) {
           {groupMode && <div className="public-group-create"><input aria-label="Group name" placeholder="Group name" maxLength={80} value={groupName} onChange={(event) => setGroupName(event.target.value)} /><div className="public-group-selected" aria-label="Selected group members">{groupPeople.map((person) => <button key={person.id} onClick={() => setGroupPeople((previous) => previous.filter((item) => item.id !== person.id))}>{person.name}<X size={13} /></button>)}</div><button disabled={busy || groupPeople.length < 2 || !groupName.trim()} onClick={createGroup}>Create group · {groupPeople.length + 1}/20</button><p>Add at least two people. Private accounts and people who aren’t mutual followers receive an invitation.</p></div>}
 
           {!groupMode && (recipient || to) && <button className="mb-3 rounded-lg border px-3 py-2" type="button" disabled={busy} onClick={() => startChat(recipient ? { recipientId: recipient } : { username: to })}>{recipientName ? `Message ${recipientName}` : "Start message"}</button>}
-          <input type="search" aria-label="Search people you follow by name" placeholder="Search by name" className="mb-2 w-full rounded-xl border bg-muted px-3 py-2 text-base" maxLength={80} value={contactQuery} onChange={(event) => setContactQuery(event.target.value)} />
+          <input type="search" aria-label="Search people you follow by name or username" placeholder="Name or username" className="mb-2 w-full rounded-xl border bg-muted px-3 py-2 text-base" maxLength={80} value={contactQuery} onChange={(event) => setContactQuery(event.target.value)} />
           {matches.map((person) => <button type="button" className="public-messages-row" key={person.id} disabled={busy || groupMode && groupPeople.length >= 19 && !groupPeople.some((item) => item.id === person.id)} onClick={() => {if (!groupMode) {startChat({ recipientId: person.id });return;}setGroupPeople((previous) => previous.some((item) => item.id === person.id) ? previous.filter((item) => item.id !== person.id) : previous.length < 19 ? [...previous, person] : previous);}} aria-pressed={groupMode ? groupPeople.some((item) => item.id === person.id) : undefined}>
             <PersonAvatar person={person} />
             <span className="truncate font-semibold">{person.name}</span>{groupMode ? <span className="public-group-selection-mark" data-selected={groupPeople.some((item) => item.id === person.id)}>{groupPeople.some((item) => item.id === person.id) && <Check size={14} />}</span> : <ChevronRight size={14} aria-hidden="true" />}
@@ -852,10 +861,10 @@ function MessagesPage({ user }) {
               </div>
               {savingReaction && <p role="status" className="public-message-reaction-status">Saving reaction…</p>}
               {error && <p role="alert" className="rounded-xl border bg-card p-3 text-sm">{error}</p>}
-              <div className="public-message-menu-preview">{activeMenu.text || (activeMenu.track_id ? 'Shared a song' : messageGifId(activeMenu) ? 'Sent a GIF' : 'Message')}</div>
+              <div className="public-message-menu-preview">{messagePreview(activeMenu)}</div>
               <div className="public-message-menu-items">
               {canSend && <button type="button" onClick={() => {
-                  setReply({ id: activeMenu.id, name: messageSender(activeMenu,thread.chat,user).display_name, text: activeMenu.text || (activeMenu.track_id ? 'Shared a song' : messageGifId(activeMenu) ? 'Sent a GIF' : 'Message') });
+                  setReply({ id: activeMenu.id, name: messageSender(activeMenu,thread.chat,user).display_name, text: messagePreview(activeMenu) });
                   setMenu(null);
                   requestAnimationFrame(() => {scroll.current?.querySelector('[data-reply-target="true"]')?.scrollIntoView({ block: "center" });draftInput.current?.focus({ preventScroll: true });});
                 }}><Reply size={17} /> Reply</button>}
@@ -981,6 +990,7 @@ function MessagesPage({ user }) {
             {gif && <div className="public-message-gif-draft"><MomentGif id={gif} label="Selected GIF" /><button type="button" aria-label="Remove GIF" disabled={busy} onClick={() => setGif("")}><X size={15} /></button></div>}
             <textarea ref={draftInput} rows={1} aria-label={reply ? "Reply" : "Message"} placeholder={attachment && !attachment.lyrics ? "Add a comment or send" : gif ? "Add a comment or send" : reply ? "Reply" : pending ? 'Write a message request…' : 'Write a message…'} className="min-w-0 flex-1 rounded-lg border bg-background p-2" value={draft} maxLength={2000} onChange={(event) => {
                 const value = event.target.value;
+                lastTypedAt.current = Date.now();
                 setDrafts((previous) => {
                   const next = new Map(previous);
                   if (value) next.set(id, value);else
@@ -1052,27 +1062,44 @@ function ReplyQuote({ preview }) {
   </blockquote>;
 }
 
+function messagePreview(message) {
+  if (message.text) return message.text;
+  if (message.track_id) return songData(message)?.lyrics ? 'Shared lyrics' : 'Shared a song';
+  if (messageGifId(message)) return 'Sent a GIF';
+  if (message.media_type === 'video') return 'Sent a video';
+  if (message.media_type === 'image') return 'Sent a photo';
+  return 'Message';
+}
+
 function messageGifId(message) {
   return message.media_type === "image" ? message.media_url?.match(/^https:\/\/media\.giphy\.com\/media\/([a-zA-Z0-9]{1,64})\/giphy\.gif$/)?.[1] : null;
 }
 
 function MessageReactions({ message, userId }) {
-  const reactions=messageReactionBadges(message,userId,REACTIONS);
-
+  const reactions = messageReactionBadges(message, userId, REACTIONS);
   if (!reactions.length) return null;
+  const total = reactions.reduce((sum, reaction) => sum + reaction.people, 0);
 
-  return <div className="public-message-reaction-group" role="group" aria-label="Message reactions">
-    {reactions.map(({ emoji, mine, people }) => {
+  return <div
+    className="public-message-reaction-group"
+    data-reaction-total={total}
+    role="group"
+    aria-label="Message reactions"
+  >
+    {reactions.flatMap(({ emoji, mine, people }) => {
       const label = REACTION_LABELS[REACTIONS.indexOf(emoji)];
-      return <span
+      // Direct messages show both people's emoji, including matching choices.
+      // Larger groups retain one badge per emoji to fit the message corner.
+      const copies = total <= 2 ? people : 1;
+      return Array.from({ length: copies }, (_, index) => <span
         className="public-message-reaction-badge"
         data-mine={mine}
-        key={emoji}
+        key={emoji + '-' + index}
         role="img"
-        aria-label={label + (people>1?`, ${people} people`:"") + (mine ? ", your reaction" : ", their reaction")}>
-        
+        aria-label={label + (copies === 1 && people > 1 ? ', ' + people + ' people' : '') + (mine ? ', including your reaction' : '')}
+      >
         <span aria-hidden="true">{emoji}</span>
-      </span>;
+      </span>);
     })}
   </div>;
 }
