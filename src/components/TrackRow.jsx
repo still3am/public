@@ -14,6 +14,7 @@ export default function TrackRow({
   index,
   showArt = true,
   compactRelease = false,
+  wrapTitle = false,
   albumArtist,
   albumCover,
   queue,
@@ -59,9 +60,9 @@ export default function TrackRow({
         <Link
           title={track.title}
           to={`/track/${track.id}`}
-          className={`text-sm font-medium truncate block ${isCurrent ? "text-foreground" : ""}`}
+          className={`text-sm font-medium ${wrapTitle ? "song-row-title-wrap" : "truncate"} block ${isCurrent ? "text-foreground" : ""}`}
         >
-          <span className="song-row-name"><OverflowText text={track.title}/></span>{compactRelease&&track.explicit&&<span className="release-row-explicit" aria-label="Explicit">E</span>}
+          <span className="song-row-name">{wrapTitle ? track.title : <OverflowText text={track.title}/>}</span>{compactRelease&&track.explicit&&<span className="release-row-explicit" aria-label="Explicit">E</span>}
         </Link>
         <div className="song-row-credit">{(() => {
           const artist = albumArtist || track.artist;
