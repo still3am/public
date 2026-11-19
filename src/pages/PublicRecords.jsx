@@ -367,7 +367,7 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
         </section>}
         {similarArtists.length > 0 && <section className="artist-similar">
           <SectionTitle icon={Users}>Similar Artists</SectionTitle>
-          {similarArtists.length > 0 && <ScrollShelf className="artist-similar-list" label="Similar artists">
+          {similarArtists.length > 0 && <ScrollShelf className="artist-similar-list" label="Similar artists" dragScroll>
             {similarArtists.map((candidate) => <Link className="artist-similar-card" key={candidate.id} to={"/records/" + encodeURIComponent(candidate.id)}><div className="artist-similar-portrait"><ArtistArtwork source={candidate.image} className="artist-similar-image" /></div><span>{candidate.name}</span>{candidate.genre && <small className="artist-similar-genre">{candidate.genre}</small>}</Link>)}
           </ScrollShelf>}
         </section>}
