@@ -1,117 +1,90 @@
-/* Track details: artwork first, with the same song controls on every viewport. */
-.public-app .artwork-content .track-page.track-editorial{max-width:1120px;min-width:0;padding-top:18px}
-.public-app .artwork-content .track-page.track-editorial .release-toolbar{position:relative;transform:none;top:auto;display:flex;height:44px;min-height:44px;align-items:center;margin:0 0 30px;pointer-events:none}
-.public-app .track-page.track-editorial .release-toolbar .release-round{width:44px!important;height:44px!important;min-width:44px!important;min-height:44px!important;border-radius:50%;background:hsl(var(--muted)/.7);border:0;box-shadow:none;pointer-events:auto}
-.public-app .track-page.track-editorial .release-toolbar .release-round:before{display:none}
-.public-app .track-page.track-editorial .release-toolbar-actions{padding:0;gap:8px;background:transparent;border:0;backdrop-filter:none}
-.public-app .artwork-content .track-page.track-editorial .release-header-full{display:grid;grid-template-columns:minmax(240px,340px) minmax(0,1fr);grid-template-rows:auto;align-items:center;gap:44px;min-height:0;margin:0 0 34px;padding:0;border:0;border-radius:0;max-width:none;background:transparent;text-align:left}
-.public-app .artwork-content .track-page.track-editorial .release-header-full .release-full-image{display:none}
-.public-app .artwork-content .track-page.track-editorial .release-header-full .release-art{position:relative;display:grid;place-items:center;visibility:visible;grid-area:auto;grid-column:auto;grid-row:auto;width:100%;max-width:none;height:auto;aspect-ratio:1;margin:0;border-radius:14px;background:hsl(var(--muted));box-shadow:0 16px 38px -22px #0006;overflow:hidden}
-.public-app .track-page.track-editorial .track-release-info{min-width:0}
-.public-app .track-page.track-editorial .track-release-kicker{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.14em;font-weight:650;color:hsl(var(--muted-foreground));margin:0 0 12px}
-.public-app .artwork-content .track-page.track-editorial .release-header-full h1{position:static;grid-area:auto;max-width:none;margin:0;font-size:clamp(30px,4vw,54px);font-weight:750;line-height:1.08;letter-spacing:-.045em;overflow-wrap:anywhere}
-.public-app .artwork-content .track-page.track-editorial .release-header-full .release-artist{position:static;grid-area:auto;margin:12px 0 0;max-width:none;font-size:22px;line-height:1.4;font-weight:500}
-.public-app .track-page.track-editorial .release-artist>div{justify-content:flex-start}
-.public-app .artwork-content .track-page.track-editorial .release-subtitle{grid-area:auto;justify-content:flex-start;flex-wrap:wrap;gap:8px;margin:13px 0 0;font-size:12px;color:hsl(var(--muted-foreground))}
-.public-app .artwork-content .track-page.track-editorial .release-play-controls{grid-area:auto;display:flex;justify-content:flex-start;align-items:center;gap:12px;max-width:360px;margin:26px 0 0}
-.public-app .track-page.track-editorial .release-play-button{display:flex;align-items:center;justify-content:center;gap:9px;min-height:50px;border-radius:13px;background:hsl(var(--foreground));color:hsl(var(--background));font-size:17px;font-weight:650;flex:1}
-.public-app .track-page.track-editorial .release-add-button{display:grid;place-items:center;flex:0 0 50px;width:50px;height:50px;min-height:50px;border-radius:50%;padding:0;border:0;background:hsl(var(--muted));color:hsl(var(--foreground))}
-.public-app .track-page.track-editorial .release-song-list{border:0;border-block:1px solid hsl(var(--border)/.6);border-radius:0;padding:0;margin:0 0 34px;background:transparent}
-.public-app .track-page.track-editorial .release-song-list .song-row{min-height:74px;border:0;border-radius:0;padding:14px 0;background:transparent}
-.public-app .track-page.track-editorial .track-detail-columns{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));align-items:start;gap:32px;margin-bottom:38px}
-.public-app .track-page.track-editorial .track-detail-columns>.track-page-section{min-width:0;width:100%;margin:0;padding:0;border:0;border-radius:0;background:transparent}
-.public-app .track-page.track-editorial .track-detail-columns:not(:has(.music-video-section))>.track-page-section{grid-column:1/-1;max-width:740px}
-.public-app .track-page.track-editorial .track-detail-columns>.music-video-section:first-child{grid-column:1/-1;max-width:800px}
-.public-app .track-page.track-editorial .track-detail-columns>.release-credits{grid-column:1/-1;min-width:0;width:100%;max-width:none;margin:0;padding:24px 0 0;border:0;border-top:1px solid hsl(var(--border)/.6);border-radius:0;background:transparent;font-size:12px;line-height:1.8}
-.public-app .track-page.track-editorial .track-details-title{display:block;font-size:18px;font-weight:650;letter-spacing:-.03em;color:hsl(var(--foreground));margin-bottom:10px}
-.public-app .track-page.track-editorial .track-page-section>h2{font-size:24px;font-weight:750;line-height:1.2;letter-spacing:-.035em;margin-bottom:16px}
-.public-app .track-page.track-editorial .track-page-lyrics{font-size:clamp(21px,2.2vw,28px);font-weight:650;line-height:1.55;letter-spacing:-.035em;color:hsl(var(--foreground))}
-.public-app .track-page.track-editorial .music-video-card{border-radius:14px;overflow:hidden}
-.public-app .track-page.track-editorial .music-video-card :is(video,.music-video-poster){aspect-ratio:16/9;width:100%;height:auto;object-fit:cover;border-radius:14px;overflow:hidden}
-.public-app .track-page.track-editorial .release-shelf{scrollbar-width:none;overscroll-behavior-x:contain}
-.public-app .track-page.track-editorial .release-shelf::-webkit-scrollbar{display:none}
-.public-app .track-page.track-editorial button:focus-visible{outline:2px solid hsl(var(--ring));outline-offset:4px}
-@media(max-width:767px){
-.public-app .artwork-content .track-page.track-editorial{padding-top:14px}
-.public-app .artwork-content .track-page.track-editorial .release-toolbar{margin-bottom:22px}
-.public-app .artwork-content .track-page.track-editorial .release-header-full{display:flex;flex-direction:column;align-items:stretch;gap:0;margin:0 0 28px;padding:0;text-align:center}
-.public-app .artwork-content .track-page.track-editorial .release-header-full .release-art{width:min(78vw,330px);max-width:100%;margin:0 auto 26px;border-radius:12px}
-.public-app .track-page.track-editorial .track-release-kicker{font-size:9px;letter-spacing:.13em;margin-bottom:9px}
-.public-app .artwork-content .track-page.track-editorial .release-header-full h1{font-size:clamp(26px,7vw,36px);line-height:1.12}
-.public-app .artwork-content .track-page.track-editorial .release-header-full .release-artist{font-size:19px;margin-top:9px}
-.public-app .track-page.track-editorial .release-artist>div{justify-content:center}
-.public-app .artwork-content .track-page.track-editorial .release-subtitle{justify-content:center;font-size:11px;margin-top:11px}
-.public-app .artwork-content .track-page.track-editorial .release-play-controls{width:100%;max-width:380px;margin:22px auto 0}
-.public-app .track-page.track-editorial .release-play-button{min-height:50px;font-size:17px}
-.public-app .track-page.track-editorial .track-detail-columns{grid-template-columns:minmax(0,1fr);gap:28px;margin-bottom:32px}
-.public-app .track-page.track-editorial .track-page-section>h2{font-size:22px}
-.public-app .track-page.track-editorial .track-page-lyrics{font-size:22px;line-height:1.6}
-.public-app .track-page.track-editorial .release-song-list{margin-bottom:28px}
-}
-@media(prefers-reduced-motion:reduce){.public-app .track-page.track-editorial button{transition:none}}
 
-/* Immersive mobile release pages. The artwork and page share one tinted surface. */
-@media(max-width:767px){
- .public-app #main-content.artwork-content:has(.track-page.track-editorial){padding-top:0}
- .public-app .artwork-content .track-page.track-editorial{
-  --foreground:0 0% 98%;--background:240 6% 7%;--muted:0 0% 18%;--muted-foreground:0 0% 72%;--border:0 0% 100%;--ring:0 0% 100%;
-  position:relative;isolation:isolate;width:calc(100% + 2 * var(--app-gutter));max-width:none;min-height:100dvh;margin:0 calc(-1 * var(--app-gutter));padding:0 var(--app-gutter) 32px;background:var(--release-surface,#1b1b1e);color:#fafafa;
- }
- .public-app .artwork-content .track-page.track-editorial .release-toolbar{position:absolute;inset:16px var(--app-gutter) auto;z-index:20;transform:none;height:44px;min-height:44px;margin:0;justify-content:space-between}
- .public-app .track-page.track-editorial .release-toolbar .release-round{display:grid;place-items:center;background:rgb(35 24 22 / .38);color:#fff;border:1px solid rgb(255 255 255 / .18);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
- .public-app .track-page.track-editorial .release-toolbar-actions{display:flex;gap:0;padding:0 3px;border:1px solid rgb(255 255 255 / .18);border-radius:999px;background:rgb(35 24 22 / .38);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
- .public-app .track-page.track-editorial .release-toolbar-actions .release-round{border:0;background:transparent;backdrop-filter:none;-webkit-backdrop-filter:none}
- .public-app .artwork-content .track-page.track-editorial .release-header-full{position:relative;display:flex;flex-direction:column;gap:0;margin:0 0 24px;padding:0;background:none;text-align:center;overflow:visible}
- .public-app .artwork-content .track-page.track-editorial .release-header-full .release-art{position:relative;visibility:visible;width:calc(100% + 2 * var(--app-gutter));max-width:none;height:auto;aspect-ratio:1;margin:0 calc(-1 * var(--app-gutter));border:0;border-radius:0;background:rgb(255 255 255 / .05);box-shadow:none;overflow:hidden}
- .public-app .artwork-content .track-page.track-editorial .release-art img{display:block;width:100%;height:100%;object-fit:cover;object-position:center}
- .public-app .artwork-content .track-page.track-editorial .release-art:after{content:'';position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,transparent 56%,color-mix(in srgb,var(--release-surface) 25%,transparent) 75%,var(--release-surface) 100%)}
- .public-app .track-page.track-editorial .track-release-info{position:relative;z-index:1;width:100%;margin-top:-9px;padding:0 0 0}
- .public-app .artwork-content .track-page.track-editorial .release-header-full h1{margin:0 auto;max-width:560px;font-size:clamp(23px,6.1vw,32px);line-height:1.15;letter-spacing:-.025em;font-weight:780;text-wrap:balance;overflow-wrap:anywhere;color:#fff}
- .public-app .artwork-content .track-page.track-editorial .release-header-full .release-artist{margin:7px auto 0;font-size:clamp(18px,5vw,23px);line-height:1.3;color:rgb(255 255 255 / .94)}
- .public-app .track-page.track-editorial .release-artist>div{justify-content:center;flex-wrap:wrap}
- .public-app .artwork-content .track-page.track-editorial .release-subtitle{display:flex;justify-content:center;flex-wrap:wrap;margin:8px auto 0;font-size:12px;font-weight:550;line-height:1.5;color:rgb(255 255 255 / .62)}
- .public-app .artwork-content .track-page.track-editorial .release-play-controls{display:flex;align-items:center;gap:14px;width:100%;max-width:410px;margin:18px auto 0}
- .public-app .track-page.track-editorial .release-play-button{flex:1;min-width:0;height:50px;min-height:50px;border:0;border-radius:999px;background:#fff;color:#201b1b;box-shadow:none;font-size:17px;font-weight:700}
- .public-app .track-page.track-editorial .release-add-button{display:grid;place-items:center;flex:0 0 50px;width:50px;min-width:50px;height:50px;min-height:50px;padding:0;border:0;border-radius:50%;background:rgb(255 255 255 / .09);color:#fff;box-shadow:none}
- .public-app .track-page.track-editorial .release-add-button[aria-pressed=true]{background:rgb(255 255 255 / .22)}
- .public-app .track-page.track-editorial .release-song-list{padding:0;margin:0 0 26px;border:0;border-top:1px solid rgb(255 255 255 / .18);border-radius:0;background:transparent}
- .public-app .track-page.track-editorial .release-song-list .song-row{gap:9px;min-height:58px;padding:8px 0;border:0;border-bottom:1px solid rgb(255 255 255 / .15);border-radius:0;background:transparent}
- .public-app .track-page.track-editorial .release-song-list .song-row>button:first-of-type{width:22px;min-width:22px;height:42px;font-size:13px;color:rgb(255 255 255 / .55)}
- .public-app .track-page.track-editorial .release-song-list .song-row>button:first-of-type>span{display:block}
- .public-app .track-page.track-editorial .release-song-list .song-row>button:first-of-type>svg.md\:hidden{display:none}
- .public-app .track-page.track-editorial .release-song-list .song-menu-reveal{width:auto;min-width:36px;overflow:visible;opacity:1;visibility:visible;pointer-events:auto}
- .public-app .track-page.track-editorial .release-song-list .song-row>div.min-w-0>a{font-size:14px;line-height:1.5;font-weight:550}
- .public-app .track-page.track-editorial .track-detail-columns>.release-credits{border-color:rgb(255 255 255 / .15);color:rgb(255 255 255 / .6)}
- .public-app .track-page.track-editorial button:disabled{opacity:.45}
- .public-app .track-page.track-editorial button:focus-visible{outline:2px solid #fff;outline-offset:3px}
-}
-.public-app .track-page.track-editorial .release-row-explicit{display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto;vertical-align:middle;margin-left:6px;width:11px;height:12px;font-size:8px;font-weight:750;line-height:1;border-radius:2px;background:hsl(var(--foreground)/.2);color:hsl(var(--foreground)/.75)}
-@media(max-width:767px){
- .public-app .artwork-content .track-page.track-editorial .release-header-full h1{font-size:clamp(21px,5.4vw,28px);font-weight:750;line-height:1.2}
- .public-app .track-page.track-editorial .track-release-info{margin-top:-16px}
- .public-app .track-page.track-editorial .release-song-list .release-compact-row{position:relative;min-height:54px;padding:5px 0;border-bottom:0}
- .public-app .track-page.track-editorial .release-song-list .release-compact-row:after{content:'';position:absolute;left:32px;right:0;bottom:0;border-bottom:1px solid rgb(255 255 255 / .15);pointer-events:none}
- .public-app .track-page.track-editorial .release-compact-row .song-row-credit{display:none}
- .public-app .track-page.track-editorial .release-compact-row>div.min-w-0>a{display:flex;align-items:center;gap:6px}
- .public-app .track-page.track-editorial .release-compact-row .song-row-name{display:block;min-width:0;flex:0 1 auto}
- .public-app .track-page.track-editorial .release-compact-row .release-row-explicit{margin-left:0}
- .public-app .track-page.track-editorial .release-add-button:disabled[aria-pressed=true]{opacity:1}
-}
-
-/* Match the mix pages: one viewport-sized MotionGradient behind all release content. */
-.public-app .desktop-workspace>#main-content.artwork-content:has(.track-page.track-editorial){padding-bottom:0}
+/* PUBLIC track page: one artwork header and responsive listening details. */
+.public-app .desktop-workspace>#main-content.artwork-content:has(.track-redesigned){padding-top:0;padding-bottom:0}
 .public-app .artwork-content .track-page.track-editorial{
- --foreground:0 0% 98%;--muted-foreground:0 0% 78%;--background:240 14% 6%;--card:240 12% 10%;--muted:240 8% 18%;--accent:240 8% 21%;
- position:relative;isolation:isolate;clip-path:inset(0);width:calc(100% + 2 * var(--app-gutter));max-width:none;min-height:100svh;margin-inline:calc(-1 * var(--app-gutter));padding-inline:var(--app-gutter);padding-bottom:64px;background:var(--release-surface,#15151d);color:#fff;
+ --foreground:0 0% 98%;--muted-foreground:0 0% 76%;--background:240 14% 6%;--card:240 12% 10%;--muted:240 8% 18%;--accent:240 8% 21%;--border:0 0% 100%;--ring:0 0% 100%;
+ position:relative;isolation:isolate;clip-path:inset(0);box-sizing:border-box;width:calc(100% + 2 * var(--app-gutter));max-width:none;min-width:0;min-height:100svh;margin:0 calc(-1 * var(--app-gutter));padding:22px var(--app-gutter) 56px;background:var(--release-surface,#15151d);color:#fff;
 }
-.public-app.has-player .artwork-content .track-page.track-editorial{padding-bottom:160px}
+.public-app.has-player .artwork-content .track-page.track-editorial{padding-bottom:140px}
 .release-atmosphere{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none}
 .release-motion-gradient{position:absolute!important;inset:0}
-.release-atmosphere-shade{position:absolute;inset:0;background:rgb(0 0 0 / .28)}
-.public-app .track-page.track-editorial :is(h1,h2,p,.song-row a,.release-artist){text-shadow:0 1px 4px #0005}
-@media(max-width:767px){
- .public-app .artwork-content .track-page.track-editorial{padding-bottom:calc(120px + env(safe-area-inset-bottom,0px))}
- .public-app.has-player .artwork-content .track-page.track-editorial{padding-bottom:calc(195px + env(safe-area-inset-bottom,0px))}
- .public-app .artwork-content .track-page.track-editorial .release-header-full .release-art{background:transparent;mask-image:linear-gradient(#000 60%,transparent 100%);-webkit-mask-image:linear-gradient(#000 60%,transparent 100%)}
- .public-app .artwork-content .track-page.track-editorial .release-art:after{content:none;background:none}
+.release-atmosphere-shade{position:absolute;inset:0;background:rgb(0 0 0 / .4)}
+.public-app .track-redesigned .track-detail-content{position:relative;width:100%;max-width:1120px;min-width:0;margin:0 auto}
+.public-app .track-redesigned .release-toolbar{position:relative;inset:auto;transform:none;display:flex;align-items:center;justify-content:space-between;min-height:44px;height:auto;margin:0 0 30px;padding:0;pointer-events:auto}
+.public-app .track-redesigned .release-toolbar-actions{display:flex;align-items:center;gap:8px;padding:0;border:0;background:none;backdrop-filter:none}
+.public-app .track-redesigned .release-toolbar .release-round{display:grid;place-items:center;width:44px!important;height:44px!important;min-width:44px!important;min-height:44px!important;max-width:44px;max-height:44px;padding:0;border:1px solid #ffffff26;border-radius:50%!important;background:#00000020;color:#fff;box-shadow:none}
+.public-app .track-redesigned .release-toolbar .release-round::before{display:none}
+.public-app .artwork-content .track-page.track-redesigned .release-header-full{position:relative;display:grid;grid-template-columns:minmax(240px,340px) minmax(0,1fr);align-items:center;gap:48px;max-width:none;min-height:0;margin:0 0 42px;padding:28px;border:1px solid #ffffff1f;border-radius:28px;background:#00000014;text-align:left;overflow:visible}
+.public-app .artwork-content .track-page.track-redesigned .release-header-full .release-art{position:relative;display:grid;place-items:center;visibility:visible;grid-area:auto;width:100%;height:auto;max-width:none;aspect-ratio:1;margin:0;padding:0;border:0;border-radius:18px;background:#ffffff0d;box-shadow:0 12px 35px #0003;overflow:hidden;mask-image:none;-webkit-mask-image:none}
+.public-app .track-redesigned .release-art img{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:contain}
+.public-app .track-redesigned .release-art::after{content:none}
+.public-app .track-redesigned .track-release-info{position:static;min-width:0;width:100%;margin:0;padding:0}
+.public-app .track-redesigned .track-release-kicker{display:block;margin:0 0 12px;font-size:10px;font-weight:650;letter-spacing:.15em;text-transform:uppercase;color:#ffffff9c}
+.public-app .artwork-content .track-page.track-redesigned .release-header-full h1{position:static;grid-area:auto;margin:0;max-width:none;font-size:clamp(30px,4vw,52px);font-weight:750;line-height:1.08;letter-spacing:-.045em;text-wrap:balance;overflow-wrap:anywhere;color:#fff}
+.public-app .artwork-content .track-page.track-redesigned .release-header-full .release-artist{position:static;grid-area:auto;max-width:none;margin:14px 0 0;font-size:21px;font-weight:500;line-height:1.4;color:#ffffffe0}
+.public-app .track-redesigned .release-artist>div{justify-content:flex-start;flex-wrap:wrap}
+.public-app .artwork-content .track-page.track-redesigned .release-subtitle{display:flex;justify-content:flex-start;align-items:center;flex-wrap:wrap;gap:8px;margin:14px 0 0;font-size:12px;line-height:1.6;color:#ffffffa6}
+.public-app .artwork-content .track-page.track-redesigned .release-play-controls{display:flex;align-items:center;justify-content:flex-start;flex-wrap:wrap;gap:10px;width:100%;max-width:none;margin:26px 0 0}
+.public-app .track-redesigned .release-play-button{display:inline-flex;align-items:center;justify-content:center;gap:8px;flex:0 1 130px;min-width:110px;min-height:48px;height:auto;padding:12px 22px;border:0;border-radius:999px;background:white;color:#17171a;box-shadow:none;font-size:15px;font-weight:700}
+.public-app .track-redesigned .release-save-button{display:inline-flex;align-items:center;justify-content:center;gap:8px;max-width:100%;min-height:48px;padding:11px 16px;border:1px solid #ffffff35;border-radius:999px;background:#ffffff0b;color:white;font-size:13px;font-weight:600}
+.public-app .track-redesigned .release-save-button>svg{flex:none}
+.public-app .track-redesigned .release-save-button[aria-pressed="true"]{background:#ffffff20}
+.public-app .track-redesigned .release-add-button{display:grid;place-items:center;flex:0 0 48px;width:48px;min-width:48px;max-width:48px;height:48px;min-height:48px;max-height:48px;padding:0;border:1px solid #ffffff35;border-radius:50%;background:#ffffff0b;color:white}
+.public-app .track-redesigned .release-add-button[aria-pressed="true"]{background:#ffffff24}
+.public-app .track-redesigned .track-detail-columns{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);align-items:start;gap:24px;margin-bottom:40px}
+.public-app .track-redesigned .track-detail-columns>.track-page-section[aria-label="Song lyrics"]{grid-column:1;grid-row:1;width:100%;max-width:none;min-width:0;margin:0;padding:24px;border:1px solid #ffffff21;border-radius:22px;background:#00000014;box-sizing:border-box}
+.public-app .track-redesigned .track-detail-columns>.release-credits{grid-column:2;grid-row:1;width:100%;max-width:none;min-width:0;margin:0;padding:24px;border:1px solid #ffffff21;border-radius:22px;background:#00000014;box-sizing:border-box}
+.public-app .track-redesigned .track-detail-columns>.music-video-section{grid-column:1/-1;grid-row:auto;width:100%;min-width:0;margin:0}
+.public-app .track-redesigned :is(.track-details-title,.track-page-section>h2){margin:0 0 18px;font-size:23px;font-weight:700;line-height:1.25;letter-spacing:-.03em;color:#fff}
+.public-app .track-redesigned .track-page-lyrics{font-size:clamp(20px,2vw,26px);font-weight:600;line-height:1.65;letter-spacing:-.025em;color:#ffffffeb}
+.public-app .track-redesigned .track-page-section>div>div.flex{justify-content:flex-start}
+.public-app .track-redesigned .track-page-section button{min-height:40px}
+.public-app .track-redesigned .catalog-song-facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 20px;margin:0}
+.public-app .track-redesigned .catalog-song-facts>div{min-width:0}
+.public-app .track-redesigned .catalog-song-facts dt{font-size:11px;line-height:1.5;color:#ffffff9c}
+.public-app .track-redesigned .catalog-song-facts dd{margin:6px 0 0;font-size:13px;font-weight:550;line-height:1.6;color:#ffffffe6;overflow-wrap:anywhere}
+.public-app .track-redesigned .track-song-info{margin-top:0}
+.public-app .track-redesigned .track-info-status{margin:18px 0 0;font-size:12px;line-height:1.6;color:#ffffffa6}
+.public-app .track-redesigned .track-info-status button{min-height:40px;padding:8px;text-decoration:underline}
+.public-app .track-redesigned>.track-detail-content>.track-page-section{margin:0 0 40px;padding:0;border:0;border-radius:0;background:none;min-width:0}
+.public-app .track-redesigned .release-shelf{display:flex;gap:18px;overflow-x:auto;scroll-snap-type:x proximity;overscroll-behavior-x:contain;scrollbar-width:none;padding:4px 2px 14px}
+.public-app .track-redesigned .release-shelf-card{flex:0 0 clamp(160px,17vw,205px);min-width:0;scroll-snap-align:start}
+.public-app .track-redesigned .release-shelf::-webkit-scrollbar{display:none}
+.public-app .track-redesigned .release-shelf[data-drag-scroll]{cursor:grab;user-select:none}
+.public-app .track-redesigned .release-shelf[data-dragging]{cursor:grabbing;scroll-snap-type:none}
+.public-app .track-redesigned .music-video-card{overflow:hidden;border-radius:18px}
+.public-app .track-redesigned .music-video-card :is(video,.music-video-poster){width:100%;height:auto;aspect-ratio:16/9;object-fit:cover}
+.public-app .track-redesigned :is(button,a):focus-visible{outline:2px solid white;outline-offset:3px}
+.public-app .track-redesigned button:disabled{opacity:.5}
+@media(max-width:1099px){
+.public-app .artwork-content .track-page.track-redesigned .release-header-full{grid-template-columns:minmax(180px,.85fr) minmax(0,1.2fr);gap:28px;padding:22px}
+.public-app .track-redesigned .track-detail-columns{grid-template-columns:minmax(0,1fr)}
+.public-app .track-redesigned .track-detail-columns>.track-page-section[aria-label="Song lyrics"],.public-app .track-redesigned .track-detail-columns>.release-credits{grid-column:1;grid-row:auto}
 }
+@media(max-width:767px){
+.public-app .artwork-content .track-page.track-editorial{padding-top:16px;padding-bottom:calc(48px + env(safe-area-inset-bottom,0px))}
+.public-app.has-player .artwork-content .track-page.track-editorial{padding-bottom:calc(140px + env(safe-area-inset-bottom,0px))}
+.public-app .track-redesigned .release-toolbar{margin-bottom:22px}
+.public-app .artwork-content .track-page.track-redesigned .release-header-full{display:flex;flex-direction:column;align-items:stretch;gap:24px;margin-bottom:28px;padding:0;border:0;border-radius:0;background:none;text-align:left}
+.public-app .artwork-content .track-page.track-redesigned .release-header-full .release-art{width:min(78vw,320px);max-width:100%;margin:0 auto;border-radius:16px}
+.public-app .artwork-content .track-page.track-redesigned .release-header-full h1{font-size:clamp(27px,7vw,36px);line-height:1.15}
+.public-app .track-redesigned .track-release-kicker{margin-bottom:9px}
+.public-app .artwork-content .track-page.track-redesigned .release-header-full .release-artist{margin-top:10px;font-size:19px}
+.public-app .artwork-content .track-page.track-redesigned .release-subtitle{margin-top:10px;font-size:11px}
+.public-app .artwork-content .track-page.track-redesigned .release-play-controls{margin-top:20px;gap:8px;flex-wrap:nowrap}
+.public-app .track-redesigned .release-play-button{flex:1;min-width:0;padding-inline:16px}
+.public-app .track-redesigned .release-save-button{font-size:12px;padding-inline:12px}
+.public-app .track-redesigned .track-detail-columns{gap:18px;margin-bottom:32px}
+.public-app .track-redesigned .track-detail-columns>.track-page-section[aria-label="Song lyrics"],.public-app .track-redesigned .track-detail-columns>.release-credits{padding:20px;border-radius:18px}
+.public-app .track-redesigned :is(.track-details-title,.track-page-section>h2){font-size:22px}
+.public-app .track-redesigned .track-page-lyrics{font-size:22px}
+.public-app .track-redesigned .release-shelf{gap:14px}
+.public-app .track-redesigned .release-shelf-card{flex-basis:44%}
+}
+@media(max-width:359px){
+.public-app .track-redesigned .release-save-button{font-size:11px;padding-inline:9px}
+.public-app .track-redesigned .release-add-button{flex-basis:44px;width:44px;min-width:44px}
+.public-app .track-redesigned .catalog-song-facts{grid-template-columns:minmax(0,1fr)}
+}
+@media(prefers-reduced-motion:reduce){.public-app .track-redesigned button{transition:none}}
+
