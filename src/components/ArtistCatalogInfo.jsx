@@ -35,10 +35,11 @@ export default function ArtistCatalogInfo({ artist }) {
   ].filter(([, value]) => value);
 
   return <div className="catalog-about artist-about-details">
+    {!biography && !history && loading && <div className="artist-biography-loading" aria-hidden="true"><span /><span /><span /></div>}
     {biography && <div className="artist-biography">
       <h3>Biography</h3>
       <CollapsibleText text={biography} className="artist-about-copy selectable-content" clampClass="max-h-40" />
-      {biographySource && <a className="artist-biography-source" href={biographySource} target="_blank" rel="noopener noreferrer">Biography source</a>}
+      {biographySource && <a className="artist-biography-source" href={biographySource} target="_blank" rel="noopener noreferrer">Read full biography ↗</a>}
     </div>}
     {history && history !== savedBio && <div className="artist-biography artist-history">
       <h3>History</h3>
@@ -46,7 +47,7 @@ export default function ArtistCatalogInfo({ artist }) {
     </div>}
     {!biography && !history && !loading && <p className="artist-biography-empty">A biography hasn’t been added yet.</p>}
     {rows.length > 0 && <div className="artist-detail-facts"><h3>Artist details</h3>
-      <dl className="artist-facts">{rows.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>
+      <dl className="artist-facts">{rows.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{label === "Genres" ? <div className="artist-genre-tags">{String(value).split(" · ").filter(Boolean).map(genre => <span key={genre}>{genre}</span>)}</div> : value}</dd></div>)}</dl>
     </div>}
     {loading && <p className="artist-about-status" role="status">Loading artist details…</p>}
     {error && <div className="artist-about-status" role="status">Additional details couldn’t load. <button type="button" onClick={() => setRetry(value => value + 1)}>Retry</button></div>}
