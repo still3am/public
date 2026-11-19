@@ -89,13 +89,6 @@
   margin:0;
   flex-shrink:0;
 }
-.public-message-reaction-target>.public-message-reaction-group {
-  position:absolute;
-  top:-12px;
-  left:-8px;
-  z-index:2;
-}
-.public-messages .public-messages-stream>.public-message-group:has(.public-message-reaction-group) { margin-top:15px; }
 .public-message-body>.public-message-timestamp {
   position:absolute;
   top:100%;
@@ -125,13 +118,46 @@
   .public-message-group[data-own="false"]>.public-message-body { max-width:calc(100% - 46px); }
 }
 
-/* Reactions stay on one row and point inward on either side of the conversation. */
-.public-message-reaction-target>.public-message-reaction-group{display:flex;flex-wrap:nowrap;width:max-content;max-width:none;align-items:center;top:-12px;left:auto;right:-6px;gap:0;overflow:visible;line-height:1;isolation:isolate}
-.public-message-group[data-own="true"] .public-message-reaction-target>.public-message-reaction-group{left:-6px;right:auto;flex-direction:row-reverse}
-.public-message-reaction-target>.public-message-reaction-group>.public-message-reaction-badge{flex:0 0 auto;font-size:23px;line-height:1;white-space:nowrap}
-.public-message-group[data-own="true"] .public-message-reaction-badge+.public-message-reaction-badge{margin-left:0;margin-right:-8px}
-.public-message-body:has(>.public-message-author)>.public-message-content:has(.public-message-reaction-group){margin-top:9px}
-
+/* Anchor each stack to the visible message's corner facing the conversation. */
+.public-message-reaction-target:has(> .public-message-reaction-group) {
+  margin-top:14px;
+}
+.public-message-reaction-target > .public-message-reaction-group {
+  position:absolute;
+  top:-13px;
+  left:auto;
+  right:12px;
+  bottom:auto;
+  width:max-content;
+  max-width:none;
+  display:flex;
+  flex-direction:row;
+  flex-wrap:nowrap;
+  align-items:center;
+  gap:0;
+  margin:0;
+  padding:0;
+  transform:translateX(55%);
+  line-height:1;
+  z-index:2;
+  overflow:visible;
+  isolation:isolate;
+}
+.public-message-reaction-target[data-own="true"] > .public-message-reaction-group {
+  left:12px;
+  right:auto;
+  transform:translateX(-55%);
+}
+.public-message-reaction-target > .public-message-reaction-group > .public-message-reaction-badge {
+  display:grid;
+  place-items:center;
+  flex:0 0 24px;
+  width:24px;
+  height:24px;
+  font-size:23px;
+  line-height:1;
+  white-space:nowrap;
+}
 /* Music wrappers use the visible card width so corner reactions cannot drift. */
 .public-messages-stream .public-message-body{width:max-content;min-width:0}
 .public-messages-stream .public-message-content{width:max-content;min-width:0;max-width:100%}
