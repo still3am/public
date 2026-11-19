@@ -39,10 +39,10 @@ assert.equal(all(tree,node=>node.type==='button').length,0,'plain lyrics have no
 
 globalThis.__trackLyricsState={identity:JSON.stringify(['old','Old song','Old artist',180]),loading:false,result:{available:true,text:'STALE SONG PAGE WORDS'},error:''};
 const pageSource=ts.transpileModule(fs.readFileSync('src/components/TrackCatalogLyrics.jsx','utf8').replace(/^import[^;]+;/gm,''),{compilerOptions:{jsx:ts.JsxEmit.React,target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext}}).outputText;
-const pageStubs='const React=globalThis.__lyricsReact,useRef=value=>({current:value}),usePlayer=()=>({}),useEffect=()=>{},useState=value=>[value&&typeof value==="object"?globalThis.__trackLyricsState:value,()=>{}],CollapsibleText="text",findLyricsCatalog=()=>Promise.resolve(null);';
+const pageStubs='const useNavigate=()=>()=>{},LyricSharePicker="share-picker",React=globalThis.__lyricsReact,useRef=value=>({current:value}),usePlayer=()=>({}),useEffect=()=>{},useState=value=>[value&&typeof value==="object"?globalThis.__trackLyricsState:value,()=>{}],CollapsibleText="text",findLyricsCatalog=()=>Promise.resolve(null);';
 const Page=(await import('data:text/javascript;base64,'+Buffer.from(pageStubs+pageSource).toString('base64'))).default;
 const nextTrack={id:'new',title:'New song',artist:'New artist',duration_seconds:180};
-let page=Page({track:nextTrack});assert.ok(!contents(page).includes('STALE SONG PAGE WORDS'));assert.ok(contents(page).includes('Finding lyrics'),'song page hides old lyrics before effects run');
+let page=Page({track:nextTrack});assert.ok(!contents(page).includes('STALE SONG PAGE WORDS'));assert.ok(contents(page).includes('Loading lyrics'),'song page hides old lyrics before effects run');
 globalThis.__trackLyricsState={...globalThis.__trackLyricsState,identity:JSON.stringify(['new','New song','New artist',180]),result:{available:true,text:'Correct song page words'}};
 page=Page({track:nextTrack});assert.equal(all(page,node=>node.type==='text')[0].props.text,'Correct song page words');
 
