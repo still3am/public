@@ -234,3 +234,12 @@
 }
 @media(max-width:359px){.public-app .artwork-content .artist-page.artist-editorial.artist-redesigned.artist-sections-v2 .artist-detail-facts.artist-detail-summary .artist-facts{grid-template-columns:minmax(0,1fr)}}
 
+/* Match the plain label/value presentation used by About this song. */
+.public-app .artwork-content .artist-page.artist-editorial.artist-redesigned.artist-sections-v2 .artist-detail-facts.artist-details-plain{padding:0;border:0;border-radius:0;background:none;box-shadow:none;min-height:0}
+.public-app .artwork-content .artist-page.artist-editorial.artist-redesigned.artist-sections-v2 .artist-detail-facts.artist-details-plain h3{margin:0 0 18px;font-size:14px;font-weight:650}
+.public-app .artwork-content .artist-page.artist-editorial.artist-redesigned.artist-sections-v2 .artist-detail-facts.artist-details-plain .artist-detail-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 24px;margin:0;padding:0;border:0}
+.public-app .artwork-content .artist-page.artist-editorial.artist-redesigned.artist-sections-v2 .artist-detail-facts.artist-details-plain .artist-detail-grid>div{display:block;min-width:0;margin:0;padding:0;border:0;border-radius:0;background:none;box-shadow:none}
+.public-app .artwork-content .artist-page.artist-editorial.artist-redesigned.artist-sections-v2 .artist-detail-facts.artist-details-plain dt{display:block;margin:0;font-size:11px;font-weight:500;line-height:1.5;text-transform:none;letter-spacing:0;color:hsl(var(--muted-foreground))}
+.public-app .artwork-content .artist-page.artist-editorial.artist-redesigned.artist-sections-v2 .artist-detail-facts.artist-details-plain dd{margin:6px 0 0;font-size:13px;font-weight:550;line-height:1.6;overflow-wrap:anywhere;color:hsl(var(--foreground))}
+@media(max-width:359px){.public-app .artwork-content .artist-page.artist-editorial.artist-redesigned.artist-sections-v2 .artist-detail-facts.artist-details-plain .artist-detail-grid{grid-template-columns:minmax(0,1fr)}}
+
