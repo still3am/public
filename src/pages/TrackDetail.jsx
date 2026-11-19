@@ -93,7 +93,7 @@ export default function TrackDetail() {
       );
       if (request !== loadVersion.current) return;
       if (credit.status === "fulfilled" && credit.value[0]) setUploader(credit.value[0]);
-      if (related.status === "fulfilled") setMoreTracks(related.value.filter((row) => row.id !== t.id).slice(0, 6));
+      if (related.status === "fulfilled") setMoreTracks(related.value.filter((row) => row.id !== t.id));
     } catch {request === loadVersion.current && setLoadError(true);
     } finally {
       request === loadVersion.current && setLoading(false);
@@ -142,6 +142,15 @@ export default function TrackDetail() {
   const isOwner = !!user?.id && track.uploader_id === user.id;
   const isPlaying = isCurrent && p.isPlaying;
   const displayArtist = track.artist || "";
+  const canShuffle = moreTracks.length > 0 || (isCurrent && p.queue?.length > 1);
+  async function shuffleSongs() {
+    const enable = !(isCurrent && p.shuffle);
+    p.setShuffle(enable);
+    if (!isCurrent || (enable && (p.queue?.length || 0) < 2)) {
+      try {await p.playTrackAt([track, ...moreTracks], 0);}
+      catch {toast({title:"These songs couldn’t start. Please retry.",variant:"destructive"});}
+    }
+  }
 
   const ownerItems = isOwner ?
   [
@@ -177,7 +186,7 @@ export default function TrackDetail() {
         <p className="release-subtitle">{[track.genre, track.release_year || null, track.duration_seconds > 0 ? formatTime(track.duration_seconds) : null].filter(Boolean).join(" · ")}{track.explicit && <span className="release-explicit" aria-label="Explicit">E</span>}</p>
         <div className="release-play-controls">
           <button type="button" className="release-play-button" aria-label={(isPlaying ? "Pause " : "Play ") + track.title} onClick={() => isCurrent ? p.togglePlay() : p.playTrackAt([track])}>{isPlaying ? <Pause size={22} fill="currentColor" /> : <Play size={22} fill="currentColor" />}{isPlaying ? "Pause" : "Play"}</button>
-          <button type="button" className="release-add-button release-shuffle-button" aria-label="Shuffle playback" aria-pressed={p.shuffle} onClick={() => {p.setShuffle(!p.shuffle);if (!isCurrent) p.playTrackAt([track]);}}><Shuffle size={20} /><span>Shuffle</span></button>
+          <button type="button" className="release-add-button release-shuffle-button" aria-label="Shuffle playback" aria-pressed={isCurrent && !!p.shuffle} disabled={!canShuffle} title={canShuffle ? "Shuffle songs" : "No other songs available to shuffle"} onClick={shuffleSongs}><Shuffle size={20} /><span>Shuffle</span></button>
         </div>
         </div>
       </section>
@@ -186,7 +195,7 @@ export default function TrackDetail() {
 
       <TrackCatalogLyrics key={track.id} track={track} />
 
-      <section className="release-credits">
+      <section className="release-credits" aria-label="About this song">
         <h2 className="track-details-title">About this song</h2>
         <SongCatalogInfo key={track.id} track={track} />
         
@@ -199,7 +208,7 @@ export default function TrackDetail() {
 
       {moreTracks.length > 0 && <section className="track-page-section">
         <h2>More by {track.artist}</h2>
-        <ScrollShelf className="release-shelf" label="More songs by this artist" dragScroll>{moreTracks.map((row) => <div key={row.id} className="release-shelf-card"><TrackCard track={row} queue={moreTracks} /></div>)}</ScrollShelf>
+        <ScrollShelf className="release-shelf" label="More songs by this artist" dragScroll>{moreTracks.slice(0, 6).map((row) => <div key={row.id} className="release-shelf-card"><TrackCard track={row} queue={moreTracks} /></div>)}</ScrollShelf>
       </section>}
       {recommended.length > 0 && <section className="track-page-section">
         <h2>You Might Also Like</h2>
