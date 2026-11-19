@@ -5,6 +5,7 @@ import '@/index.css'
 import '@/public-redesign.css'
 import '@/desktop.css'
 import '@/mobile-music.css'
+import '@/navigation-controls.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <App />
