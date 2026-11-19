@@ -152,4 +152,35 @@ const music=await invoke('shared',{id:historyChat.id,kind:'music'},'b');assert.e
 assert.equal((await invoke('shared',{id:historyChat.id,kind:'photos'},'d')).status,404);
 assert.equal((await invoke('shared',{id:historyChat.id,kind:'music',cursor:photos.nextCursor},'b')).status,403);
 assert.equal((await invoke('shared',{id:historyChat.id,kind:'unknown'},'b')).status,400);
+// Reply previews preserve the sender and distinguish each media kind.
+const quoteChat = await entities.Conversation.create({
+  dm_enabled: true,
+  participant_ids: ['quote-author', 'quote-reader'],
+  participant_names: ['Older name', 'Reader'],
+  dm_status: 'accepted',
+  dm_requester: 'quote-author',
+});
+for (const [mediaType, mediaUrl, expected] of [
+  ['image', 'private/photo.png', 'Sent a photo'],
+  ['video', 'private/video.mp4', 'Sent a video'],
+  ['image', 'https://media.giphy.com/media/example/giphy.gif', 'Sent a GIF'],
+]) {
+  const original = await entities.Message.create({
+    conversation_id: quoteChat.id,
+    sender_id: 'quote-author',
+    recipient_id: 'quote-reader',
+    sender_name: 'Saved sender name',
+    text: '',
+    media_type: mediaType,
+    media_url: mediaUrl,
+  });
+  const response = await invoke('send', {
+    id: quoteChat.id, text: 'Reply', replyId: original.id,
+  }, 'quote-reader');
+  assert.equal(response.status, 200);
+  const reply = data.Message.find(message => message.reply_to_id === original.id);
+  const preview = JSON.parse(reply.reply_preview);
+  assert.equal(preview.text, expected);
+  assert.equal(preview.sender_name, 'Saved sender name');
+}
 console.log('PASS group invitations, membership authorization, shared edits, reactions, replies, admin transfer, mute, limits, DM compatibility, parallel updates, creation retries, pending introductions, and removed-member access');
