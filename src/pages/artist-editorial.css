@@ -179,10 +179,6 @@
 .public-app .artist-page.artist-editorial.artist-redesigned .artist-hero .artist-hero-actions .artist-follow-pill{display:inline-flex;gap:8px;width:auto;min-width:100px;padding:0 16px;border-radius:999px;font-size:13px;font-weight:650;white-space:nowrap}
 .public-app .artist-page.artist-editorial.artist-redesigned .artist-follow-pill svg{width:18px;height:18px}
 .public-app .artist-page.artist-editorial.artist-redesigned .artist-follow-pill[aria-pressed="true"]{background:#fff;color:#18181b;border-color:#fff}
-.public-app .artist-page.artist-editorial.artist-redesigned .artist-section-nav{display:flex;align-items:center;gap:8px;max-width:1120px;margin:0 auto 32px;padding:0 0 14px;border-bottom:1px solid hsl(var(--border)/.6);overflow-x:auto;scrollbar-width:none}
-.artist-section-nav::-webkit-scrollbar{display:none}
-.artist-section-nav>a{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;min-height:42px;padding:0 16px;border-radius:999px;font-size:13px;font-weight:650;color:hsl(var(--muted-foreground));text-decoration:none}
-.artist-section-nav>a:focus-visible{outline:2px solid hsl(var(--ring));outline-offset:-2px}
 .public-app .artist-page.artist-editorial.artist-redesigned :is(.artist-top-songs,.artist-discography,.artist-appears-on,.artist-about){scroll-margin-top:24px}
 .public-app .artist-page.artist-editorial.artist-redesigned .artist-catalog-list{display:block;min-width:0}
 .public-app .artist-page.artist-editorial.artist-redesigned .artist-catalog-list .song-row{min-height:76px;padding:12px 8px;gap:14px;border-bottom:1px solid hsl(var(--border)/.5);border-radius:0;background:transparent}
@@ -194,13 +190,33 @@
 .artist-redesigned .artist-search-empty h3{font-size:17px;font-weight:650}
 .artist-redesigned .artist-search-empty p{font-size:13px}
 @media(hover:hover){
-.artist-section-nav>a:hover{background:hsl(var(--foreground)/.06);color:hsl(var(--foreground))}
 .public-app .artist-page.artist-editorial.artist-redesigned .artist-catalog-list .song-row:hover{background:hsl(var(--foreground)/.035)}
 }
 @media(max-width:767px){
-.public-app .artist-page.artist-editorial.artist-redesigned .artist-section-nav{gap:4px;margin-bottom:24px;padding-bottom:10px}
-.artist-section-nav>a{padding-inline:13px;font-size:12px}
 .public-app .artist-page.artist-editorial.artist-redesigned .artist-catalog-list .song-row{padding-inline:0;gap:10px;min-height:72px}
 .public-app .artist-page.artist-editorial.artist-redesigned .artist-catalog-list .song-row>button:nth-child(2){width:46px;height:46px}
 }
+
+/* Keep attention on the artist and music without a second navigation row. */
+.public-app .artist-page.artist-editorial.artist-redesigned .artist-feature-grid{margin-top:4px}
+.public-app .artist-page.artist-editorial.artist-redesigned .artist-clear-search{display:grid;place-items:center;flex-shrink:0;width:36px;height:40px;padding:0;border:0;border-radius:50%;background:transparent;color:hsl(var(--muted-foreground))}
+.public-app .artist-page.artist-editorial.artist-redesigned .artist-search-count{font-size:12px;color:hsl(var(--muted-foreground));margin:-8px 0 14px}
+.public-app .artist-page.artist-editorial.artist-redesigned .artist-song-pagination{padding-top:4px}
+.public-app .artist-page.artist-editorial.artist-redesigned .artist-catalog-list .song-row{padding-block:10px}
+.public-app .artist-page.artist-editorial.artist-redesigned .artist-album-cover{box-shadow:0 5px 18px #00000012}
+.public-app .artist-page.artist-editorial.artist-redesigned .artist-album-card>span:last-child{font-size:12px;line-height:1.5}
+.public-app .artist-page.artist-editorial.artist-redesigned .artist-facts:empty{display:none}
+@media(min-width:768px){
+.public-app .artist-page.artist-editorial.artist-redesigned .artist-feature-grid>.artist-latest{padding:18px;gap:16px;border-radius:20px;max-width:320px}
+.public-app .artist-page.artist-editorial.artist-redesigned .artist-feature-grid .artist-latest-title{font-size:20px}
+.public-app .artist-page.artist-editorial.artist-redesigned .artist-about{display:flow-root}
+.public-app .artist-page.artist-editorial.artist-redesigned .artist-about-copy{max-width:70ch}
+}
+@media(max-width:479px){
+.public-app .artist-page.artist-editorial.artist-redesigned .artist-song-pagination{flex-direction:column;align-items:stretch;gap:12px}
+.public-app .artist-page.artist-editorial.artist-redesigned .artist-song-pagination>span{text-align:center}
+.public-app .artist-page.artist-editorial.artist-redesigned .artist-song-pagination>button{min-height:44px}
+.public-app .artist-page.artist-editorial.artist-redesigned .artist-feature-grid>.artist-latest{background:transparent;padding:0;border:0;gap:16px}
+}
+@media(hover:hover){.public-app .artist-page.artist-editorial.artist-redesigned .artist-clear-search:hover{background:hsl(var(--foreground)/.06)}}
 
