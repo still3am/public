@@ -26,6 +26,16 @@ globalThis.__player.currentTrack=tracks[2];index=0;tree=artist.default({});all(t
 assert.equal(all(tree,n=>n.props?.["aria-label"]==="Artist top songs").length,1,"top songs have one accessible list without horizontal paging");
 assert.equal(all(tree,n=>n.type==="input"&&n.props.type==="search").length,1,"artist songs remain searchable");
 assert.equal(all(tree,n=>n.type==="select"&&n.props["aria-label"]==="Sort artist songs").length,1,"artist songs offer sorting");
+globalThis.__player.queue=[...tracks].reverse();index=0;tree=artist.default({});
+assert.equal(all(tree,n=>n.props?.className==="artist-play")[0].props["aria-label"],"Pause Artist","shuffled artist playback still offers Pause");
+values[4]="not a song";index=0;tree=artist.default({});
+assert.equal(all(tree,n=>n.props?.className==="artist-play")[0].props["aria-label"],"Pause Artist","searching the catalog does not change header playback");
+const manyTracks=Array.from({length:8},(_,i)=>({...tracks[0],id:"many"+i,play_count:i}));
+values[1]=manyTracks;values[4]="";index=0;tree=artist.default({});
+const topRows=all(tree,n=>Number.isInteger(n.props?.queueIndex));
+assert.equal(topRows.length,5,"show only five top songs");
+assert.equal(topRows[0].props.queue.length,8,"Top Songs continues through the entire artist catalog");
+values[1]=tracks;globalThis.__player.queue=tracks;
 const directory=await load("src/pages/PublicRecordsIndex.jsx",common+`
 const useAuth=()=>({user:{id:"me"}}),useLibrary=()=>({ids:new Set(),revision:0}),base44={},readAllPages=async()=>[],artistKey=value=>value.toLowerCase();
 const splitArtistNames=value=>[value],getPublishedTracks=async()=>[],getArtists=async()=>[],ChevronRight=Loader2,useCoverUrl=url=>url;
