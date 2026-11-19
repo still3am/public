@@ -22,7 +22,7 @@ function PinnedTrackCard({ track, queue, index, position, onError, onSelect }) {
   async function play(e) {e.stopPropagation();if (lp.consumeLongPress()) return;onSelect?.();try {if (current) await p.togglePlay();else await p.playTrackAt(queue, index);} catch {onError("Couldn’t play this song. Please retry.");}}
   return <article ref={lp.ref} {...lp.handlers} className={"rotation-card song-menu-surface" + (playing ? " is-playing" : "")}>
  <div className="rotation-art"><Cover url={track.cover_art_url} /><span className="rotation-position">{String(position + 1).padStart(2, "0")}</span>
- <button type="button" className="rotation-play" onClick={play} aria-label={(playing ? "Pause " : "Play ") + (track.title || "song")}><span>{playing ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" />}</span></button>
+ <button type="button" className="rotation-play" data-glass-preserve="" onClick={play} aria-label={(playing ? "Pause " : "Play ") + (track.title || "song")}><span>{playing ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" />}</span></button>
  <HoverTrackMenu track={track} lp={lp} size={18} className="rotation-menu" buttonClassName="rotation-menu-button" />
  </div><div className="rotation-caption"><strong title={track.title}>{track.title || "Untitled song"}</strong><span title={track.artist || track.uploader_name}>{track.artist || track.uploader_name || "Unknown artist"}</span></div>
  </article>;
