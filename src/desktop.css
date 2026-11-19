@@ -434,7 +434,9 @@
  .desktop-sidebar{transition:none}
 }
 
-/* Track detail hero must match the artist hero: a full-bleed image, not the legacy inset release card. */
+/* Track detail hero must match the artist hero: remove the page-level inset before bleeding the artwork to the workspace edges. */
+.public-app .artwork-content .page-surface .track-page.track-editorial.track-artist-layout{padding-inline:0!important;}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .track-detail-content{padding:0!important;}
 .public-app .artwork-content .track-page.track-editorial.track-artist-layout .release-header-full{
  display:flex!important;position:relative!important;align-items:flex-end!important;
  width:calc(100% + 2 * var(--app-gutter))!important;max-width:none!important;min-height:clamp(500px,46vw,640px)!important;height:auto!important;flex:0 0 calc(100% + 2 * var(--app-gutter))!important;
