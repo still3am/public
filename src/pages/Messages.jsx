@@ -870,7 +870,19 @@ function MessagesPage({ user }) {
               </div>
               {savingReaction && <p role="status" className="public-message-reaction-status">Saving reaction…</p>}
               {error && <p role="alert" className="rounded-xl border bg-card p-3 text-sm">{error}</p>}
-              <div className="public-message-menu-preview">{messagePreview(activeMenu)}</div>
+              <div className="public-message-menu-preview" data-own={activeMenu.sender_id === user?.id}>
+                {activeMenu.reply_preview && <ReplyQuote preview={activeMenu.reply_preview} />}
+                {activeMenu.track_id && <SharedSong
+                  message={activeMenu}
+                  playing={player.currentTrack?.id === activeMenu.track_id && player.isPlaying && (!songData(activeMenu)?.lyrics || lyricPlayback.current === activeMenu.id)}
+                  onPlay={() => void perform(() => playSharedSong(activeMenu))}
+                  busy={busy}
+                />}
+                {messageGifId(activeMenu) && <MomentGif id={messageGifId(activeMenu)} label="Selected GIF" />}
+                {activeMenu.media_url && !messageGifId(activeMenu) && ['image', 'video'].includes(activeMenu.media_type) &&
+                  <ChatMedia key={activeMenu.id} chatId={id} message={activeMenu} />}
+                {activeMenu.text && <p className="public-message-bubble" data-own={activeMenu.sender_id === user?.id}>{activeMenu.text}</p>}
+              </div>
               <div className="public-message-menu-items">
               {canSend && <button type="button" onClick={() => {
                   setReply({ id: activeMenu.id, name: messageSender(activeMenu,thread.chat,user).display_name, text: messagePreview(activeMenu) });
