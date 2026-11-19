@@ -27,7 +27,7 @@ export default function SongCatalogInfo({ track }) {
     ['Arranged by', info?.arranger], ['Performed by', info?.performers]
   ].map(([label,value]) => [label,display(value)]).filter(([,value]) => value);
   return <div className="catalog-about track-song-info">
-    {rows.length > 0 && <dl className="catalog-song-facts">{rows.map(([label,value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>}
+    {rows.length > 0 && <dl className="catalog-song-facts">{rows.map(([label,value]) => <div key={label} data-wide={value.length > 70}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>}
     {loading && <p className="track-info-status" role="status">Loading additional credits…</p>}
     {error && <p className="track-info-status" role="status">Additional credits couldn’t load. <button type="button" onClick={() => setRetry(value => value + 1)}>Retry</button></p>}
     {!loading && !error && !rows.length && <p className="track-info-status">Song details haven’t been added yet.</p>}
