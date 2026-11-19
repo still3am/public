@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
 
 /**
@@ -15,6 +15,7 @@ export default function CollapsibleText({
   const [expanded, setExpanded] = useState(false);
   const [cutOff, setCutOff] = useState(false);
   const bodyRef = useRef(null);
+  const bodyId = useId();
 
   // Fresh text starts collapsed again.
   useEffect(() => setExpanded(false), [text]);
@@ -32,6 +33,7 @@ export default function CollapsibleText({
     <div>
       <div
         ref={bodyRef}
+        id={bodyId}
         className={`overflow-hidden ${expanded ? "" : clampClass} ${className}`}>
         {text}
       </div>
@@ -39,6 +41,8 @@ export default function CollapsibleText({
       <div className="flex justify-center">
           <button
           type="button"
+          aria-expanded={expanded}
+          aria-controls={bodyId}
           onClick={() => setExpanded((v) => !v)}
           className="mt-2 inline-flex items-center gap-1 px-3 py-2 text-[11px] font-bold uppercase tracking-wider text-foreground/55 hover:text-foreground transition active:scale-95">
           
