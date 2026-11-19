@@ -25,16 +25,18 @@ export default function PlayerBar(){
 
   const cancelGesture=()=>{gesture.current=null;setDragY(0);};
   const touchStart=event=>{
-    if(!window.matchMedia("(max-width:767px)").matches||event.touches.length!==1)return;
+    if(!window.matchMedia("(max-width:767px)").matches)return;
+    if(event.touches.length!==1){cancelGesture();return;}
     const control=event.target.closest?.("button,a,input,[role=slider]");
     if(control&&!control.classList.contains("player-dock-track"))return;
     const touch=event.touches[0];
     gesture.current={x:touch.clientX,y:touch.clientY,dy:0,moved:false};
   };
   const touchMove=event=>{
-    const start=gesture.current;if(!start||event.touches.length!==1)return;
+    const start=gesture.current;if(!start)return;
+    if(event.touches.length!==1){cancelGesture();return;}
     const touch=event.touches[0],dx=touch.clientX-start.x,dy=touch.clientY-start.y;
-    if(!start.moved&&Math.abs(dx)>10&&Math.abs(dx)>Math.abs(dy)){cancelGesture();return;}
+    if(!start.moved&&Math.abs(dx)>10&&Math.abs(dx)>Math.abs(dy)){suppressClickUntil.current=Date.now()+350;cancelGesture();return;}
     if(Math.abs(dy)<12&&!start.moved)return;
     start.moved=true;start.dy=dy;
     setDragY(Math.max(-28,Math.min(66,dy*.5)));
@@ -58,7 +60,7 @@ export default function PlayerBar(){
   const playLabel=p.isPlaying?"Pause":"Play";
 
   return <>
-    <section aria-label="Music player" className="player-surface player-dock player-bar-mobile-bottom" data-collapsed={collapsed}
+    <section aria-label="Music player" className="player-surface player-dock player-bar-mobile-bottom" data-collapsed={collapsed} data-dragging={!!dragY}
       style={{"--player-sidebar-width":collapsed?"68px":"256px",transform:dragY?`translateY(${dragY}px)`:undefined}}
       onTouchStart={touchStart} onTouchMove={touchMove} onTouchEnd={touchEnd} onTouchCancel={cancelGesture}
       onClickCapture={event=>{if(Date.now()<suppressClickUntil.current){event.preventDefault();event.stopPropagation();}}}>
