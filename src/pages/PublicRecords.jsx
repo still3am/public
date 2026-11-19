@@ -276,7 +276,7 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
           <ArtistHeroBackdrop source={artist.cover_art_url || artist.avatar_url || topCover} />
           <button onClick={() => window.history.state?.idx > 0 ? nav(-1) : nav("/search")} className="artist-back" aria-label="Back"><ChevronLeft size={25} /></button>
           <div className="artist-hero-actions">
-            <ArtistReleaseFollow key={(user?.id || "guest") + ":" + artist.name} name={artist.name} />
+            <ArtistReleaseFollow key={(user?.id || "guest") + ":" + artist.name} name={artist.name} variant="pill" />
             <DropdownMenu><DropdownMenuTrigger asChild><button type="button" className="artist-more-button" aria-label={"More options for " + artist.name}><MoreHorizontal size={25} /></button></DropdownMenuTrigger>
               <DropdownMenuContent align="end" sideOffset={10} className="rounded-2xl p-2 min-w-[220px]">
                 <DropdownMenuItem className="min-h-11 rounded-xl" onSelect={shareArtist}><Share2 />Share artist</DropdownMenuItem>
@@ -297,6 +297,12 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
           </div>
         </section>
 
+        <nav className="artist-section-nav" aria-label="Artist sections">
+          {topTracks.length > 0 && <a href="#artist-top-songs">Top songs</a>}
+          {mainTracks.length > 0 && <a href="#artist-discography">Songs</a>}
+          {appearanceTracks.length > 0 && <a href="#artist-appearances">Appears on</a>}
+          {hasAbout && <a href="#artist-about">About</a>}
+        </nav>
         <div className="artist-feature-grid">
         {latestTrack && <section className="artist-latest">
           <button className="artist-latest-cover" onClick={() => {if (p.currentTrack?.id === latestTrack.id) p.togglePlay();else p.playTrackAt(mainTracks, mainTracks.findIndex((track) => track.id === latestTrack.id));}} aria-label={(p.currentTrack?.id === latestTrack.id && p.isPlaying ? "Pause " : "Play ") + latestTrack.title}><ArtistArtwork source={latestTrack.cover_art_url} className="w-full h-full object-cover" /><span className="artist-feature-play" aria-hidden="true">{p.currentTrack?.id === latestTrack.id && p.isPlaying ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" />}</span></button>
@@ -308,7 +314,7 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
           </div>
         </section>}
 
-        {topTracks.length > 0 && <section className="artist-top-songs">
+        {topTracks.length > 0 && <section id="artist-top-songs" className="artist-top-songs">
           <SectionTitle icon={Music} right={<button className="text-xs text-muted-foreground px-2 py-2" onClick={() => {setSongsExpanded(true);requestAnimationFrame(() => document.getElementById("artist-discography")?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" }));}}>All songs <ChevronRight size={14} className="inline" /></button>}>Top Songs</SectionTitle>
           <div className="artist-top-list" aria-label="Artist top songs">{topTracks.map((track, index) => <TrackRow key={track.id} track={track} index={index} queue={topQueue} queueIndex={index} />)}</div>
         </section>}
@@ -336,11 +342,11 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
               <label className="artist-song-search"><Search size={17} aria-hidden="true" /><input type="search" value={query} onChange={event => setQuery(event.target.value)} placeholder="Search songs" aria-label={"Search songs by " + artist.name} /></label>
               <select value={sort} onChange={event => setSort(event.target.value)} aria-label="Sort artist songs"><option value="recent">Recently added</option><option value="popular">Most played</option><option value="title">Title</option></select>
             </div>
-          <div id="artist-song-grid" className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 md:gap-4">
-              {!visibleTracks.length && <div className="collection-empty col-span-full"><h2>No matching songs</h2><button className="playlist-action" onClick={() => setQuery("")}>Show all songs</button></div>}
-              {(songsExpanded || query.trim() ? visibleTracks : visibleTracks.slice(0, songPreviewLimit)).map((t) =>
-            <TrackCard key={t.id} track={t} queue={visibleTracks} />
-            )}
+          <div id="artist-song-grid" className="artist-catalog-list">
+              {!visibleTracks.length && <div className="artist-search-empty" role="status"><Search size={24} aria-hidden="true" /><h3>No songs found</h3><p>Try a different song title.</p><button type="button" className="playlist-action" onClick={() => setQuery("")}>Clear search</button></div>}
+              {(songsExpanded || query.trim() ? visibleTracks : visibleTracks.slice(0, songPreviewLimit)).map((track, index) =>
+                <TrackRow key={track.id} track={track} index={index} queue={visibleTracks} queueIndex={index} />
+              )}
             </div>
           </div>
           }
@@ -352,7 +358,7 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
             }}>{songsExpanded ? "Show less" : "Show all songs"}</button>
           </div>}
         </section>
-        {appearanceTracks.length > 0 && <section className="artist-appears-on">
+        {appearanceTracks.length > 0 && <section id="artist-appearances" className="artist-appears-on">
           <SectionTitle icon={Disc3}>Appears On</SectionTitle>
           <ScrollShelf className="artist-appears-list" label="Featured appearances">
             {appearanceTracks.map((track) => <div className="artist-appears-card" key={track.id}><TrackCard track={track} queue={appearanceTracks} /></div>)}
