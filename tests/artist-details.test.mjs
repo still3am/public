@@ -1,0 +1,16 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+const {artistDetailRows,artistDetailDate}=await import('data:text/javascript;base64,'+Buffer.from(fs.readFileSync('src/lib/artistDetails.js','utf8')).toString('base64'));
+assert.equal(artistDetailDate(1995),'1995','year-only dates keep their precision');
+assert.equal(artistDetailDate('2020-02'),new Intl.DateTimeFormat(undefined,{year:'numeric',month:'long',timeZone:'UTC'}).format(new Date('2020-02-01T12:00:00Z')));
+assert.equal(artistDetailDate('2020-02-30'),'2020-02-30','invalid dates do not silently roll into a different month');
+let rows=artistDetailRows({location:'Saved location',formed_year:2010,catalogGenres:'Pop · pop · Other · R&B'}, {type:'Person',origin:'External location',begin:'1990-01-01'});
+assert.equal(rows.find(row=>row.label==='From').value,'Saved location');
+assert.equal(rows.find(row=>row.label==='Active since').value,'2010');
+assert.equal(rows.some(row=>row.label==='Born'),false,'formation/activity year is not presented as a birthday');
+assert.deepEqual(rows.find(row=>row.label==='Genres').value,['Pop','R&B']);
+rows=artistDetailRows({},null);assert.deepEqual(rows,[],'missing facts produce no empty cells');
+rows=artistDetailRows({}, {type:'Person',begin:'1990',genres:'Rock · Rock'});
+assert.equal(rows.find(row=>row.label==='Born').value,'1990');
+assert.deepEqual(rows.find(row=>row.label==='Genres').value,['Rock']);
+console.log('PASS date precision, invalid dates, saved facts, activity versus birth dates, genre deduplication and empty details');
