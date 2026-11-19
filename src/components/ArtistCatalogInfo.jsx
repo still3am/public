@@ -1,4 +1,7 @@
 import './catalog-about.css';
+import { Calendar, MapPin, Music2, UserRound, Users } from 'lucide-react';
+import { artistDetailRows } from '@/lib/artistDetails';
+const detailIcons = { artist: UserRound, location: MapPin, calendar: Calendar, members: Users, genres: Music2 };
 import CollapsibleText from '@/components/CollapsibleText';
 import { useEffect, useState } from 'react';
 import { findArtistInfo } from '@/lib/artistInfo';
@@ -25,14 +28,7 @@ export default function ArtistCatalogInfo({ artist }) {
   const biography = savedBio || (!history && info?.biography?.text);
   const biographySource = !savedBio && biography && safeLink(info?.biography?.url);
   const officialWebsite = !artist.website && safeLink(info?.website);
-  const rows = [
-    ['Artist', info?.type === 'Person' ? 'Solo artist' : info?.type],
-    ['From', artist.location || info?.origin || info?.area],
-    [info?.type === 'Person' ? 'Born' : 'Formed', artist.formed_year || info?.begin],
-    ['Members', artist.members],
-    ['Ended', info?.end],
-    ['Genres', info?.genres || artist.catalogGenres]
-  ].filter(([, value]) => value);
+  const rows = artistDetailRows(artist, info);
 
   return <div className="catalog-about artist-about-details">
     {!biography && !history && loading && <div className="artist-biography-loading" aria-hidden="true"><span /><span /><span /></div>}
@@ -47,7 +43,13 @@ export default function ArtistCatalogInfo({ artist }) {
     </div>}
     {!biography && !history && !loading && <p className="artist-biography-empty">A biography hasn’t been added yet.</p>}
     {rows.length > 0 && <div className="artist-detail-facts"><h3>Artist details</h3>
-      <dl className="artist-facts">{rows.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{label === "Genres" ? <div className="artist-genre-tags">{String(value).split(" · ").filter(Boolean).map(genre => <span key={genre}>{genre}</span>)}</div> : value}</dd></div>)}</dl>
+      <dl className="artist-facts">{rows.map(({label, value, icon}) => {
+        const Icon = detailIcons[icon];
+        return <div className="artist-fact" key={label} data-wide={icon === 'genres' || icon === 'members'}>
+          <dt><Icon size={14} aria-hidden="true" />{label}</dt>
+          <dd>{Array.isArray(value) ? <div className="artist-genre-tags">{value.map(genre => <span key={genre}>{genre}</span>)}</div> : value}</dd>
+        </div>;
+      })}</dl>
     </div>}
     {loading && <p className="artist-about-status" role="status">Loading artist details…</p>}
     {error && <div className="artist-about-status" role="status">Additional details couldn’t load. <button type="button" onClick={() => setRetry(value => value + 1)}>Retry</button></div>}
