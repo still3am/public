@@ -5,7 +5,6 @@ import { Link } from "react-router-dom";
 import { usePlayer } from "@/context/PlayerContext";
 import { Image } from "@/components/ui/image";
 import { useCoverUrl } from "@/hooks/useCoverUrl";
-import { formatTime } from "@/lib/audio-utils";
 
 /** @param {any} props */
 export default function TrackCard({ track, selectable = false, selected = false, onToggleSelect, queue, queueIndex }) {
@@ -38,14 +37,13 @@ export default function TrackCard({ track, selectable = false, selected = false,
       <div className="public-song-art-shade" aria-hidden="true" />
       {selectable ? <span className="public-song-selection" data-selected={selected} aria-hidden="true">{selected && <Check size={16} />}</span> : <>
         {isPlayingNow && <span className="public-song-playing" aria-label="Playing"><i /><i /><i /></span>}
-        <button type="button" className="public-song-play" data-glass-tone="light" onClick={handlePlay} aria-label={`${isPlayingNow ? "Pause" : "Play"} ${track.title || "song"}`}>
+        <button type="button" className="public-song-play" onClick={handlePlay} aria-label={`${isPlayingNow ? "Pause" : "Play"} ${track.title || "song"}`}>
           {isPlayingNow ? <Pause size={19} fill="currentColor" /> : <Play size={19} fill="currentColor" />}
         </button>
         <div className="public-song-menu" onClick={event => event.stopPropagation()} onPointerDown={event => event.stopPropagation()}>
           <TrackOptionsMenu track={track} size={18} openSignal={lp.signal} anchorRef={lp.ref} buttonClassName="public-song-menu-button" />
         </div>
       </>}
-      {track.duration_seconds > 0 && <span className="public-song-duration">{formatTime(track.duration_seconds)}</span>}
     </div>
     {selectable ? <div className="public-song-copy"><CardMeta track={track} /></div> :
       <Link to={`/track/${track.id}`} className="public-song-copy" onClick={event => {event.stopPropagation();if (lp.consumeLongPress()) event.preventDefault();}}><CardMeta track={track} /></Link>}
