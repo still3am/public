@@ -1,3 +1,4 @@
+import { useColorPalette } from "@/hooks/useColorPalette";
 import ArtistCatalogInfo from '@/components/ArtistCatalogInfo';
 import ArtistAliases from "@/components/ArtistAliases";
 import ArtistAlbums from "@/components/ArtistAlbums";
@@ -64,6 +65,15 @@ function ArtistArtwork({ source, className }) {
   const [failed, setFailed] = useState(false);
   useEffect(() => setFailed(false), [url]);
   return url && !failed ? <img src={url} alt="" className={className} onError={() => setFailed(true)} /> : <div aria-hidden="true" className={className + " artist-art-fallback"}><Mic2 size={36} /></div>;
+}
+
+function ArtistHeroBackdrop({ source }) {
+  const cover = useCoverUrl(source);
+  const palette = useColorPalette(cover);
+  return <div className="artist-hero-backdrop" style={{ '--artist-tone': palette[0] }}>
+    <ArtistArtwork source={source} className="artist-hero-image" />
+    <div className="artist-hero-shade" />
+  </div>;
 }
 
 /** @param {any} props */
@@ -231,7 +241,7 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
   find((t) => t.cover_art_url)?.cover_art_url;
 
   const latestTrack = [...mainTracks].sort((a, b) => (Date.parse(b.created_date) || 0) - (Date.parse(a.created_date) || 0))[0];
-  const topTracks = [...mainTracks].sort((a, b) => (b.play_count || 0) - (a.play_count || 0)).slice(0, 18);
+  const topTracks = [...mainTracks].sort((a, b) => (b.play_count || 0) - (a.play_count || 0)).slice(0, 5);
   const artistQueue = visibleTracks.length ? visibleTracks : mainTracks.length ? mainTracks : appearanceTracks;
   const artistActive = artistQueue.length > 0 && p.queue?.length === artistQueue.length && artistQueue.every((track, index) => p.queue[index]?.id === track.id) && artistQueue.some((track) => track.id === p.currentTrack?.id);
   const artistPlaying = artistActive && p.isPlaying;
@@ -251,11 +261,10 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
 
   return (
     <PullToRefresh onRefresh={load}>
-      <div className="artist-page artist-editorial mx-auto pb-12">
+      <div className="artist-page artist-editorial artist-redesigned mx-auto pb-12">
         {loadError && <LoadError message="This artist page couldn’t refresh." onRetry={load} />}
         <section className="artist-hero">
-          <ArtistArtwork source={artist.cover_art_url || artist.avatar_url || topCover} className="artist-hero-image" />
-          <div className="artist-hero-shade" />
+          <ArtistHeroBackdrop source={artist.cover_art_url || artist.avatar_url || topCover} />
           <button onClick={() => window.history.state?.idx > 0 ? nav(-1) : nav("/search")} className="artist-back" aria-label="Back"><ChevronLeft size={25} /></button>
           <div className="artist-hero-actions">
             <ArtistReleaseFollow key={(user?.id || "guest") + ":" + artist.name} name={artist.name} />
@@ -272,7 +281,10 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
               <ArtistNameEditor artist={artist} canEdit={!!user && !!id} onSaved={(name) => setArtist((prev) => prev ? { ...prev, name } : prev)} />
               <p className="artist-track-count">{mainTracks.length} {mainTracks.length === 1 ? "song" : "songs"}{appearanceTracks.length > 0 && ` · ${appearanceTracks.length} appearances`}</p>
             </div>
-            {tracks.length > 0 && <button onClick={playAll} className="artist-play" aria-label={(artistPlaying ? "Pause " : "Play ") + artist.name}>{artistPlaying ? <Pause size={26} fill="currentColor" /> : <Play size={26} fill="currentColor" />}</button>}
+            {tracks.length > 0 && <div className="artist-playback-actions">
+              <button type="button" onClick={playAll} className="artist-play" aria-label={(artistPlaying ? "Pause " : "Play ") + artist.name}>{artistPlaying ? <Pause size={21} fill="currentColor" /> : <Play size={21} fill="currentColor" />}<span>{artistPlaying ? "Pause" : "Play"}</span></button>
+              <button type="button" onClick={shuffleArtist} className="artist-shuffle" aria-label={"Shuffle " + artist.name}><Shuffle size={20} /><span>Shuffle</span></button>
+            </div>}
           </div>
         </section>
 
@@ -280,16 +292,16 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
         {latestTrack && <section className="artist-latest">
           <button className="artist-latest-cover" onClick={() => {if (p.currentTrack?.id === latestTrack.id) p.togglePlay();else p.playTrackAt(mainTracks, mainTracks.findIndex((track) => track.id === latestTrack.id));}} aria-label={(p.currentTrack?.id === latestTrack.id && p.isPlaying ? "Pause " : "Play ") + latestTrack.title}><ArtistArtwork source={latestTrack.cover_art_url} className="w-full h-full object-cover" /></button>
           <div className="min-w-0 flex-1">
-            <p className="eyebrow text-muted-foreground mb-2">{latestDate || "Latest on PUBLIC"}</p>
+            <p className="eyebrow text-muted-foreground mb-2">Featured song</p>
             <Link to={"/track/" + latestTrack.id} className="artist-latest-title">{latestTrack.title}</Link>
-            <p className="text-sm text-muted-foreground mt-1 truncate">Latest on PUBLIC · Song</p>
+            <p className="text-sm text-muted-foreground mt-1 truncate">{latestDate ? "Added " + latestDate : "In the PUBLIC catalog"}</p>
             <div className="mt-2"><LibraryButton track={latestTrack} /></div>
           </div>
         </section>}
 
         {topTracks.length > 0 && <section className="artist-top-songs">
           <SectionTitle icon={Music} right={<button className="text-xs text-muted-foreground px-2 py-2" onClick={() => {setSongsExpanded(true);requestAnimationFrame(() => document.getElementById("artist-discography")?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" }));}}>All songs <ChevronRight size={14} className="inline" /></button>}>Top Songs</SectionTitle>
-          <ScrollShelf className="artist-top-list" label="Artist top songs">{Array.from({ length: Math.ceil(topTracks.length / 3) }, (_, column) => <div className="artist-top-column" key={column}>{topTracks.slice(column * 3, column * 3 + 3).map((track, index) => <TrackRow key={track.id} track={track} index={column * 3 + index} queue={topTracks} queueIndex={column * 3 + index} />)}</div>)}</ScrollShelf>
+          <div className="artist-top-list" aria-label="Artist top songs">{topTracks.map((track, index) => <TrackRow key={track.id} track={track} index={index} queue={topTracks} queueIndex={index} />)}</div>
         </section>}
 
         </div>
