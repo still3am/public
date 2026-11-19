@@ -120,11 +120,11 @@
 
 /* Anchor each stack to the visible message's corner facing the conversation. */
 .public-message-reaction-target:has(> .public-message-reaction-group) {
-  margin-top:14px;
+  margin-top:16px;
 }
 .public-message-reaction-target > .public-message-reaction-group {
   position:absolute;
-  top:-13px;
+  top:-14px;
   left:auto;
   right:min(12px,calc(100% - var(--reaction-stack-width,24px)));
   bottom:auto;
