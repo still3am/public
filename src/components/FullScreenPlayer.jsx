@@ -8,7 +8,7 @@ import { useState, useRef, useEffect } from "react";
 import { usePlayer } from "@/context/PlayerContext";
 import { useColorPalette } from "@/hooks/useColorPalette";
 import { useAuth } from "@/lib/AuthContext";
-import { formatTime } from "@/lib/audio-utils";
+import PlaybackSeekSlider from "@/components/PlaybackSeekSlider";
 import { shareTrack } from "@/lib/shareTrack";
 import { getTrackShareUrl, prepareTrackShare } from "@/lib/trackShareUrl";
 import SyncedLyrics from "@/components/SyncedLyrics";
@@ -191,8 +191,7 @@ export default function FullScreenPlayer({ onClose }) {
   }
 
   if (!t) return null;
-  const progress = p.duration ? p.position / p.duration * 100 : 0;
-  const remaining = Math.max(0, (p.duration || 0) - (p.position || 0));
+
   const volPct = (p.muted ? 0 : p.volume) * 100;
   const isMutedLow = p.muted || p.volume === 0;
   const VolIcon = isMutedLow ? VolumeX : p.volume < 0.5 ? Volume1 : Volume2;
@@ -318,30 +317,7 @@ export default function FullScreenPlayer({ onClose }) {
             <TrackFavoriteButton trackId={t.id}/>
           </div>
 
-          {/* scrubber */}
-          <div className="mb-1.5 shrink-0">
-            <div className="relative h-1.5 bg-white/20 rounded-full group">
-              <div className="absolute left-0 top-0 h-1.5 bg-overlay-foreground rounded-full" style={{ width: `${progress}%` }} />
-              <div
-                className="absolute top-1/2 -translate-y-1/2 w-3 h-3 bg-overlay-foreground rounded-full shadow-md opacity-0 group-hover:opacity-100 transition"
-                style={{ left: `calc(${progress}% - 6px)` }} />
-
-              <input
-                type="range"
-                min={0}
-                max={p.duration || 0}
-                step="0.1"
-                value={p.position}
-                onChange={(e) => p.seek(Number(e.target.value))}
-                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                aria-label="Seek" />
-
-            </div>
-            <div className="flex justify-between text-[11px] opacity-70 mt-2 tabular-nums">
-              <span>{formatTime(p.position)}</span>
-              <span>-{formatTime(remaining)}</span>
-            </div>
-          </div>
+          <PlaybackSeekSlider key={t.id} position={p.position} duration={p.duration} onSeek={p.seek} overlay />
 
           {/* controls */}
           <div className="full-player-transport flex items-center justify-center gap-12 my-4 shrink-0">
