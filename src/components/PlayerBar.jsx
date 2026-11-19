@@ -19,7 +19,7 @@ export default function PlayerBar(){
   const gesture=useRef(null),suppressClickUntil=useRef(0),lastVolume=useRef(.5);
   useEffect(()=>{const handler=event=>toast({title:event.detail,variant:"destructive"});window.addEventListener("player:error",handler);return()=>window.removeEventListener("player:error",handler);},[toast]);
   useEffect(()=>{if(p.volume>0)lastVolume.current=p.volume;},[p.volume]);
-  useEffect(()=>{gesture.current=null;setDragY(0);},[p.currentTrack?.id]);
+  useEffect(()=>{gesture.current=null;setDragY(0);if(!p.currentTrack?.id){setFullOpen(false);setQueueOpen(false);}},[p.currentTrack?.id]);
   const offlineCover=useOfflineCoverUrl(p.currentTrack?.id,p.currentTrack?.cover_art_url),coverUrl=useCoverUrl(offlineCover);
   useEffect(()=>{setCoverFailed(false);const retry=()=>setCoverFailed(false);window.addEventListener("online",retry);return()=>window.removeEventListener("online",retry);},[coverUrl]);
 
