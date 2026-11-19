@@ -60,3 +60,5 @@
 .public-app .player-surface.player-dock .player-dock-button{flex-basis:44px;width:44px;min-width:44px;max-width:44px;height:44px;min-height:44px;max-height:44px}
 }
 
+.public-app .player-surface.player-dock[data-dragging="true"]{transition:none}
+
