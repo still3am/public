@@ -191,7 +191,7 @@ function MessagesPage({ user }) {
   draftText.current = draft;
   const typingMisses = useRef(0);
   const [reply, setReply] = useState(null);
-  const [peerTyping, setPeerTyping] = useState(false);
+  const [typingPeople, setTypingPeople] = useState([]);
   const typingPollLock = useRef(false);
   const draftInput = useRef(null);
   const [inboxQuery, setInboxQuery] = useState('');
@@ -329,15 +329,16 @@ function MessagesPage({ user }) {
         await messages('typing', { id, typing });
         const result = await messages('typing_status', { id });
         if (active) {
-          if (result.typing) {typingMisses.current = 0;setPeerTyping(true);} else
-          if (++typingMisses.current >= 2) setPeerTyping(false);
+          typingMisses.current = 0;
+          const people = Array.isArray(result.people) ? result.people : [];
+          setTypingPeople(people.filter(person => person?.id && person.id !== user?.id));
         }
       } catch {
-        if (active && ++typingMisses.current >= 3) setPeerTyping(false);
+        if (active && ++typingMisses.current >= 3) setTypingPeople([]);
       } finally {typingPollLock.current = false;}
     };
     typingMisses.current = 0;
-    setPeerTyping(false);
+    setTypingPeople([]);
     void refreshTyping();
     const timer = setInterval(refreshTyping, 2500);
     return () => {
@@ -829,7 +830,15 @@ function MessagesPage({ user }) {
               {messageTime(message.created_date)&&<time className="public-message-timestamp" dateTime={message.created_date}>{messageTime(message.created_date)}</time>}
               </div>
             </div></Fragment>)}
-            {peerTyping && currentPeer !== user?.id && <div className="public-message-typing" role="status" aria-live="polite" aria-label={peerName(thread.chat) + " is typing"}><span className="public-message-typing-dots" aria-hidden="true"><i /><i /><i /></span></div>}
+            {typingPeople.length > 0 && <div className="public-message-typing-people" role="status" aria-live="polite" aria-label={typingPeople.map(person => person.display_name || 'Someone').join(', ') + (typingPeople.length === 1 ? ' is typing' : ' are typing')}>
+              {typingPeople.map(person => <div key={person.id} className="public-message-typing-person">
+                <PersonAvatar size={34} person={person} />
+                <div className="public-message-typing-body">
+                  <span className="public-message-author">{person.display_name || 'PUBLIC listener'}</span>
+                  <span className="public-message-typing" aria-hidden="true"><span className="public-message-typing-dots"><i /><i /><i /></span></span>
+                </div>
+              </div>)}
+            </div>}
             </div>
           </div>
           {activeMenu && <Dialog open onOpenChange={(open) => {if (!open) setMenu(null);}}>
