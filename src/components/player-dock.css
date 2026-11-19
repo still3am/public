@@ -1,0 +1,54 @@
+
+/* Only the bottom player: no global button or page overrides. */
+.public-app .player-surface.player-dock{position:fixed;z-index:30;left:12px;right:12px;bottom:calc(var(--mobile-nav-bottom,8px) + var(--mobile-nav-height,64px) + 10px);width:auto;max-width:520px;margin:0 auto;padding:0;overflow:hidden;border:1px solid hsl(var(--border)/.85);border-radius:20px;background:hsl(var(--card));color:hsl(var(--foreground));box-shadow:0 7px 25px #00000015;backdrop-filter:none;-webkit-backdrop-filter:none;touch-action:pan-x;transition:transform .2s ease,left .2s ease}
+.public-app .player-surface.player-dock>.player-dock-mobile-progress{display:block;height:3px;margin:0;background:hsl(var(--foreground)/.08)}
+.player-dock-mobile-progress>span{display:block;height:100%;max-width:100%;background:hsl(var(--foreground)/.65);border-radius:99px}
+.public-app .player-surface.player-dock>.player-dock-layout{display:flex;align-items:center;min-height:64px;padding:8px 10px;gap:8px;box-sizing:border-box}
+.public-app .player-dock .player-dock-track{display:flex;align-items:center;flex:1;min-width:0;max-width:100%;gap:11px;min-height:48px;margin:0;padding:0;border:0;border-radius:10px;background:none;color:inherit;text-align:left;overflow:hidden}
+.public-app .player-dock .player-dock-art{display:grid;place-items:center;position:relative;flex:0 0 44px;width:44px;height:44px;overflow:hidden;border-radius:10px;background:hsl(var(--muted));color:hsl(var(--muted-foreground))}
+.public-app .player-dock .player-dock-art>img{display:block;width:100%;height:100%;object-fit:cover;border-radius:inherit}
+.player-dock-meta{display:block;flex:1;min-width:0;overflow:hidden}
+.player-dock-title{display:flex;align-items:center;gap:6px;min-width:0;font-size:13px;font-weight:650;line-height:1.4}
+.player-dock-title>span:first-child{display:block;flex:1;min-width:0;overflow:hidden}
+.player-dock-explicit{display:inline-grid;place-items:center;flex:none;width:12px;height:13px;border-radius:3px;background:hsl(var(--foreground)/.12);font-size:8px;font-weight:750;color:hsl(var(--foreground)/.65)}
+.player-dock-pure{display:none}
+.player-dock-artist{display:block;min-width:0;margin-top:4px;font-size:11px;line-height:1.4;color:hsl(var(--muted-foreground))}
+.player-dock-mobile-controls{display:flex;align-items:center;flex:none;gap:2px}
+.public-app .player-dock .player-dock-button{display:inline-flex;align-items:center;justify-content:center;position:relative;flex:0 0 42px;width:42px;min-width:42px;height:42px;min-height:42px;max-width:42px;max-height:42px;margin:0;padding:0;border:0;border-radius:50%;background:transparent;color:inherit;box-sizing:border-box;touch-action:manipulation}
+.public-app .player-dock .player-dock-button>svg{flex:none}
+.public-app .player-dock .player-dock-play{background:hsl(var(--foreground));color:hsl(var(--background))}
+.player-dock-center,.player-dock-tools{display:none}
+.public-app .player-dock :is(button,input):focus-visible{outline:2px solid hsl(var(--ring));outline-offset:-2px}
+.public-app .player-dock button:disabled{opacity:.4}
+@media(min-width:768px){
+.public-app .player-surface.player-dock{left:calc(var(--player-sidebar-width,256px) + 16px);right:16px;bottom:16px;max-width:none;margin:0;border-radius:22px;touch-action:auto}
+.public-app .player-surface.player-dock>.player-dock-mobile-progress{display:none}
+.public-app .player-surface.player-dock>.player-dock-layout{display:grid;grid-template-columns:minmax(100px,1fr) auto auto;grid-template-areas:"meta transport tools" "seek seek seek";align-items:center;gap:0 12px;padding:10px 14px;min-height:0}
+.public-app .player-dock .player-dock-track{grid-area:meta;max-width:none;min-width:0}
+.player-dock-center{display:contents}
+.player-dock-mobile-controls{display:none}
+.player-dock-transport{display:flex;grid-area:transport;align-items:center;justify-content:center;gap:4px}
+.player-dock-seek{grid-area:seek;min-width:0;margin:0}
+.player-dock-seek .public-playback-seek-times{display:none}
+.player-dock-tools{display:flex;grid-area:tools;align-items:center;justify-content:flex-end;gap:4px;min-width:0}
+.player-dock-volume,.player-dock-options{display:none}
+.public-app .player-dock .player-dock-button{flex-basis:36px;width:36px;min-width:36px;max-width:36px;height:36px;min-height:36px;max-height:36px}
+.public-app .player-dock .player-dock-play{flex-basis:40px;width:40px;min-width:40px;max-width:40px;height:40px;min-height:40px;max-height:40px}
+.player-dock-queue>i{position:absolute;top:6px;right:6px;width:4px;height:4px;border-radius:50%;background:currentColor}
+}
+@media(min-width:1200px){
+.public-app .player-surface.player-dock>.player-dock-layout{grid-template-columns:minmax(160px,1fr) minmax(280px,1.2fr) minmax(160px,1fr);grid-template-areas:"meta center tools";gap:24px;padding:10px 18px}
+.player-dock-center{display:flex;grid-area:center;flex-direction:column;justify-content:center;gap:0;min-width:0}
+.player-dock-seek{width:100%}
+.player-dock-seek .public-playback-seek-control,.player-dock-seek .public-playback-seek-control>input{height:30px!important}
+.player-dock-seek .public-playback-seek-track{top:13px;bottom:13px}
+.player-dock-seek .public-playback-seek-times{display:flex;font-size:10px;line-height:1.2}
+.player-dock-options{display:inline-flex;flex:none}
+.player-dock-volume{display:flex;align-items:center;gap:4px;min-width:0}
+.player-dock-volume>input{width:64px;min-width:48px;height:32px;margin:0;accent-color:hsl(var(--foreground));cursor:pointer}
+.player-dock-pure{display:inline-flex;flex:none}
+.public-app .player-dock .player-dock-art{flex-basis:48px;width:48px;height:48px}
+}
+@media(hover:hover){.public-app .player-dock .player-dock-button:not(.player-dock-play):hover{background:hsl(var(--foreground)/.07)}.public-app .player-dock .player-dock-track:hover{opacity:.8}}
+@media(max-width:359px){.public-app .player-surface.player-dock>.player-dock-layout{padding-inline:8px;gap:5px}.public-app .player-dock .player-dock-art{flex-basis:38px;width:38px;height:38px}.public-app .player-dock .player-dock-track{gap:8px}}
+@media(prefers-reduced-motion:reduce){.public-app .player-surface.player-dock{transition:none}}
