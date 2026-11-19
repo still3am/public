@@ -9,8 +9,7 @@ globalThis.__dockCalls=calls;
 globalThis.window={matchMedia:()=>({matches:true})};
 globalThis.__dockPlayer={currentTrack:{id:'song',title:'Song',artist:'First artist, Second artist',cover_art_url:'cover.jpg'},queue:[{id:'song'},{id:'next'}],currentIndex:0,position:30,duration:120,volume:.5,muted:false,isPlaying:true,togglePlay:()=>calls.push('toggle'),next:()=>calls.push('next'),prev:()=>calls.push('prev'),clearQueue:()=>calls.push('clear'),setVolume:value=>calls.push(['volume',value]),setMuted:value=>calls.push(['muted',value])};
 const stubs=`const React=globalThis.__dockReact;
-let stateIndex=0;
-const useState=value=>{const index=stateIndex++;return [value,next=>globalThis.__dockUpdates.push([index,next])];},useRef=value=>({current:value}),useEffect=()=>{};
+const useState=value=>{const index=globalThis.__dockStateIndex++;return [value,next=>globalThis.__dockUpdates.push([index,next])];},useRef=value=>({current:value}),useEffect=()=>{};
 const usePlayer=()=>globalThis.__dockPlayer,useToast=()=>({toast(){}}),useSidebarCollapsed=()=>({collapsed:false}),useOfflineCoverUrl=(id,url)=>url,useCoverUrl=url=>url;
 const Play="play",Pause="pause",SkipBack="previous",SkipForward="next",Volume2="volume",VolumeX="muted",ListMusic="queue",X="close";
 const PureBadge="pure",OverflowText="overflow",FullScreenPlayer="full-player",PlaybackSeekSlider="seek",QueuePanel="queue-panel",TrackOptionsMenu="track-options";\n`;
@@ -18,7 +17,7 @@ const source=fs.readFileSync('src/components/PlayerBar.jsx','utf8').replace(/^im
 const code=ts.transpileModule(stubs+source,{compilerOptions:{jsx:ts.JsxEmit.React,target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext}}).outputText;
 const {default:PlayerBar}=await import('data:text/javascript;base64,'+Buffer.from(code).toString('base64'));
 const all=(node,test)=>!node||typeof node!=='object'?[]:[...(test(node)?[node]:[]),...React.Children.toArray(node.props?.children).flatMap(child=>all(child,test))];
-const render=()=>{updates.length=0;calls.length=0;const tree=PlayerBar();return {tree,dock:all(tree,node=>node.type==='section')[0].props};};
+const render=()=>{globalThis.__dockStateIndex=0;updates.length=0;calls.length=0;const tree=PlayerBar();return {tree,dock:all(tree,node=>node.type==='section')[0].props};};
 let {tree,dock}=render();
 const buttons=label=>all(tree,node=>node.type==='button'&&node.props['aria-label']===label);
 buttons('Pause')[0].props.onClick();buttons('Next')[0].props.onClick();buttons('Previous')[0].props.onClick();assert.deepEqual(calls,['toggle','next','prev']);
