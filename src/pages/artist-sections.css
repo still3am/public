@@ -186,3 +186,15 @@
 .public-app .artwork-content .artist-page.artist-editorial.artist-redesigned.artist-sections-v2 .artist-about-details:not(:has(.artist-biography))>.artist-detail-facts{margin-top:0}
 }
 
+/* Compact details use consistent labels, values and a full-width genre row. */
+.public-app .artwork-content .artist-page.artist-editorial.artist-redesigned.artist-sections-v2 .artist-detail-facts{padding:20px;border-radius:18px;background:hsl(var(--foreground)/.02)}
+.public-app .artwork-content .artist-page.artist-editorial.artist-redesigned.artist-sections-v2 .artist-detail-facts .artist-facts{gap:0 24px}
+.public-app .artwork-content .artist-page.artist-editorial.artist-redesigned.artist-sections-v2 .artist-detail-facts .artist-fact{padding:14px 0;border-top:1px solid hsl(var(--border)/.55)}
+.public-app .artwork-content .artist-page.artist-editorial.artist-redesigned.artist-sections-v2 .artist-detail-facts .artist-fact[data-wide="true"]{grid-column:1 / -1}
+.public-app .artwork-content .artist-page.artist-editorial.artist-redesigned.artist-sections-v2 .artist-detail-facts dt{display:flex;align-items:center;gap:7px;margin-bottom:8px;font-size:11px;text-transform:none;letter-spacing:0;font-weight:550;line-height:1.4}
+.public-app .artwork-content .artist-page.artist-editorial.artist-redesigned.artist-sections-v2 .artist-detail-facts dt>svg{flex:none;opacity:.8}
+.public-app .artwork-content .artist-page.artist-editorial.artist-redesigned.artist-sections-v2 .artist-detail-facts dd{font-size:14px;line-height:1.6;font-weight:550}
+.public-app .artwork-content .artist-page.artist-editorial.artist-redesigned.artist-sections-v2 .artist-genre-tags{gap:8px}
+.public-app .artwork-content .artist-page.artist-editorial.artist-redesigned.artist-sections-v2 .artist-genre-tags>span{padding:5px 11px;font-size:12px;font-weight:500;background:hsl(var(--background)/.6)}
+@media(max-width:767px){.public-app .artwork-content .artist-page.artist-editorial.artist-redesigned.artist-sections-v2 .artist-detail-facts{padding:16px}.public-app .artwork-content .artist-page.artist-editorial.artist-redesigned.artist-sections-v2 .artist-detail-facts .artist-facts{gap:0 18px}}
+
