@@ -8,13 +8,14 @@ globalThis.__cardPlayer={currentTrack:null,isPlaying:false,togglePlay:()=>global
 globalThis.__cardLongPress=false;
 const source=fs.readFileSync('src/components/TrackCard.jsx','utf8').replace(/^import[^;]+;/gm,'');
 const stubs=`const React=globalThis.__cardReact,Link="a",Image="img",Play="play",Pause="pause",Check="check",Music2="music",TrackOptionsMenu="menu";
-const usePlayer=()=>globalThis.__cardPlayer,useCoverUrl=value=>value,formatTime=value=>String(value),useLongPressMenu=()=>({ref:null,handlers:{},signal:0,consumeLongPress:()=>globalThis.__cardLongPress});\n`;
+const usePlayer=()=>globalThis.__cardPlayer,useCoverUrl=value=>value,useLongPressMenu=()=>({ref:null,handlers:{},signal:0,consumeLongPress:()=>globalThis.__cardLongPress});\n`;
 const output=ts.transpileModule(stubs+source,{compilerOptions:{jsx:ts.JsxEmit.React,target:ts.ScriptTarget.ES2022,module:ts.ModuleKind.ESNext}}).outputText;
 const {default:TrackCard}=await import('data:text/javascript;base64,'+Buffer.from(output).toString('base64'));
 const all=(node,test)=>!node||typeof node!=='object'?[]:[...(test(node)?[node]:[]),...React.Children.toArray(node.props?.children).flatMap(child=>all(child,test))];
 const song={id:'song',title:'Long song name',artist:'Artist',cover_art_url:'cover.jpg',duration_seconds:150};
 const queue=[{id:'first'},song,song];
 let tree=TrackCard({track:song,queue,queueIndex:2});
+assert.equal(all(tree,node=>node.props?.className==='public-song-duration').length,0,'song cards do not show duration badges');
 let play=all(tree,node=>node.props?.className==='public-song-play')[0];
 assert.equal(play.props['aria-label'],'Play Long song name');
 play.props.onClick({stopPropagation(){}});
@@ -32,4 +33,4 @@ assert.equal(tree.props.role,'checkbox');assert.equal(tree.props['aria-checked']
 assert.equal(all(tree,node=>node.props?.className==='public-song-play').length,0);
 const target={};let prevented=false;tree.props.onKeyDown({key:' ',target,currentTarget:target,preventDefault(){prevented=true;}});
 assert.equal(selected,song);assert.equal(prevented,true);
-console.log('PASS visible playback, current song pause, duplicate queue positions, long press and keyboard selection');
+console.log('PASS card actions, no duration badge, current song pause, duplicate queue positions, long press and keyboard selection');
