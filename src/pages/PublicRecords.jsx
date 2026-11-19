@@ -265,7 +265,6 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
   }
   const hasAbout = !!(artist.bio || meta.length || socials.length || artist.history_text || tracks.some((track) => track.genre) || artist.name);
   const aboutArtist = () => document.getElementById("artist-about")?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" });
-  const latestDate = latestTrack?.created_date && Number.isFinite(Date.parse(latestTrack.created_date)) ? new Date(latestTrack.created_date).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" }) : "";
 
   return (
     <PullToRefresh onRefresh={load}>
@@ -305,7 +304,6 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
           <button className="artist-latest-cover" onClick={() => {if (p.currentTrack?.id === latestTrack.id) p.togglePlay();else p.playTrackAt(mainTracks, mainTracks.findIndex((track) => track.id === latestTrack.id));}} aria-label={(p.currentTrack?.id === latestTrack.id && p.isPlaying ? "Pause " : "Play ") + latestTrack.title}><span className="artist-feature-play" aria-hidden="true">{p.currentTrack?.id === latestTrack.id && p.isPlaying ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" />}</span></button>
           <div className="artist-feature-copy min-w-0 flex-1">
             <Link to={"/track/" + latestTrack.id} className="artist-latest-title">{latestTrack.title}</Link>
-            <p className="text-sm text-muted-foreground mt-1 truncate">{latestDate ? "Added " + latestDate : "In the PUBLIC catalog"}</p>
             <div className="artist-feature-save"><LibraryButton track={latestTrack} label className="artist-feature-library-button" /></div>
           </div>
           </div>
