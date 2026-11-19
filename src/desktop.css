@@ -437,7 +437,7 @@
 /* Track detail hero must match the artist hero: a full-bleed image, not the legacy inset release card. */
 .public-app .artwork-content .track-page.track-editorial.track-artist-layout .release-header-full{
  display:flex!important;position:relative!important;align-items:flex-end!important;
- width:auto!important;max-width:none!important;min-height:clamp(500px,46vw,640px)!important;height:auto!important;
+ width:calc(100% + 2 * var(--app-gutter))!important;max-width:none!important;min-height:clamp(500px,46vw,640px)!important;height:auto!important;flex:0 0 calc(100% + 2 * var(--app-gutter))!important;
  margin:0 calc(-1 * var(--app-gutter)) 36px!important;padding:0!important;
  border:0!important;border-radius:0!important;background:#17171a!important;overflow:hidden!important;isolation:isolate!important;
 }
