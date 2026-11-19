@@ -13,7 +13,7 @@ import { copyText } from '@/lib/shareLink';
 import { Link, useLocation, useSearchParams } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { useAuth } from '@/lib/AuthContext';
-import { ArrowUp, BellOff, Check, ChevronLeft, ChevronRight, Clapperboard, Copy, Disc3, ExternalLink, Library, Trash2, Users, MessageCircle, Image, ImagePlus, Info, Music2, Palette, Pause, Play, Plus, Reply, Search, ShoppingBag, SquarePen, TextQuote, UserRound, X } from 'lucide-react';
+import { ArrowDown, ArrowUp, BellOff, Check, ChevronLeft, ChevronRight, Clapperboard, Copy, Disc3, ExternalLink, Library, Trash2, Users, MessageCircle, Image, ImagePlus, Info, Music2, Palette, Pause, Play, Plus, Reply, Search, ShoppingBag, SquarePen, TextQuote, UserRound, X } from 'lucide-react';
 import LyricSharePicker from '@/components/LyricSharePicker';
 import LyricCoverGradient from '@/components/LyricCoverGradient';
 import TrackPickerSheet from '@/components/profile/TrackPickerSheet';
@@ -546,15 +546,43 @@ function MessagesPage({ user }) {
   useEffect(()=>{if(!revealedTimestamp)return;const timer=setTimeout(()=>setRevealedTimestamp(null),3500);return()=>clearTimeout(timer);},[revealedTimestamp]);
   const followLatest = useRef(true);
   const [showLatest, setShowLatest] = useState(false);
+  const [newMessageCount, setNewMessageCount] = useState(0);
+  const previousLastMessage = useRef(null);
+  const jumpingToLatest = useRef(false);
   const tabChats = inbox?.filter((chat) => requests === (chat.is_group ? Boolean(chat.invited_ids?.includes(user?.id)) : chat.dm_status === 'pending' && chat.dm_requester !== user?.id) && chat.dm_status !== 'declined' && (chat.is_group || chat.last_message_at || chat.dm_requester === user?.id));
   const inboxTerm = inboxQuery.trim().toLocaleLowerCase();
   const visibleChats = tabChats?.filter((chat) => !inboxTerm || peerName(chat).toLocaleLowerCase().includes(inboxTerm));
-  useEffect(() => {followLatest.current = true;setShowLatest(false);}, [id]);
-  function jumpToLatest() {
+  useEffect(() => {
+    followLatest.current = true;
+    jumpingToLatest.current = false;
+    previousLastMessage.current = null;
+    setShowLatest(false);
+    setNewMessageCount(0);
+  }, [id]);
+  function jumpToLatest(smooth = false) {
+    const history = scroll.current;
     followLatest.current = true;
     setShowLatest(false);
-    if (scroll.current) scroll.current.scrollTop = scroll.current.scrollHeight;
+    setNewMessageCount(0);
+    if (!history) return;
+    const animate = smooth && !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    jumpingToLatest.current = animate;
+    history.scrollTo({ top: history.scrollHeight, behavior: animate ? 'smooth' : 'auto' });
   }
+  useLayoutEffect(() => {
+    const history = scroll.current;
+    const conversation = history?.parentElement;
+    if (!history || !conversation) return;
+    const positionControl = () => {
+      const distance = conversation.getBoundingClientRect().bottom - history.getBoundingClientRect().bottom;
+      conversation.style.setProperty('--message-composer-clearance', Math.max(12, distance + 12) + 'px');
+    };
+    const observer = typeof ResizeObserver === 'undefined' ? null : new ResizeObserver(positionControl);
+    observer?.observe(history);
+    observer?.observe(conversation);
+    positionControl();
+    return () => observer?.disconnect();
+  }, [thread?.chat?.id]);
   useLayoutEffect(()=>{
     if(!thread?.chat?.id||!messageStream.current||!scroll.current)return;
     let frame;
@@ -613,8 +641,18 @@ function MessagesPage({ user }) {
   const sharedMusic=(sharedPages[id+':music']?.messages||[]).slice().reverse();
   useEffect(() => {
     if (!lastMessage) return;
-    if (followLatest.current) jumpToLatest();else
+    const previous = previousLastMessage.current;
+    previousLastMessage.current = lastMessage;
+    if (followLatest.current) {
+      jumpToLatest();
+      return;
+    }
     setShowLatest(true);
+    const previousIndex = thread.messages.findIndex(message => message.id === previous);
+    if (previousIndex >= 0) {
+      const received = thread.messages.slice(previousIndex + 1).filter(message => message.sender_id !== user?.id).length;
+      if (received) setNewMessageCount(count => count + received);
+    }
   }, [id, lastMessage]);
   return <main className="public-messages" style={viewportStyle} data-compact={viewport.height < 480} data-thread={Boolean(id)} data-composing={composing}>
     {!online&&<p className="public-messages-connection" role="status">You’re offline. Your draft is kept here.</p>}
@@ -785,11 +823,15 @@ function MessagesPage({ user }) {
           onSelectBackground={chooseMarketBackground} />
         }
         {thread && <>
-          <div ref={scroll} className="public-messages-history" aria-label="Conversation messages" onScroll={() => {
+          <div ref={scroll} className="public-messages-history" aria-label="Conversation messages" onWheel={() => {jumpingToLatest.current = false;}} onTouchStart={() => {jumpingToLatest.current = false;}} onScroll={() => {
             const node = scroll.current;
             if (!node) return;
-            followLatest.current = node.scrollHeight - node.scrollTop - node.clientHeight < 72;
-            if (followLatest.current) setShowLatest(false);
+            const distance = node.scrollHeight - node.scrollTop - node.clientHeight;
+            if (jumpingToLatest.current && distance >= 72) return;
+            jumpingToLatest.current = false;
+            followLatest.current = distance < 72;
+            setShowLatest(distance > 120);
+            if (followLatest.current) setNewMessageCount(0);
           }}>
             {thread.messages.length === 0 && <p className="public-messages-list-empty">{groupInvited ? 'You have been invited to this group. Accept to see its messages.' : pending ? "Send a message request to start the conversation." : "Send the first message."}</p>}
             <div className="public-messages-stream" ref={messageStream}>
@@ -909,7 +951,9 @@ function MessagesPage({ user }) {
               </div>
             </DialogContent>
           </Dialog>}
-          {showLatest && <button type="button" className="public-messages-latest" onClick={jumpToLatest}>Jump to latest</button>}
+          {showLatest && <button type="button" className="public-messages-latest" onClick={() => jumpToLatest(true)} aria-label={newMessageCount ? newMessageCount + ' new messages. Jump to latest' : 'Jump to latest'}>
+            <ArrowDown size={17} aria-hidden="true" /><span>{newMessageCount ? newMessageCount + (newMessageCount === 1 ? ' new message' : ' new messages') : 'Latest messages'}</span>
+          </button>}
           {incoming && (groupInvited || thread.messages.length > 0) && <div className="public-message-request-actions flex gap-3 p-3">
             {[true, false].map((accept) => <button className="rounded-lg border px-3 py-2" key={String(accept)} disabled={busy} onClick={() => void perform(async () => {
               await messages(groupInvited ? 'group_respond' : 'respond', { id, accept });
