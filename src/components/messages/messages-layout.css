@@ -499,3 +499,81 @@
   border-radius:18px 18px 18px 6px;
 }
 
+/* Preview original reply content in a compact, independently scrolling area. */
+.public-messages-thread > .public-message-reply-draft {
+  align-items:flex-start;
+  max-height:min(240px,calc(var(--messages-viewport-height,100dvh) * .3));
+  overflow-y:auto;
+  overscroll-behavior:contain;
+}
+.public-message-reply-draft > .public-message-reply-draft-content {
+  flex:1;
+  min-width:0;
+}
+.public-message-reply-draft-content > strong { margin:3px 0 7px; }
+.public-message-reply-draft > button {
+  position:sticky;
+  top:0;
+}
+.public-message-reply-content {
+  display:flex;
+  flex-direction:column;
+  align-items:flex-start;
+  gap:6px;
+  min-width:0;
+  max-width:100%;
+}
+.public-message-reply-content > :is(.moment-comment-gif,.public-message-upload) {
+  display:block;
+  width:auto;
+  max-width:min(220px,100%);
+  max-height:130px;
+  object-fit:contain;
+  border-radius:10px;
+}
+.public-message-reply-content > :is(.public-message-music,.public-message-lyric-card) {
+  width:250px;
+  max-width:100%;
+  min-width:0;
+}
+.public-message-reply-content .public-message-song {
+  width:100%;
+  max-width:100%;
+  padding:8px;
+  box-sizing:border-box;
+}
+.public-message-reply-content .public-message-song-cover {
+  width:36px;
+  height:36px;
+}
+.public-message-reply-content .public-message-lyric-lines {
+  max-height:160px;
+  overflow-y:auto;
+  padding:10px 12px;
+  font-size:14px;
+  line-height:1.35;
+}
+.public-message-reply-content .public-message-song-title { font-size:12px; }
+.public-message-reply-content .public-message-song-artist { font-size:11px; }
+.public-message-reply-content > .public-message-reply-text {
+  display:block;
+  max-width:100%;
+  white-space:pre-wrap;
+  overflow-wrap:anywhere;
+  font-size:12px;
+}
+.public-message-reply-quote > strong { margin-bottom:6px; }
+.public-message-context .public-message-menu-preview:has(> .public-message-reaction-group) {
+  position:relative;
+  padding-top:16px;
+}
+.public-message-menu-preview > .public-message-reaction-group {
+  top:2px;
+  left:auto;
+  right:2px;
+}
+.public-message-menu-preview[data-own="true"] > .public-message-reaction-group {
+  left:2px;
+  right:auto;
+}
+
