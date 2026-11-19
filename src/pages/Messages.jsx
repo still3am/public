@@ -818,7 +818,7 @@ function MessagesPage({ user }) {
               {message.sender_id!==user?.id&&messageRunPosition(thread.messages,messageIndex).start&&<span className="public-message-author">{messageSender(message,thread.chat,user).display_name}</span>}
               <div className="public-message-content">
               {message.reply_preview && <ReplyQuote preview={message.reply_preview} chatId={id} original={thread.messages.find(item => item.id === message.reply_to_id)} />}
-              <div className="public-message-reaction-target">
+              <div className="public-message-reaction-target" data-own={message.sender_id === user?.id}>
               {message.track_id && <SharedSong message={message} playing={player.currentTrack?.id === message.track_id && player.isPlaying && (!songData(message)?.lyrics || lyricPlayback.current === message.id)} onPlay={() => void perform(() => playSharedSong(message))} busy={busy} />}
               {message.media_url && !messageGifId(message) && ['image', 'video'].includes(message.media_type) && <ChatMedia key={message.id} chatId={id} message={message} />}
               {messageGifId(message) && <MomentGif id={messageGifId(message)} label="Shared GIF" />}
