@@ -13,7 +13,7 @@ function setup(enabled=true) {
   const rail=React.Children.toArray(tree.props.children).find(node=>node.props?.role==='region');
   const captured=new Set();
   const element={scrollWidth:1200,clientWidth:400,scrollLeft:200,setPointerCapture:id=>captured.add(id),hasPointerCapture:id=>captured.has(id),releasePointerCapture:id=>captured.delete(id),scrollBy({left}){this.scrollLeft+=left;}};
-  rail.props.ref.current=element;
+  rail.ref.current=element;
   const event=(x=200,y=0,type='mouse')=>({currentTarget:element,target:{closest:()=>null},pointerId:1,pointerType:type,button:0,clientX:x,clientY:y,detail:1,prevented:false,stopped:false,preventDefault(){this.prevented=true;},stopPropagation(){this.stopped=true;}});
   return {rail:rail.props,element,event,captured};
 }
