@@ -54,7 +54,7 @@ export default function GroupChatPanel({chat,userId,invoke,onChanged,onLeft,busy
     },200);
     return()=>{active=false;clearTimeout(timer);};
   },[searching,people,retry,invoke]);
-  const matches=(people||[]).filter(person=>!chat.participant_ids.includes(person.id)&&(person.name||person.display_name||'').toLocaleLowerCase().includes(term));
+  const matches=(people||[]).filter(person=>!chat.participant_ids.includes(person.id)&&[person.name,person.display_name,person.username].some(value=>typeof value==='string'&&value.toLocaleLowerCase().includes(term.replace(/^@/,''))));
   async function run(action,data={}){
     if(lock.current||busy)return;
     lock.current=true;setWorking(true);setError('');
@@ -98,7 +98,7 @@ export default function GroupChatPanel({chat,userId,invoke,onChanged,onLeft,busy
       </div>;
     })}</div>
     {isAdmin&&chat.participant_ids.length<20&&<div className="public-group-invite">
-      <h3>Invite people</h3><label className="public-group-search"><Search size={17}/><input aria-label="Search people to invite" placeholder="Search people you follow" value={query} onChange={event=>setQuery(event.target.value)} /></label>
+      <h3>Invite people</h3><label className="public-group-search"><Search size={17}/><input aria-label="Search people to invite" placeholder="Name or username" value={query} onChange={event=>setQuery(event.target.value)} /></label>
       {searching&&contactError?<p role="alert">{contactError} <button type="button" onClick={()=>setRetry(value=>value+1)}>Retry</button></p>:searching&&people===null?<p role="status">Searching…</p>:searching&&!matches.length?<p role="status">No matching people to invite.</p>:searching&&matches.map(person=><button type="button" className="public-group-invite-result" key={person.id} disabled={working||busy} onClick={()=>void run('group_invite',{memberId:person.id})}><span className="public-group-invite-avatar"><Avatar user={person} size={30}/></span><span className="public-group-invite-name">{person.name}</span><span>Invite</span></button>)}
       <p>New members receive an invitation to accept.</p>
     </div>}
