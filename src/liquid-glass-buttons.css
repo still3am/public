@@ -1,0 +1,35 @@
+
+/* Shared clear Liquid Glass material. Geometry and hit areas stay with each control. */
+:is(button,[data-button-variant],a.chrome-button,a.playlist-action,a.upload-primary,a.moment-primary):not([role="switch"]):not([role="checkbox"]):not([role="slider"]):not([data-glass-preserve]):not([style*="background"]){
+ background-color:var(--glass-button-fill,hsl(var(--background)/.16))!important;
+ color:var(--glass-button-ink,hsl(var(--foreground)))!important;
+ border:1px solid var(--glass-button-edge,hsl(var(--foreground)/.18))!important;
+ border-radius:var(--glass-button-radius,999px)!important;
+ box-sizing:border-box;
+ box-shadow:inset 0 1px 0 rgb(255 255 255 / .5),inset 0 -1px 0 rgb(255 255 255 / .06),0 3px 12px rgb(0 0 0 / .055)!important;
+ backdrop-filter:blur(16px) saturate(145%)!important;
+ -webkit-backdrop-filter:blur(16px) saturate(145%)!important;
+ transition:background-color .16s,border-color .16s,box-shadow .16s,opacity .16s;
+}
+:is(button,[data-button-variant],a.chrome-button,a.playlist-action,a.upload-primary,a.moment-primary):not([role="switch"]):not([role="checkbox"]):not([role="slider"]):not([data-glass-preserve]):not([style*="background"]):is([aria-pressed="true"],[aria-selected="true"],[data-state="on"],[aria-current="date"]){
+ background-color:var(--glass-button-active,hsl(var(--foreground)/.13))!important;
+ border-color:var(--glass-button-active-edge,hsl(var(--foreground)/.48))!important;
+ box-shadow:inset 0 1px 0 #ffffff65,inset 0 0 0 1px var(--glass-button-edge,hsl(var(--foreground)/.12)),0 3px 12px #0000000d!important;
+}
+:is(button,[data-button-variant],a.chrome-button,a.playlist-action,a.upload-primary,a.moment-primary):not([role="switch"]):not([role="checkbox"]):not([role="slider"]):not([data-glass-preserve]):not([style*="background"]):disabled{opacity:.45;cursor:default}
+:is(button,[data-button-variant],a.chrome-button,a.playlist-action,a.upload-primary,a.moment-primary):not([role="switch"]):not([role="checkbox"]):not([role="slider"]):not([data-glass-preserve]):not([style*="background"]):focus-visible{outline:2px solid var(--glass-button-ink,hsl(var(--foreground)));outline-offset:3px}
+:is(button,[data-button-variant],a.chrome-button,a.playlist-action,a.upload-primary,a.moment-primary):not([role="switch"]):not([role="checkbox"]):not([role="slider"]):not([data-glass-preserve]):not([style*="background"]):is([data-button-variant="destructive"],[class*="text-red-"],[class*="text-destructive"]){color:hsl(var(--destructive))!important;border-color:hsl(var(--destructive)/.35)!important}
+button[aria-pressed="true"]:has(svg.lucide-heart){color:#f4728d!important}
+:is(.artist-hero,.artist-feature-card,.full-player-screen,.public-song-art,[data-glass-tone="light"]){
+ --glass-button-ink:#fff;
+ --glass-button-fill:rgb(255 255 255 / .12);
+ --glass-button-edge:rgb(255 255 255 / .34);
+ --glass-button-active:rgb(255 255 255 / .24);
+ --glass-button-active-edge:rgb(255 255 255 / .7);
+}
+.public-song-art .public-song-menu-button{--glass-button-ink:white}
+@media(hover:hover){:is(button,[data-button-variant],a.chrome-button,a.playlist-action,a.upload-primary,a.moment-primary):not([role="switch"]):not([role="checkbox"]):not([role="slider"]):not([data-glass-preserve]):not([style*="background"]):not(:disabled):hover{background-color:var(--glass-button-active,hsl(var(--foreground)/.09))!important;border-color:var(--glass-button-active-edge,hsl(var(--foreground)/.3))!important}}
+@supports not ((backdrop-filter:blur(1px)) or (-webkit-backdrop-filter:blur(1px))){:is(button,[data-button-variant],a.chrome-button,a.playlist-action,a.upload-primary,a.moment-primary):not([role="switch"]):not([role="checkbox"]):not([role="slider"]):not([data-glass-preserve]):not([style*="background"]){background-color:var(--glass-button-fallback,hsl(var(--background)/.78))!important}}
+@media(prefers-reduced-transparency:reduce){:is(button,[data-button-variant],a.chrome-button,a.playlist-action,a.upload-primary,a.moment-primary):not([role="switch"]):not([role="checkbox"]):not([role="slider"]):not([data-glass-preserve]):not([style*="background"]){background-color:hsl(var(--background)/.9)!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important}}
+@media(prefers-reduced-motion:reduce){:is(button,[data-button-variant],a.chrome-button,a.playlist-action,a.upload-primary,a.moment-primary):not([role="switch"]):not([role="checkbox"]):not([role="slider"]):not([data-glass-preserve]):not([style*="background"]){transition:none}}
+@media(forced-colors:active){:is(button,[data-button-variant],a.chrome-button,a.playlist-action,a.upload-primary,a.moment-primary):not([role="switch"]):not([role="checkbox"]):not([role="slider"]):not([data-glass-preserve]):not([style*="background"]){background:ButtonFace!important;color:ButtonText!important;border:1px solid ButtonText!important;box-shadow:none!important;backdrop-filter:none!important}}
