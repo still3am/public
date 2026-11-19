@@ -1,7 +1,5 @@
 import './catalog-about.css';
-import { Calendar, MapPin, Music2, UserRound, Users } from 'lucide-react';
 import { artistDetailRows } from '@/lib/artistDetails';
-const detailIcons = { artist: UserRound, location: MapPin, calendar: Calendar, members: Users, genres: Music2 };
 import CollapsibleText from '@/components/CollapsibleText';
 import { useEffect, useState } from 'react';
 import { findArtistInfo } from '@/lib/artistInfo';
@@ -40,15 +38,10 @@ export default function ArtistCatalogInfo({ artist }) {
       <CollapsibleText text={history} className="artist-about-copy selectable-content whitespace-pre-line" clampClass="max-h-40" />
     </div>}
     {!biography && !history && !loading && <p className="artist-biography-empty">A biography hasn’t been added yet.</p>}
-    {rows.length > 0 && <div className="artist-detail-facts artist-detail-summary"><h3>Artist details</h3>
-      <dl className="artist-facts">{rows.map(({label, value, icon}) => {
-        const Icon = detailIcons[icon];
-        return <div className="artist-fact" key={label} data-wide={icon === 'genres' || icon === 'members'}>
-          <dt><Icon size={14} aria-hidden="true" /><span>{label}</span></dt>
-          <dd>{Array.isArray(value) ? <div className="artist-genre-tags">{value.map(genre => <span key={genre}>{genre}</span>)}</div> : value}</dd>
-        </div>;
-      })}</dl>
-    </div>}
+    {rows.length > 0 && <div className="artist-detail-facts artist-details-plain"><h3>Artist details</h3>
+       <dl className="catalog-song-facts artist-detail-grid">{rows.map(({label,value}) => <div key={label}>
+        <dt>{label}</dt><dd>{Array.isArray(value) ? value.join(" · ") : value}</dd>
+      </div>)}</dl>    </div>}
     {loading && <p className="artist-about-status" role="status">Loading artist details…</p>}
     {error && <div className="artist-about-status" role="status">Additional details couldn’t load. <button type="button" onClick={() => setRetry(value => value + 1)}>Retry</button></div>}
     {officialWebsite && <a className="artist-official-link" href={officialWebsite} target="_blank" rel="noopener noreferrer">Official website ↗</a>}
