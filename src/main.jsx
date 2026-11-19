@@ -7,7 +7,6 @@ import '@/desktop.css'
 import '@/mobile-music.css'
 import '@/navigation-controls.css'
 import '@/public-song-cards.css'
-import '@/liquid-glass-buttons.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <App />
