@@ -3,8 +3,6 @@ import TrackCatalogLyrics from '@/components/TrackCatalogLyrics';
 import { entityRows } from "@/lib/entityRows";
 import TrackMusicVideo from "@/components/TrackMusicVideo";
 import "./track-editorial.css";
-import { useReleaseTheme } from "@/hooks/useReleaseTheme";
-import ReleaseAtmosphere from "@/components/ReleaseAtmosphere";
 import { shareTrack } from "@/lib/shareTrack";
 import { prepareTrackShare } from "@/lib/trackShareUrl";
 import { getPublishedTracks } from "@/lib/catalogCache";
@@ -49,7 +47,6 @@ export default function TrackDetail() {
   const p = usePlayer();
   const [track, setTrack] = useState(null);
   const coverUrl = useCoverUrl(track?.cover_art_url);
-  const releaseTheme = useReleaseTheme(coverUrl);
   const [coverFailed, setCoverFailed] = useState(false);
   useEffect(() => {setCoverFailed(false);const retry=()=>setCoverFailed(false);window.addEventListener('online',retry);return()=>window.removeEventListener('online',retry);}, [coverUrl]);
   const [loading, setLoading] = useState(true);
@@ -161,27 +158,26 @@ export default function TrackDetail() {
   [];
 
   return (
-    <div className="track-page track-editorial track-redesigned release-page mx-auto" style={releaseTheme}>
-      <ReleaseAtmosphere theme={releaseTheme} />
+    <div className="track-page track-editorial track-redesigned track-artist-layout release-page mx-auto">
       <div className="track-detail-content">
+      <section className={"release-header release-header-full" + (coverUrl && !coverFailed ? " has-release-art" : "")}>
       <div className="release-toolbar">
         <button data-navigation-circle="" onClick={() => window.history.state?.idx > 0 ? nav(-1) : nav("/search")} className="release-round" aria-label="Back"><ChevronLeft size={26} /></button>
         <div className="release-toolbar-actions">
+          <LibraryButton track={track} size={20} className="release-round" />
           <button className="release-round" aria-label="Share song" onClick={async () => {try {const result = await shareTrack(track);if (result === "copied") toast({ title: "Song link copied" });} catch {toast({ title: "Couldn’t share this song. Please try again.", variant: "destructive" });}}}><Share2 size={21} /></button>
           <TrackOptionsMenu track={track} size={22} buttonClassName="release-round" items={ownerItems} />
         </div>
       </div>
-      <section className={"release-header release-header-full" + (coverUrl && !coverFailed ? " has-release-art" : "")}>
         <div className="release-art">{coverUrl && !coverFailed ? <img src={coverUrl} alt={track.title + " cover"} onError={() => setCoverFailed(true)} /> : <Music size={52} />}</div>
+        <div className="track-hero-shade" aria-hidden="true" />
         <div className="track-release-info">
-        <p className="track-release-kicker">Song</p>
         <h1>{track.title}</h1>
         <div className="release-artist">{displayArtist ? <ArtistLinks artist={displayArtist} maxShown={8} linkClassName="hover:underline" /> : uploader && <Link to={"/profile/" + uploader.id}>{uploader.display_name || uploader.full_name || track.uploader_name}</Link>}</div>
         <p className="release-subtitle">{[track.genre, track.release_year || null, track.duration_seconds > 0 ? formatTime(track.duration_seconds) : null].filter(Boolean).join(" · ")}{track.explicit && <span className="release-explicit" aria-label="Explicit">E</span>}</p>
         <div className="release-play-controls">
           <button type="button" className="release-play-button" aria-label={(isPlaying ? "Pause " : "Play ") + track.title} onClick={() => isCurrent ? p.togglePlay() : p.playTrackAt([track])}>{isPlaying ? <Pause size={22} fill="currentColor" /> : <Play size={22} fill="currentColor" />}{isPlaying ? "Pause" : "Play"}</button>
-          <LibraryButton track={track} size={18} label className="release-save-button" />
-          <button type="button" className="release-add-button release-shuffle-button" aria-label="Shuffle playback" aria-pressed={p.shuffle} onClick={() => {p.setShuffle(!p.shuffle);if (!isCurrent) p.playTrackAt([track]);}}><Shuffle size={22} /></button>
+          <button type="button" className="release-add-button release-shuffle-button" aria-label="Shuffle playback" aria-pressed={p.shuffle} onClick={() => {p.setShuffle(!p.shuffle);if (!isCurrent) p.playTrackAt([track]);}}><Shuffle size={20} /><span>Shuffle</span></button>
         </div>
         </div>
       </section>
