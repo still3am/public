@@ -167,7 +167,7 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
   const songPreviewLimit = 6;
   const mainTracks = useMemo(() => tracks.filter((track) => artistTrackRole(track, artist?.name) === "lead"), [tracks, artist?.name]);
   const appearanceTracks = useMemo(() => tracks.filter((track) => artistTrackRole(track, artist?.name) === "appearance"), [tracks, artist?.name]);
-  const visibleTracks = useMemo(() => {const term = query.trim().toLowerCase(),list = mainTracks.filter((t) => !term || [t.title, t.artist, t.uploader_name].some((value) => (value || "").toLowerCase().includes(term)));if (sort === "popular") list.sort((a, b) => (b.play_count || 0) - (a.play_count || 0));if (sort === "title") list.sort((a, b) => (a.title || "").localeCompare(b.title || ""));return list;}, [mainTracks, query, sort]);
+  const visibleTracks = useMemo(() => {const term = query.trim().toLowerCase(),list = mainTracks.filter((t) => !term || [t.title, t.artist, t.uploader_name].some((value) => (value || "").toLowerCase().includes(term)));if (sort === "recent") list.sort((a, b) => (Date.parse(b.created_date) || 0) - (Date.parse(a.created_date) || 0));if (sort === "popular") list.sort((a, b) => (b.play_count || 0) - (a.play_count || 0));if (sort === "title") list.sort((a, b) => (a.title || "").localeCompare(b.title || ""));return list;}, [mainTracks, query, sort]);
 
   const loadVersion = useRef(0);
   const [loadError, setLoadError] = useState(false);
@@ -241,12 +241,21 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
   find((t) => t.cover_art_url)?.cover_art_url;
 
   const latestTrack = [...mainTracks].sort((a, b) => (Date.parse(b.created_date) || 0) - (Date.parse(a.created_date) || 0))[0];
-  const topTracks = [...mainTracks].sort((a, b) => (b.play_count || 0) - (a.play_count || 0)).slice(0, 5);
-  const artistQueue = visibleTracks.length ? visibleTracks : mainTracks.length ? mainTracks : appearanceTracks;
-  const artistActive = artistQueue.length > 0 && p.queue?.length === artistQueue.length && artistQueue.every((track, index) => p.queue[index]?.id === track.id) && artistQueue.some((track) => track.id === p.currentTrack?.id);
+  const topQueue = [...mainTracks].sort((a, b) => (b.play_count || 0) - (a.play_count || 0));
+  const topTracks = topQueue.slice(0, 5);
+  const artistQueue = mainTracks.length ? mainTracks : appearanceTracks;
+  const queuedIds = new Set(p.queue?.map(track => track.id));
+  const artistActive = artistQueue.length > 0 && p.queue?.length === artistQueue.length && artistQueue.every(track => queuedIds.has(track.id)) && artistQueue.some((track) => track.id === p.currentTrack?.id);
   const artistPlaying = artistActive && p.isPlaying;
-  const playAll = () => {if (artistActive) p.togglePlay();else {p.setShuffle(false);p.playTrackAt(artistQueue);}};
+  const playAll = async () => {
+    if (!artistQueue.length) return;
+    try {
+      if (artistActive) await p.togglePlay();
+      else {p.setShuffle(false);await p.playTrackAt(artistQueue);}
+    } catch {toast({ title: "This artist’s music could not start. Please retry.", variant: "destructive" });}
+  };
   async function shuffleArtist() {
+    if (!artistQueue.length) return;
     const queue = [...artistQueue];
     for (let i = queue.length - 1; i > 0; i--) {const j = Math.floor(Math.random() * (i + 1));[queue[i], queue[j]] = [queue[j], queue[i]];}
     try {p.setShuffle(false);await p.playTrackAt(queue, 0);} catch {toast({ title: "This artist’s music could not start. Please retry.", variant: "destructive" });}
@@ -290,7 +299,7 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
 
         <div className="artist-feature-grid">
         {latestTrack && <section className="artist-latest">
-          <button className="artist-latest-cover" onClick={() => {if (p.currentTrack?.id === latestTrack.id) p.togglePlay();else p.playTrackAt(mainTracks, mainTracks.findIndex((track) => track.id === latestTrack.id));}} aria-label={(p.currentTrack?.id === latestTrack.id && p.isPlaying ? "Pause " : "Play ") + latestTrack.title}><ArtistArtwork source={latestTrack.cover_art_url} className="w-full h-full object-cover" /></button>
+          <button className="artist-latest-cover" onClick={() => {if (p.currentTrack?.id === latestTrack.id) p.togglePlay();else p.playTrackAt(mainTracks, mainTracks.findIndex((track) => track.id === latestTrack.id));}} aria-label={(p.currentTrack?.id === latestTrack.id && p.isPlaying ? "Pause " : "Play ") + latestTrack.title}><ArtistArtwork source={latestTrack.cover_art_url} className="w-full h-full object-cover" /><span className="artist-feature-play" aria-hidden="true">{p.currentTrack?.id === latestTrack.id && p.isPlaying ? <Pause size={20} fill="currentColor" /> : <Play size={20} fill="currentColor" />}</span></button>
           <div className="min-w-0 flex-1">
             <p className="eyebrow text-muted-foreground mb-2">Featured song</p>
             <Link to={"/track/" + latestTrack.id} className="artist-latest-title">{latestTrack.title}</Link>
@@ -301,7 +310,7 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
 
         {topTracks.length > 0 && <section className="artist-top-songs">
           <SectionTitle icon={Music} right={<button className="text-xs text-muted-foreground px-2 py-2" onClick={() => {setSongsExpanded(true);requestAnimationFrame(() => document.getElementById("artist-discography")?.scrollIntoView({ behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" }));}}>All songs <ChevronRight size={14} className="inline" /></button>}>Top Songs</SectionTitle>
-          <div className="artist-top-list" aria-label="Artist top songs">{topTracks.map((track, index) => <TrackRow key={track.id} track={track} index={index} queue={topTracks} queueIndex={index} />)}</div>
+          <div className="artist-top-list" aria-label="Artist top songs">{topTracks.map((track, index) => <TrackRow key={track.id} track={track} index={index} queue={topQueue} queueIndex={index} />)}</div>
         </section>}
 
         </div>
