@@ -104,3 +104,8 @@
 .public-app .artwork-content .track-page.track-editorial.track-artist-layout .catalog-song-facts{gap:18px}
 }
 
+/* Keep the track artwork as a true edge-to-edge hero on every screen. */
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .release-header-full.has-release-art .release-art{visibility:visible;width:100%;height:100%;max-width:none;margin:0;border-radius:0}
+.public-app .artwork-content .track-page.track-editorial.track-artist-layout .release-header-full .release-art img{position:absolute;inset:0;display:block;width:100%;height:100%;max-width:none;object-fit:cover;object-position:center}
+
+
