@@ -15,7 +15,7 @@ const Link="a",Loader2=()=>null,Mic2=Loader2,LoadError=Loader2,PullToRefresh="di
 const artist=await load("src/pages/PublicRecords.jsx",common+`
 const useParams=()=>({id:"artist"}),useNavigate=()=>()=>{},useToast=()=>({toast(){}}),usePlayer=()=>globalThis.__player,useAuth=()=>({user:null});
 const base44={},getArtists=async()=>[],getPublishedTracks=async()=>[],fetchArtistTracks=async()=>[],artistTrackRole=t=>t.artist==="Artist"?"lead":"appearance",useCoverUrl=url=>url;
-const ArtistCatalogInfo="artist-info",ArtistReleaseFollow=()=>null,ArtistAliases=()=>null,ArtistAlbums=()=>null,DropdownMenu="div",DropdownMenuTrigger="button",DropdownMenuContent="div",DropdownMenuItem="button",MoreHorizontal=()=>null,Share2=MoreHorizontal,Shuffle=MoreHorizontal,Info=MoreHorizontal;
+const ArtistCatalogInfo="artist-info",ArtistReleaseFollow=()=>null,ArtistAliases=()=>null,ArtistAlbums=()=>null,DropdownMenu="div",DropdownMenuTrigger="button",DropdownMenuContent="div",DropdownMenuItem="button",MoreHorizontal=()=>null,Share2=MoreHorizontal,Shuffle=MoreHorizontal,Info=MoreHorizontal,Search=MoreHorizontal;
 const SafetyControls=()=>null,TrackCard=SafetyControls,TrackRow=SafetyControls,ArtistNameEditor=SafetyControls,CollapsibleText=SafetyControls,LibraryButton=SafetyControls,ScrollShelf="section";
 const ChevronLeft=Mic2,ChevronRight=Mic2,Music=Mic2,Sparkles=Mic2,Globe=Mic2,Calendar=Mic2,Users=Mic2,MapPin=Mic2,Disc3=Mic2,Headphones=Mic2,Play=Mic2,Pause=Mic2,ExternalLink=Mic2;
 `);
@@ -23,7 +23,9 @@ values=[{id:"artist",name:"Artist"},tracks,[],false,"","recent",false,false];ind
 let tree=artist.default({});const hero=all(tree,n=>n.props?.className==="artist-play")[0];assert.equal(hero.props["aria-label"],"Pause Artist");hero.props.onClick();assert.deepEqual(calls,["toggle"],"artist playback pauses without restarting");
 const latest=all(tree,n=>n.props?.className==="artist-latest-cover")[0];latest.props.onClick();assert.deepEqual(calls.at(-1),{queue:tracks,index:2},"latest song uses its real full-queue index");
 globalThis.__player.currentTrack=tracks[2];index=0;tree=artist.default({});all(tree,n=>n.props?.className==="artist-latest-cover")[0].props.onClick();assert.equal(calls.at(-1),"toggle","latest-song control resumes/pauses the current song");
-assert.equal(all(tree,n=>n.props?.label==="Artist top songs").length,1,"top songs use the shared mouse/keyboard shelf");
+assert.equal(all(tree,n=>n.props?.["aria-label"]==="Artist top songs").length,1,"top songs have one accessible list without horizontal paging");
+assert.equal(all(tree,n=>n.type==="input"&&n.props.type==="search").length,1,"artist songs remain searchable");
+assert.equal(all(tree,n=>n.type==="select"&&n.props["aria-label"]==="Sort artist songs").length,1,"artist songs offer sorting");
 const directory=await load("src/pages/PublicRecordsIndex.jsx",common+`
 const useAuth=()=>({user:{id:"me"}}),useLibrary=()=>({ids:new Set(),revision:0}),base44={},readAllPages=async()=>[],artistKey=value=>value.toLowerCase();
 const splitArtistNames=value=>[value],getPublishedTracks=async()=>[],getArtists=async()=>[],ChevronRight=Loader2,useCoverUrl=url=>url;
