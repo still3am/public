@@ -396,8 +396,11 @@ Deno.serve(async req => {
         quote = {
           reply_to_id:source.id,
           reply_preview:JSON.stringify({
-            sender_name:chat.participant_names?.[senderIndex]||'PUBLIC listener',
-            text:(source.text|| (source.track_id?'Shared music':source.media_type==='image'?'Sent a GIF':'Message')).slice(0,180),
+            sender_name:source.sender_name||chat.participant_names?.[senderIndex]||'PUBLIC listener',
+            text:(source.text || (source.track_id ? 'Shared music' :
+              source.media_type === 'video' ? 'Sent a video' :
+              source.media_type === 'image' ? (/^https:\/\/media\.giphy\.com\/media\//.test(source.media_url || '') ? 'Sent a GIF' : 'Sent a photo') :
+              'Message')).slice(0,180),
           }),
         };
       }
