@@ -817,7 +817,7 @@ function MessagesPage({ user }) {
               <div className="public-message-body">
               {message.sender_id!==user?.id&&messageRunPosition(thread.messages,messageIndex).start&&<span className="public-message-author">{messageSender(message,thread.chat,user).display_name}</span>}
               <div className="public-message-content">
-              {message.reply_preview && <ReplyQuote preview={message.reply_preview} />}
+              {message.reply_preview && <ReplyQuote preview={message.reply_preview} chatId={id} original={thread.messages.find(item => item.id === message.reply_to_id)} />}
               <div className="public-message-reaction-target">
               {message.track_id && <SharedSong message={message} playing={player.currentTrack?.id === message.track_id && player.isPlaying && (!songData(message)?.lyrics || lyricPlayback.current === message.id)} onPlay={() => void perform(() => playSharedSong(message))} busy={busy} />}
               {message.media_url && !messageGifId(message) && ['image', 'video'].includes(message.media_type) && <ChatMedia key={message.id} chatId={id} message={message} />}
@@ -871,7 +871,7 @@ function MessagesPage({ user }) {
               {savingReaction && <p role="status" className="public-message-reaction-status">Saving reaction…</p>}
               {error && <p role="alert" className="rounded-xl border bg-card p-3 text-sm">{error}</p>}
               <div className="public-message-menu-preview" data-own={activeMenu.sender_id === user?.id}>
-                {activeMenu.reply_preview && <ReplyQuote preview={activeMenu.reply_preview} />}
+                {activeMenu.reply_preview && <ReplyQuote preview={activeMenu.reply_preview} chatId={id} original={thread.messages.find(item => item.id === activeMenu.reply_to_id)} />}
                 {activeMenu.track_id && <SharedSong
                   message={activeMenu}
                   playing={player.currentTrack?.id === activeMenu.track_id && player.isPlaying && (!songData(activeMenu)?.lyrics || lyricPlayback.current === activeMenu.id)}
@@ -882,10 +882,11 @@ function MessagesPage({ user }) {
                 {activeMenu.media_url && !messageGifId(activeMenu) && ['image', 'video'].includes(activeMenu.media_type) &&
                   <ChatMedia key={activeMenu.id} chatId={id} message={activeMenu} />}
                 {activeMenu.text && <p className="public-message-bubble" data-own={activeMenu.sender_id === user?.id}>{activeMenu.text}</p>}
+                <MessageReactions message={activeMenu} userId={user?.id} />
               </div>
               <div className="public-message-menu-items">
               {canSend && <button type="button" onClick={() => {
-                  setReply({ id: activeMenu.id, name: messageSender(activeMenu,thread.chat,user).display_name, text: messagePreview(activeMenu) });
+                  setReply({ id: activeMenu.id, name: messageSender(activeMenu,thread.chat,user).display_name, text: messagePreview(activeMenu), message: activeMenu });
                   setMenu(null);
                   requestAnimationFrame(() => {scroll.current?.querySelector('[data-reply-target="true"]')?.scrollIntoView({ block: "center" });draftInput.current?.focus({ preventScroll: true });});
                 }}><Reply size={17} /> Reply</button>}
@@ -937,7 +938,9 @@ function MessagesPage({ user }) {
             onClose={() => setSongPicker(false)}
             onSelect={(song) => {setAttachment(song);setSongPicker(false);}} />}
           {canSend && reply && <div className="public-message-reply-draft">
-            <div className="min-w-0"><strong className="block truncate">Replying to {reply.name}</strong><span className="block truncate">{reply.text}</span></div>
+            <div className="public-message-reply-draft-content"><strong className="block truncate">Replying to {reply.name}</strong>
+              <ReplyContent message={thread.messages.find(item => item.id === reply.id) || reply.message} chatId={id} fallback={reply.text} />
+            </div>
             <button type="button" aria-label="Cancel reply" disabled={busy} onClick={() => setReply(null)}><X size={17} /></button>
           </div>}
           {sendStage&&sendingChat.current===id&&<p className="public-message-send-status" role="status">{sendStage==='uploading'?'Uploading attachment…':'Sending message…'}</p>}
@@ -1043,7 +1046,7 @@ function SharedItemsPaging({page,onMore,onRetry}) {
 function songData(message) {
   try {return JSON.parse(message.track);} catch {return null;}
 }
-function SharedSong({ message, onPlay, busy, playing }) {
+function SharedSong({ message, onPlay, busy, playing, previewOnly = false }) {
   const song = songData(message);
   const lyrics = Array.isArray(song?.lyrics?.lines) ? song.lyrics : null;
   const cover = useCoverUrl(typeof song?.cover_art_url === 'string' ? song.cover_art_url : '');
@@ -1068,18 +1071,32 @@ function SharedSong({ message, onPlay, busy, playing }) {
         <span className="public-message-song-brand">PUBLIC.</span>
       </span>
     </Link>
-    <button type="button" className="public-message-song-play" data-playing={playing} onClick={onPlay} disabled={busy} aria-label={(playing ? "Pause " : "Play ") + title}>{playing ? <Pause size={17} fill="currentColor" /> : <Play size={17} fill="currentColor" />}</button>
+    {!previewOnly && <button type="button" className="public-message-song-play" data-playing={playing} onClick={onPlay} disabled={busy} aria-label={(playing ? "Pause " : "Play ") + title}>{playing ? <Pause size={17} fill="currentColor" /> : <Play size={17} fill="currentColor" />}</button>}
     </div>
   </div>;
 }
 
-function ReplyQuote({ preview }) {
+function ReplyContent({ message, chatId, fallback }) {
+  if (!message) return <span className="public-message-reply-text">{fallback}</span>;
+  return <div className="public-message-reply-content">
+    {message.track_id && <SharedSong message={message} previewOnly />}
+    {messageGifId(message) && <MomentGif id={messageGifId(message)} label="Original GIF" />}
+    {message.media_url && !messageGifId(message) && ['image', 'video'].includes(message.media_type) &&
+      <ChatMedia key={message.id} chatId={chatId} message={message} />}
+    {message.text && <span className="public-message-reply-text">{message.text}</span>}
+  </div>;
+}
+
+function ReplyQuote({ preview, chatId, original }) {
   let quote;
   try {quote = JSON.parse(preview);} catch {return null;}
-  if (typeof quote?.text !== "string") return null;
+  if (!quote || typeof quote !== 'object') return null;
+  const saved = quote.message;
+  const message = original || (saved && typeof saved === 'object' && typeof saved.id === 'string' ? saved : null);
+  if (!message && typeof quote.text !== 'string') return null;
   return <blockquote className="public-message-reply-quote">
     <strong className="block truncate">{quote.sender_name || "Reply"}</strong>
-    <span className="block truncate">{quote.text}</span>
+    <ReplyContent message={message} chatId={chatId} fallback={quote.text} />
   </blockquote>;
 }
 
