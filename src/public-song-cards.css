@@ -23,7 +23,7 @@
 .public-song-selection[data-selected="true"]{background:#fff;color:#161618}
 .public-app .public-song-card .public-song-copy{display:block;min-width:0;padding:11px 1px 2px;text-decoration:none;color:inherit}
 .public-song-title-line{display:flex;align-items:flex-start;gap:6px;min-width:0}
-.public-song-title{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;overflow:hidden;min-width:0;min-height:2.8em;font-size:13px;font-weight:650;line-height:1.4;overflow-wrap:anywhere}
+.public-song-title{display:block;flex:1;overflow:hidden;min-width:0;min-height:1.4em;font-size:13px;font-weight:650;line-height:1.4;overflow-wrap:anywhere}
 .public-song-explicit{flex:none;margin-top:3px;padding:1px 3px;border-radius:3px;background:hsl(var(--foreground)/.12);color:hsl(var(--foreground)/.7);font-size:8px;font-weight:700;line-height:1.2}
 .public-song-artist{display:block;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:5px;font-size:11px;line-height:1.5;color:hsl(var(--muted-foreground))}
 @media(hover:hover){.public-app .public-song-card:hover :is(.public-song-play,.public-song-menu){opacity:1;pointer-events:auto}.public-app .public-song-card:hover .public-song-art-shade{opacity:1}}
