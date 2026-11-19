@@ -26,7 +26,6 @@ export default function ArtistCatalogInfo({ artist }) {
   const savedBio = artist.bio?.trim();
   const history = artist.history_text?.trim();
   const biography = savedBio || (!history && info?.biography?.text);
-  const biographySource = !savedBio && biography && safeLink(info?.biography?.url);
   const officialWebsite = !artist.website && safeLink(info?.website);
   const rows = artistDetailRows(artist, info);
 
@@ -35,18 +34,17 @@ export default function ArtistCatalogInfo({ artist }) {
     {biography && <div className="artist-biography">
       <h3>Biography</h3>
       <CollapsibleText text={biography} className="artist-about-copy selectable-content" clampClass="max-h-40" />
-      {biographySource && <a className="artist-biography-source" href={biographySource} target="_blank" rel="noopener noreferrer">Read full biography ↗</a>}
     </div>}
     {history && history !== savedBio && <div className="artist-biography artist-history">
       <h3>History</h3>
       <CollapsibleText text={history} className="artist-about-copy selectable-content whitespace-pre-line" clampClass="max-h-40" />
     </div>}
     {!biography && !history && !loading && <p className="artist-biography-empty">A biography hasn’t been added yet.</p>}
-    {rows.length > 0 && <div className="artist-detail-facts"><h3>Artist details</h3>
+    {rows.length > 0 && <div className="artist-detail-facts artist-detail-summary"><h3>Artist details</h3>
       <dl className="artist-facts">{rows.map(({label, value, icon}) => {
         const Icon = detailIcons[icon];
         return <div className="artist-fact" key={label} data-wide={icon === 'genres' || icon === 'members'}>
-          <dt><Icon size={14} aria-hidden="true" />{label}</dt>
+          <dt><Icon size={14} aria-hidden="true" /><span>{label}</span></dt>
           <dd>{Array.isArray(value) ? <div className="artist-genre-tags">{value.map(genre => <span key={genre}>{genre}</span>)}</div> : value}</dd>
         </div>;
       })}</dl>
