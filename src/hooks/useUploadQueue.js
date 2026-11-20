@@ -17,7 +17,7 @@ const IMAGE_EXT_RE =
   /\.(jpe?g|jfif|png|gif|webp|avif|heic|heif|bmp|tiff?|svg|ico|apng)$/i;
 import { findDuplicateTracks, hashAudioFile } from "@/lib/duplicateCheck";
 import { readAllPages } from "@/lib/readPages";
-import { ensureHighResCover } from "@/lib/coverImage";
+import { ensureHighResCover, getCoverImageDimensions } from "@/lib/coverImage";
 
 let uid = 0;
 const nextId = () => `u${Date.now()}_${uid++}`;
@@ -85,17 +85,17 @@ export function useUploadQueue({ user, isAdmin }) {
   const worker=async()=>{while(cursor<batch.length){const item=batch[cursor++];try{
    const [duration,tagTitle,tagArtist,embedded,sha,albumTags]=await Promise.all([getAudioDuration(item.file),extractEmbeddedTitle(item.file),extractEmbeddedArtist(item.file),extractEmbeddedCover(item.file),hashAudioFile(item.file),extractAlbumMetadata(item.file)]);
    if(epoch!==generation.current)return;if(!itemsRef.current.some(row=>row.id===item.id))continue;
-   const title=tagTitle||item.title,artist=tagArtist||'',rawCover=embedded||coverFallback||null,cover=rawCover?await ensureHighResCover(rawCover):null;
+   const title=tagTitle||item.title,artist=tagArtist||'',rawCover=embedded||coverFallback||null,cover=rawCover?await ensureHighResCover(rawCover):null,coverQuality=cover?await getCoverImageDimensions(cover):null;
    if(epoch!==generation.current)return;if(!itemsRef.current.some(row=>row.id===item.id))continue;
    const coverPreviewUrl=cover?URL.createObjectURL(cover):'';
-   const analyzed={...item,title,artist,duration,audio_sha256:sha,coverFile:cover,coverPreviewUrl,status:'ready'};
+   const analyzed={...item,title,artist,duration,audio_sha256:sha,coverFile:cover,coverPreviewUrl,coverQuality,status:'ready'};
    assets.current.set(item.id,{sha});
    setItems(prev=>prev.map(it=>{
     if(it.id!==item.id)return it;
     const edited=metadataEdits.current.get(item.id)||{};
     return {...it,...Object.fromEntries(Object.entries(albumTags).filter(([key])=>!edited[key])),duration,audio_sha256:sha,
      title:edited.title?it.title:title,artist:edited.artist?it.artist:artist,
-     coverFile:it.coverFile||cover,coverPreviewUrl:it.coverPreviewUrl||coverPreviewUrl,
+     coverFile:it.coverFile||cover,coverPreviewUrl:it.coverPreviewUrl||coverPreviewUrl,coverQuality:it.coverQuality||coverQuality,
      status:'ready',detecting:true};
    }));
    // Include this batch in duplicate comparisons, not only persisted songs.
@@ -112,6 +112,7 @@ export function useUploadQueue({ user, isAdmin }) {
     return {...it,detecting:false,
      catalogCoverUrl:!edited.coverFile?(meta?.catalogCoverUrl||''):'',
      coverPreviewUrl:!edited.coverFile&&meta?.catalogCoverUrl?meta.catalogCoverUrl:it.coverPreviewUrl,
+     coverQuality:!edited.coverFile&&meta?.catalogCoverUrl?{source:'catalog'}:it.coverQuality,
      album_name:!edited.album_name&&missingAlbum?(text('album_name')||it.album_name):it.album_name,
      album_artist:!edited.album_artist&&!it.album_artist?(text('album_artist')||it.album_artist):it.album_artist,
      release_year:!edited.release_year&&!it.release_year?(meta?.release_year||0):it.release_year,
