@@ -25,8 +25,8 @@ export async function lookupItunesCover(track){
   const raw=matches[0].artworkUrl100;
   if(!raw)return null;
   const url=new URL(raw);
-  if(!/\\.mzstatic\\.com$/i.test(url.hostname))return null;
-  url.pathname=url.pathname.replace(/\\/\\d+x\\d+bb\\.(?:jpg|png)$/i,'/4096x4096bb.jpg');
+  if(!/\.mzstatic\.com$/i.test(url.hostname))return null;
+  url.pathname=url.pathname.replace(/\/\d+x\d+bb\.(?:jpg|png)$/i,'/4096x4096bb.jpg');
   return {url:url.href,source:'Apple Music catalog artwork'};
  }catch{return null;}finally{clearTimeout(timer);}
 }
