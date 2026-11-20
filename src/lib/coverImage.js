@@ -1,8 +1,8 @@
 // Never manufacture "4K" by enlarging a small embedded thumbnail. Keep the
 // original bytes, dimensions, format and detail; use a true catalog master when
 // one is available instead of resampling a low-resolution image.
-export async function ensureHighResCover(file) {
-  return file instanceof Blob ? file : file;
+export function ensureHighResCover(file) {
+  return file;
 }
 
 export async function getCoverImageDimensions(file) {
