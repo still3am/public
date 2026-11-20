@@ -16,8 +16,8 @@ const originalFetch=globalThis.fetch;
 try{
  globalThis.fetch=async()=>new Response(JSON.stringify({results:[{trackName:'Options (feat. Lil Baby)',artistName:'Jordan Adetunji',collectionName:'Options (feat. Lil Baby) - Single',artworkUrl100:'https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/cover.jpg/100x100bb.jpg'}]}),{headers:{'content-type':'application/json'}});
  const high=await lookupItunesCover({title:'Options (feat. Lil Baby)',artist:'Jordan Adetunji, Lil Baby',album_name:'Options (feat. Lil Baby) - Single'});
- assert.match(high.url,/4096x4096bb\\.jpg$/);
- assert.match(high.url,/mzstatic\\.com/);
+ assert.ok(high.url.endsWith('/4096x4096bb.jpg'));
+ assert.ok(high.url.includes('mzstatic.com'));
 }finally{globalThis.fetch=originalFetch;}
 assert.equal(selectReleaseCover([{front:true,approved:true,image:'https://archive.org/full-resolution.jpg',thumbnails:{1200:'https://archive.org/1200.jpg'}}]),'https://archive.org/full-resolution.jpg');
 console.log('PASS high-resolution iTunes cover lookup and original Cover Art Archive image preference');
