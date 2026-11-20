@@ -101,7 +101,7 @@ export function useUploadQueue({ user, isAdmin }) {
    // Include this batch in duplicate comparisons, not only persisted songs.
    const local=catalog.current.concat(batch.filter(t=>t.id!==item.id&&assets.current.get(t.id)?.sha).map(t=>({...t,audio_sha256:assets.current.get(t.id).sha})));
    const hits=findDuplicateTracks(local,analyzed);warn(analyzed,hits);
-   const meta=await detectMeta(title,artist,duration,albumTags,!cover);
+   const meta=await detectMeta(title,artist,duration,albumTags,true);
    if(epoch!==generation.current)return;
    setItems(prev=>prev.map(it=>{
     if(it.id!==item.id)return it;
@@ -110,8 +110,8 @@ export function useUploadQueue({ user, isAdmin }) {
     const text=key=>typeof meta?.[key]==='string'?meta[key].trim():'';
     const missingAlbum=!it.album_name||/^(unknown(?: album)?|untitled|n\/a)$/i.test(it.album_name.trim());
     return {...it,detecting:false,
-     catalogCoverUrl:!it.coverFile&&!edited.coverFile?(meta?.catalogCoverUrl||''):'',
-     coverPreviewUrl:!it.coverFile&&!edited.coverFile&&!it.coverPreviewUrl?(meta?.catalogCoverUrl||''):it.coverPreviewUrl,
+     catalogCoverUrl:!edited.coverFile?(meta?.catalogCoverUrl||''):'',
+     coverPreviewUrl:!edited.coverFile&&meta?.catalogCoverUrl?meta.catalogCoverUrl:it.coverPreviewUrl,
      album_name:!edited.album_name&&missingAlbum?(text('album_name')||it.album_name):it.album_name,
      album_artist:!edited.album_artist&&!it.album_artist?(text('album_artist')||it.album_artist):it.album_artist,
      release_year:!edited.release_year&&!it.release_year?(meta?.release_year||0):it.release_year,
@@ -171,13 +171,15 @@ export function useUploadQueue({ user, isAdmin }) {
     if(hits.length&&!item.duplicateAcknowledged){warn(candidate,hits);throw Error('Review the possible match below, then confirm this is a different recording to continue.');}
    }
    if(!memo.file_uri){memo.file_uri=(await base44.integrations.Core.UploadPrivateFile({file:item.file})).file_uri;if(!memo.file_uri)throw Error('Audio upload did not return a file.');}
-   if(item.coverFile&&(memo.coverFile!==item.coverFile||!memo.cover_art_url)){
+   const userSelectedCover=!!metadataEdits.current.get(item.id)?.coverFile;
+   const useCatalogCover=!!item.catalogCoverUrl&&!userSelectedCover;
+   if(item.coverFile&&!useCatalogCover&&(memo.coverFile!==item.coverFile||!memo.cover_art_url)){
     const uploadedCover=(await base44.integrations.Core.UploadFile({file:item.coverFile})).file_url;
     if(!uploadedCover)throw Error('Artwork could not upload. Retry without re-uploading your audio.');
     memo.cover_art_url=uploadedCover;
     memo.coverFile=item.coverFile;
    }
-   const coverUrl=item.coverFile?memo.cover_art_url:item.catalogCoverUrl||'';
+   const coverUrl=useCatalogCover?item.catalogCoverUrl:item.coverFile?memo.cover_art_url:item.catalogCoverUrl||'';
    if(epoch!==generation.current)throw Error('Account changed. Start this upload again.');
    if(item.videoFile){
     if(!/\.(mp4|webm)$/i.test(item.videoFile.name)||item.videoFile.size>100*1024*1024)throw Error('Choose an MP4 or WebM video under 100 MB.');
