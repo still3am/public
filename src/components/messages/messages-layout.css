@@ -613,3 +613,23 @@
   box-shadow:none !important;
 }
 
+/* Seat the chat composer lower and remove the leftover bottom tray/gap. */
+.public-messages[data-thread="true"] .public-messages-thread > .public-messages-compose {
+  margin:0 !important;
+  padding-bottom:max(6px,calc(env(safe-area-inset-bottom,0px) - 18px)) !important;
+  background:transparent !important;
+  background-image:none !important;
+  border:0 !important;
+  box-shadow:none !important;
+  -webkit-backdrop-filter:none !important;
+  backdrop-filter:none !important;
+}
+.public-messages[data-thread="true"] .public-messages-thread {
+  padding-bottom:0 !important;
+}
+@media(max-width:767px) {
+  .public-messages[data-thread="true"] .public-messages-thread > .public-messages-compose {
+    padding-bottom:max(6px,calc(env(safe-area-inset-bottom,0px) - 18px)) !important;
+  }
+}
+
