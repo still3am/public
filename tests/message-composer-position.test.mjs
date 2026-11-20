@@ -1,0 +1,10 @@
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+const css = fs.readFileSync('src/components/messages/messages-layout.css', 'utf8');
+const pageCss = fs.readFileSync('src/pages/messages.css', 'utf8');
+assert.match(css, /\.public-messages\[data-thread="true"\] \.public-messages-thread > \.public-messages-compose\s*\{[^}]*padding-bottom:max\(6px,calc\(env\(safe-area-inset-bottom,0px\) - 18px\)\) !important/s);
+assert.match(css, /\.public-messages\[data-thread="true"\] \.public-messages-thread > \.public-messages-compose\s*\{[^}]*background:transparent !important/s);
+assert.match(css, /\.public-messages\[data-thread="true"\] \.public-messages-thread\s*\{\s*padding-bottom:0 !important/s);
+assert.match(pageCss, /\.public-messages\[data-thread="true"\] \.public-messages-compose\s*\{\s*padding-bottom:\s*max\(10px,\s*env\(safe-area-inset-bottom\)\) !important;/s);
+assert.ok(css.lastIndexOf('Seat the chat composer lower') > css.lastIndexOf('public-message-input-pill'));
+console.log('PASS chat composer sits lower, removes the extra bottom tray, and retains device safe-area clearance');
