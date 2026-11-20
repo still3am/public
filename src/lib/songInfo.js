@@ -50,7 +50,7 @@ export async function findSongInfo(track,{includeArtwork=false,includeAlbumGenre
  const match=selectRecording(track,found.recordings||[]);
  let value=null;
  if(match){
-  const record=await getMusicBrainz('recording/'+match.id+'?fmt=json&inc=artist-credits+releases+artist-rels+release-groups+genres+work-rels+work-level-rels');
+  const record=await getMusicBrainz('recording/'+match.id+'?fmt=json&inc=artist-credits+releases+artist-rels+release-groups+genres+work-rels+work-level-rels').catch(()=>({}));
   const releases=(record.releases||[]).filter(r=>r.status==='Official'&&r.title);
   const albumName=track.album_name||track.album_title||track.album;
   const preferred=releases.filter(r=>!(r['release-group']?.['secondary-types']||[]).some(t=>['Compilation','Live','DJ-mix'].includes(t))).sort((a,b)=>String(a.date||'9999').localeCompare(String(b.date||'9999')));
