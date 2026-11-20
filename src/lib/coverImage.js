@@ -1,9 +1,7 @@
-// Cover art pulled from a file's metadata tags is often only ~300px, which
-// looks blocky when blown up in the full-screen player. Before we upload a
-// cover we upscale it on a canvas to a high resolution so the stored file is
-// crisp on retina / 4K displays. Files already at or above the target pass
-// through unchanged.
-const COVER_TARGET = 2048;
+// Prefer true high-resolution catalog artwork first. This 4096px normalization
+// is a fallback for user-supplied/embedded artwork; resampling increases pixel
+// dimensions but cannot recreate detail missing from a tiny original image.
+const COVER_TARGET = 4096;
 
 export async function ensureHighResCover(file, target = COVER_TARGET) {
   if (!(file instanceof Blob)) return file;
@@ -35,7 +33,7 @@ export async function ensureHighResCover(file, target = COVER_TARGET) {
     ctx.drawImage(img, 0, 0, w, h);
     URL.revokeObjectURL(url);
     const blob = await new Promise((res) =>
-      canvas.toBlob(res, "image/jpeg", 0.92)
+      canvas.toBlob(res, "image/jpeg", 0.96)
     );
     if (!blob) return file;
     const baseName = ((file instanceof File ? file.name : "cover")).replace(/\.[a-z0-9]+$/i, "");
