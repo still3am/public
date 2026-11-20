@@ -18,10 +18,19 @@ export async function lookupItunesCover(track){
   const response=await fetch('https://itunes.apple.com/search?'+new URLSearchParams({term,entity:'song',limit:'15'}),{signal:controller.signal,credentials:'omit'});
   if(!response.ok)return null;
   const data=await response.json();
-  const matches=(data.results||[]).filter(row=>title(row.trackName)===title(track.title)&&primary(row.artistName)===primary(track.artist));
+  let matches=(data.results||[]).filter(row=>title(row.trackName)===title(track.title)&&primary(row.artistName)===primary(track.artist));
   if(!matches.length)return null;
   const album=track.album_name||track.album_title||track.album;
-  matches.sort((a,b)=>(norm(b.collectionName)===norm(album)?1:0)-(norm(a.collectionName)===norm(album)?1:0));
+  const duration=Number(track.duration_seconds)||0;
+  if(duration){
+   const timed=matches.filter(row=>Number(row.trackTimeMillis)>0&&Math.abs(Number(row.trackTimeMillis)/1000-duration)<=8);
+   if(timed.length)matches=timed;
+  }
+  matches.sort((a,b)=>{
+   const albumScore=Number(!!album&&norm(b.collectionName)===norm(album))-Number(!!album&&norm(a.collectionName)===norm(album));
+   const durationScore=duration?(Math.abs((Number(a.trackTimeMillis)||0)/1000-duration)-Math.abs((Number(b.trackTimeMillis)||0)/1000-duration)):0;
+   return albumScore||durationScore;
+  });
   const raw=matches[0].artworkUrl100;
   if(!raw)return null;
   const url=new URL(raw);
