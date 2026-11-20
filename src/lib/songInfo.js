@@ -10,6 +10,27 @@ export function selectRecording(track,rows){
  if(!duration&&new Set(matches.map(r=>Math.round((r.length||0)/10000))).size>1)return null;
  return ranked[0]||null;
 }
+export async function lookupItunesCover(track){
+ if(!track?.title||!track?.artist)return null;
+ const term=[track.title,track.artist,track.album_name||track.album_title||track.album].filter(Boolean).join(' ');
+ const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),8000);
+ try{
+  const response=await fetch('https://itunes.apple.com/search?'+new URLSearchParams({term,entity:'song',limit:'15'}),{signal:controller.signal,credentials:'omit'});
+  if(!response.ok)return null;
+  const data=await response.json();
+  const matches=(data.results||[]).filter(row=>title(row.trackName)===title(track.title)&&primary(row.artistName)===primary(track.artist));
+  if(!matches.length)return null;
+  const album=track.album_name||track.album_title||track.album;
+  matches.sort((a,b)=>(norm(b.collectionName)===norm(album)?1:0)-(norm(a.collectionName)===norm(album)?1:0));
+  const raw=matches[0].artworkUrl100;
+  if(!raw)return null;
+  const url=new URL(raw);
+  if(!/\\.mzstatic\\.com$/i.test(url.hostname))return null;
+  url.pathname=url.pathname.replace(/\\/\\d+x\\d+bb\\.(?:jpg|png)$/i,'/4096x4096bb.jpg');
+  return {url:url.href,source:'Apple Music catalog artwork'};
+ }catch{return null;}finally{clearTimeout(timer);}
+}
+
 export async function getMusicBrainz(path){
  const task=queue.catch(()=>{}).then(async()=>{
   await new Promise(resolve=>setTimeout(resolve,Math.max(0,1100-(Date.now()-last))));last=Date.now();
@@ -22,9 +43,10 @@ export async function findSongInfo(track,{includeArtwork=false,includeAlbumGenre
  if(!track.title||!track.artist)return null;
  const key=[track.title,track.artist,track.duration_seconds,track.album_name||track.album_title||track.album,includeArtwork,includeAlbumGenres].join('|'),old=cache.get(key);
  if(old&&Date.now()-old.time<600000)return old.value;
+ const itunesPromise=includeArtwork?lookupItunesCover(track):Promise.resolve(null);
  const quote=s=>'"'+String(s).replace(/[\\"]/g,' ').slice(0,180)+'"';
  const query='recording:'+quote(track.title)+' AND artist:'+quote(String(track.artist).split(/,| feat\.? | ft\.? /i)[0]);
- const found=await getMusicBrainz('recording/?'+new URLSearchParams({query,fmt:'json',limit:'20'}));
+ const found=await getMusicBrainz('recording/?'+new URLSearchParams({query,fmt:'json',limit:'20'})).catch(()=>({recordings:[]}));
  const match=selectRecording(track,found.recordings||[]);
  let value=null;
  if(match){
@@ -37,6 +59,7 @@ export async function findSongInfo(track,{includeArtwork=false,includeAlbumGenre
   const writers=types=>[...new Set(workRelations.filter(r=>types.includes(r.type)&&r.artist?.name).map(r=>r.artist.name))].join(', ');
   const performers=[...new Set((record.relations||[]).filter(r=>['vocal','instrument','performer'].includes(r.type)&&r.artist?.name).map(r=>r.artist.name+((r.attributes||[]).length?' ('+r.attributes.join(', ')+')':'')))].join(', ');
   const cover=includeArtwork&&release?.id?await lookupReleaseCover(release.id).catch(()=>null):null;
+  const itunes=await itunesPromise,bestCover=cover||itunes;
   const people=type=>[...new Set((record.relations||[]).filter(r=>r.type===type&&r.artist?.name).map(r=>r.artist.name))].join(', ');
   const rankGenres=rows=>[...(rows||[])].filter(g=>g.name&&Number(g.count??1)>0).sort((a,b)=>(b.count||0)-(a.count||0)).map(g=>g.name);
   const genres=rankGenres(record.genres);
@@ -45,15 +68,16 @@ export async function findSongInfo(track,{includeArtwork=false,includeAlbumGenre
    const album=await getMusicBrainz('release-group/'+groupId+'?fmt=json&inc=genres').catch(()=>null);
    genres.push(...rankGenres(album?.genres));
   }
-  value={id:match.id,title:record.title,genres,artists:(record['artist-credit']||[]).map(a=>(a.name||a.artist?.name||'')+(a.joinphrase||'')).join(''),album:release?.title||'',albumArtist:(release?.['artist-credit']||record['artist-credit']||[]).map(a=>(a.name||a.artist?.name||'')+(a.joinphrase||'')).join(''),releaseDate:release?.date||'',producer:people('producer'),mixer:people('mix'),engineer:people('engineer'),composer:writers(['composer']),lyricist:writers(['lyricist']),writer:writers(['writer']),arranger:writers(['arranger']),performers,releaseId:release?.id||'',coverUrl:cover?.url||'',coverSource:cover?.source||''};
+  value={id:match.id,title:record.title,genres,artists:(record['artist-credit']||[]).map(a=>(a.name||a.artist?.name||'')+(a.joinphrase||'')).join(''),album:release?.title||'',albumArtist:(release?.['artist-credit']||record['artist-credit']||[]).map(a=>(a.name||a.artist?.name||'')+(a.joinphrase||'')).join(''),releaseDate:release?.date||'',producer:people('producer'),mixer:people('mix'),engineer:people('engineer'),composer:writers(['composer']),lyricist:writers(['lyricist']),writer:writers(['writer']),arranger:writers(['arranger']),performers,releaseId:release?.id||'',coverUrl:bestCover?.url||'',coverSource:bestCover?.source||''};
  }
+ if(!value&&includeArtwork){const itunes=await itunesPromise;if(itunes)value={title:track.title,artists:track.artist,album:track.album_name||track.album_title||track.album||'',albumArtist:'',releaseDate:'',genres:[],coverUrl:itunes.url,coverSource:itunes.source};}
  cache.set(key,{time:Date.now(),value});if(cache.size>50)cache.delete(cache.keys().next().value);return value;
 }
 
 export function selectReleaseCover(images){
  const front=(images||[]).find(image=>image.front===true&&image.approved===true);
  if(!front)return null;
- const raw=front.thumbnails?.['1200']||front.thumbnails?.['500']||front.image;
+ const raw=front.image||front.thumbnails?.['1200']||front.thumbnails?.['500'];
  try{const url=new URL(raw);if(url.protocol==='http:')url.protocol='https:';
  if(url.protocol!=='https:'||url.username||url.password||!(url.hostname==='coverartarchive.org'||url.hostname==='archive.org'||url.hostname.endsWith('.archive.org')))return null;
  return url.href;}catch{return null;}
