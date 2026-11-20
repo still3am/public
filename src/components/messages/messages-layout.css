@@ -3,9 +3,9 @@
   position:fixed;
   inset:var(--messages-viewport-top,0px) 0 auto;
   width:100%;
-  height:var(--messages-viewport-height,100dvh);
+  height:calc(var(--messages-viewport-height,100dvh) + env(safe-area-inset-bottom,0px));
   min-height:0;
-  max-height:var(--messages-viewport-height,100dvh);
+  max-height:calc(var(--messages-viewport-height,100dvh) + env(safe-area-inset-bottom,0px));
   box-sizing:border-box;
   display:flex;
   flex-direction:column;
