@@ -36,13 +36,13 @@ export default function TrackRow({
       className={`song-row song-menu-surface group flex items-center gap-3 sm:gap-4 px-2.5 sm:px-3 py-3 rounded-xl hover:bg-foreground/[0.04] transition ${compactRelease ? "release-compact-row" : ""}`}
       onDoubleClick={(event) => {if (event.target instanceof Element && event.target.closest("a,button,input,select,textarea")) return;play();}}>
       
-      <button type="button"
-      className={`${showArt ? "hidden md:grid" : "grid"} place-items-center w-8 h-11 text-sm font-medium text-muted-foreground shrink-0`}
-      aria-label={isCurrent && p.isPlaying ? `Pause ${track.title}` : `Play ${track.title}`}
-      onClick={() => isCurrent ? p.togglePlay() : play()} onDoubleClick={(e) => e.stopPropagation()}>
-        {isCurrent ? p.isPlaying ? <Pause size={15} className="hidden" /> : <Play size={15} /> :
-        <><span className="song-row-position hidden md:block md:group-hover:hidden">{index != null ? index + 1 : ""}</span><Play size={15} className="song-row-idle-play md:hidden md:group-hover:block" /></>}
-      </button>
+      
+
+
+
+
+
+      
 
       {showArt &&
       <button type="button"
