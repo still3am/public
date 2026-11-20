@@ -14,8 +14,8 @@ const info=await findSongInfo(track);assert.equal(info.album,'Parachutes');asser
 console.log('PASS song matching rejects wrong artists, versions, duration and ambiguity; metadata cache');
 const originalFetch=globalThis.fetch;
 try{
- globalThis.fetch=async()=>new Response(JSON.stringify({results:[{trackName:'Options (feat. Lil Baby)',artistName:'Jordan Adetunji',collectionName:'Options (feat. Lil Baby) - Single',artworkUrl100:'https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/cover.jpg/100x100bb.jpg'}]}),{headers:{'content-type':'application/json'}});
- const high=await lookupItunesCover({title:'Options (feat. Lil Baby)',artist:'Jordan Adetunji, Lil Baby',album_name:'Options (feat. Lil Baby) - Single'});
+ globalThis.fetch=async()=>new Response(JSON.stringify({results:[{trackName:'Options (feat. Lil Baby)',artistName:'Jordan Adetunji',collectionName:'Wrong Single',trackTimeMillis:180000,artworkUrl100:'https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/wrong.jpg/100x100bb.jpg'},{trackName:'Options (feat. Lil Baby)',artistName:'Jordan Adetunji',collectionName:'Options (feat. Lil Baby) - Single',trackTimeMillis:220000,artworkUrl100:'https://is1-ssl.mzstatic.com/image/thumb/Music211/v4/cover.jpg/100x100bb.jpg'}]}),{headers:{'content-type':'application/json'}});
+ const high=await lookupItunesCover({title:'Options (feat. Lil Baby)',artist:'Jordan Adetunji, Lil Baby',album_name:'Options (feat. Lil Baby) - Single',duration_seconds:220});
  assert.ok(high.url.endsWith('/4096x4096bb.jpg'));
  assert.ok(high.url.includes('mzstatic.com'));
 }finally{globalThis.fetch=originalFetch;}
