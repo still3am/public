@@ -178,7 +178,7 @@ export default function TrackDetail() {
           <TrackOptionsMenu track={track} size={22} buttonClassName="release-round" items={ownerItems} />
         </div>
       </div>
-        <div className="release-art">{coverUrl && !coverFailed ? <img src={coverUrl} alt={track.title + " cover"} onError={() => setCoverFailed(true)} /> : <Music size={52} />}</div>
+        <div className="release-art">{coverUrl && !coverFailed ? <img src={coverUrl} alt={track.title + " cover"} loading="eager" fetchPriority="high" decoding="async" onError={() => setCoverFailed(true)} /> : <Music size={52} />}</div>
         <div className="track-hero-shade" aria-hidden="true" />
         <div className="track-release-info">
         <h1>{track.title}</h1>
