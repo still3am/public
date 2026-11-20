@@ -1,44 +1,36 @@
-// Prefer true high-resolution catalog artwork first. This 4096px normalization
-// is a fallback for user-supplied/embedded artwork; resampling increases pixel
-// dimensions but cannot recreate detail missing from a tiny original image.
-const COVER_TARGET = 4096;
+// Never manufacture "4K" by enlarging a small embedded thumbnail. Keep the
+// original bytes, dimensions, format and detail; use a true catalog master when
+// one is available instead of resampling a low-resolution image.
+export async function ensureHighResCover(file) {
+  return file instanceof Blob ? file : file;
+}
 
-export async function ensureHighResCover(file, target = COVER_TARGET) {
-  if (!(file instanceof Blob)) return file;
+export async function getCoverImageDimensions(file) {
+  if (!(file instanceof Blob)) return null;
+  if (typeof createImageBitmap === "function") {
+    let bitmap;
+    try {
+      bitmap = await createImageBitmap(file);
+      return { width: bitmap.width, height: bitmap.height };
+    } catch {
+      return null;
+    } finally {
+      bitmap?.close?.();
+    }
+  }
+  if (typeof Image === "undefined" || typeof URL === "undefined") return null;
+  const url = URL.createObjectURL(file);
   try {
-    const url = URL.createObjectURL(file);
     const img = new Image();
     await new Promise((resolve, reject) => {
       img.onload = resolve;
       img.onerror = reject;
       img.src = url;
     });
-    const longest =
-      img.naturalWidth && img.naturalHeight
-        ? Math.max(img.naturalWidth, img.naturalHeight)
-        : 0;
-    if (!longest || longest >= target) {
-      URL.revokeObjectURL(url);
-      return file;
-    }
-    const scale = target / longest;
-    const w = Math.round(img.naturalWidth * scale);
-    const h = Math.round(img.naturalHeight * scale);
-    const canvas = document.createElement("canvas");
-    canvas.width = w;
-    canvas.height = h;
-    const ctx = canvas.getContext("2d");
-    ctx.imageSmoothingEnabled = true;
-    ctx.imageSmoothingQuality = "high";
-    ctx.drawImage(img, 0, 0, w, h);
-    URL.revokeObjectURL(url);
-    const blob = await new Promise((res) =>
-      canvas.toBlob(res, "image/jpeg", 0.96)
-    );
-    if (!blob) return file;
-    const baseName = ((file instanceof File ? file.name : "cover")).replace(/\.[a-z0-9]+$/i, "");
-    return new File([blob], `${baseName}.jpg`, { type: "image/jpeg" });
+    return { width: img.naturalWidth, height: img.naturalHeight };
   } catch {
-    return file;
+    return null;
+  } finally {
+    URL.revokeObjectURL(url);
   }
 }
