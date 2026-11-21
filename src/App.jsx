@@ -135,7 +135,7 @@ const AuthenticatedApp = () => {
           <Route path="/lounge/:code" element={<Lounge />} />
         </Route>
       </Route>
-      <Route element={<ProtectedRoute />}><Route path="/messages" element={<Messages />} /></Route>
+      <Route element={<ProtectedRoute />}><Route path="/messages" element={<ErrorBoundary scope="page" resetKey="messages"><Messages /></ErrorBoundary>} /></Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
