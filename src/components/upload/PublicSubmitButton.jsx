@@ -1,13 +1,11 @@
 import { useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { useAuth } from "@/lib/AuthContext";
 import { useToast } from "@/components/ui/use-toast";
 import { Globe, Loader2 } from "lucide-react";
 import { awaitingFirstSubmit, publicSubmitBlockers } from "@/lib/publicSubmit";
 
 /** @param {any} props */
 export default function PublicSubmitButton({ track, onSubmitted }) {
-  const { user } = useAuth();
   const { toast } = useToast();
   const [busy, setBusy] = useState(false);
 
@@ -23,20 +21,14 @@ export default function PublicSubmitButton({ track, onSubmitted }) {
   }
 
   const submit = async () => {
-    const isAdmin = user?.role === "admin";
     setBusy(true);
     try {
-      // Owner submissions join the admin review queue; an admin's own upload is
-      // already trusted, so it goes live straight away — the upload gate's rule.
+      // A finished song goes live for everyone, whichever account uploaded it.
       await base44.entities.Track.update(track.id, {
-        approval_status: isAdmin ? "approved" : "pending",
-        is_published: isAdmin,
+        approval_status: "approved",
+        is_published: true,
       });
-      toast({
-        title: isAdmin
-          ? `"${track.title}" is live on PUBLIC`
-          : `"${track.title}" sent for review`,
-      });
+      toast({ title: `"${track.title}" is live on PUBLIC` });
       onSubmitted?.([track.id]);
     } catch {
       toast({ title: "Couldn't publish that song", variant: "destructive" });

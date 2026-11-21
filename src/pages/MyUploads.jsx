@@ -133,11 +133,10 @@ export default function MyUploads() {
   // Flip the card in place once a song is offered to the public, so its action
   // swaps to the sent-for-review state without reloading the page.
   const markSubmitted = (ids) => {
-    const isAdmin = user?.role === "admin";
     setUploadData((prev) => prev.owner !== owner ? prev : { ...prev, rows:
     (prev.rows || []).map((t) =>
     ids.includes(t.id) ?
-    { ...t, approval_status: isAdmin ? "approved" : "pending", is_published: isAdmin } :
+    { ...t, approval_status: "approved", is_published: true } :
     t
     )
     });

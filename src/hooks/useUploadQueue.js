@@ -52,7 +52,7 @@ function rateLimitDelay(error) {
  return Number.isFinite(seconds)&&seconds>0?Math.max(1000,seconds*1000):5000;
 }
 
-export function useUploadQueue({ user, isAdmin }) {
+export function useUploadQueue({ user }) {
  const [items,setItems]=useState([]),[dupes,setDupes]=useState(null),[uploadedCount,setUploadedCount]=useState(0);
  const [catalogError,setCatalogError]=useState('');
  const itemsRef=useRef(items);itemsRef.current=items;
@@ -188,7 +188,7 @@ export function useUploadQueue({ user, isAdmin }) {
    }
    if(epoch!==generation.current)throw Error('Account changed. Start this upload again.');
    const ready=!!(item.artist.trim()&&coverUrl);
-   const track=await retryUploadRequest(()=>base44.entities.Track.create({title:item.title.trim(),audio_url:'',audio_file_uri:memo.file_uri,...(item.videoFile?{music_video_file_uri:memo.video_uri,video_rights_confirmed:true}:{}),audio_sha256:memo.sha,upload_request_id:item.id,cover_art_url:coverUrl,artist:item.artist.trim(),album_name:(item.album_name||'').trim(),album_artist:(item.album_artist||'').trim(),track_number:Number(item.track_number)||0,disc_number:Number(item.disc_number)||0,release_year:Number(item.release_year)||0,genre:item.genre?.trim()||'Other',duration_seconds:item.duration,explicit:item.explicit,rights_confirmed:true,is_downloadable:item.allowDownloads===true,approval_status:ready?(isAdmin?'approved':'pending'):'private',is_published:isAdmin&&ready}),epoch);
+   const track=await retryUploadRequest(()=>base44.entities.Track.create({title:item.title.trim(),audio_url:'',audio_file_uri:memo.file_uri,...(item.videoFile?{music_video_file_uri:memo.video_uri,video_rights_confirmed:true}:{}),audio_sha256:memo.sha,upload_request_id:item.id,cover_art_url:coverUrl,artist:item.artist.trim(),album_name:(item.album_name||'').trim(),album_artist:(item.album_artist||'').trim(),track_number:Number(item.track_number)||0,disc_number:Number(item.disc_number)||0,release_year:Number(item.release_year)||0,genre:item.genre?.trim()||'Other',duration_seconds:item.duration,explicit:item.explicit,rights_confirmed:true,is_downloadable:item.allowDownloads===true,approval_status:ready?'approved':'private',is_published:ready}),epoch);
    memo.track=track;catalog.current.push({...track,audio_sha256:memo.sha});
    let warning='';
    if(epoch!==generation.current)return;

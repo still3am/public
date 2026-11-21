@@ -46,7 +46,7 @@ export default function UnfinishedUploads() {
     return (tracks||[]).filter(t=>(filter==="all"||filter==="genre"&&needsGenre(t)||filter==="ready"&&draft(t)&&!publicSubmitBlockers(t).length||t.approval_status===filter)&&(!term||[t.title,t.artist,t.genre].some(v=>String(v||"").toLowerCase().includes(term))));
   },[tracks,query,filter]);
   const updateTrack=saved=>{setTracks(prev=>(prev||[]).map(t=>t.id===saved.id?{...t,...saved}:t).filter(t=>!t.is_published));};
-  const markSubmitted=ids=>setTracks(prev=>(prev||[]).flatMap(t=>!ids.includes(t.id)?[t]:admin?[]:[{...t,approval_status:"pending",is_published:false}]));
+  const markSubmitted=ids=>setTracks(prev=>(prev||[]).filter(t=>!ids.includes(t.id)));
   const toggle=id=>setSelected(prev=>{const next=new Set(prev);next.has(id)?next.delete(id):next.add(id);return next;});
   async function applyGenre(){
     if(lock.current||!genre||!selected.size)return;

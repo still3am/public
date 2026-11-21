@@ -449,16 +449,22 @@ export default async function handleRequest(req) {
           if(input.approval_status==='approved'&&!ready) fail('Rights, artist, genre and cover are required',422);
           data.approval_status=input.approval_status;
           data.is_published=input.approval_status==='approved';
+        } else if(!isAdmin && (input.approval_status==='approved'||input.is_published===true)) {
+          // An owner publishes their own finished song the same way an admin does.
+          if(old?.approval_status==='rejected') fail('An administrator has to review this song before it can go live',403);
+          if(!ready) fail('Rights, artist, genre and cover are required',422);
+          data.approval_status='approved';data.is_published=true;
         } else if(input.approval_status==='pending') {
           if(!ready) fail('Rights, artist, genre and cover are required',422);
           data.approval_status='pending';data.is_published=false;
         } else if(kind==='create'&&ready) {
-          data.approval_status=isAdmin?'approved':'pending';data.is_published=isAdmin;
+          // A finished upload is live for everyone straight away.
+          data.approval_status='approved';data.is_published=true;
         } else if(old?.is_published && Object.keys(content).length) {
-          data.approval_status=isAdmin?'approved':'pending';data.is_published=isAdmin;
+          // Editing a live song keeps it live instead of taking it offline.
+          data.approval_status='approved';data.is_published=true;
         }
         if(data.is_published===true&&!old?.published_at)data.published_at=new Date().toISOString();
-        if(!isAdmin && input.is_published===true) fail('Only an administrator can publish a track');
       } else if(entity==='Lyrics') {
         const track=await requireTrack(data.track_id||old?.track_id);
         if(!isAdmin && track.uploader_id!==user.id) fail('Only the track owner can edit lyrics');

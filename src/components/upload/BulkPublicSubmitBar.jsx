@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { base44 } from "@/api/base44Client";
-import { useAuth } from "@/lib/AuthContext";
 import { useToast } from "@/components/ui/use-toast";
 import { Globe, Loader2 } from "lucide-react";
 import {
@@ -13,7 +12,6 @@ import {
 // the public bar is picked for you, and the rest say what they are missing.
 /** @param {any} props */
 export default function BulkPublicSubmitBar({ tracks, onSubmitted }) {
-  const { user } = useAuth();
   const { toast } = useToast();
   const [busy, setBusy] = useState(false);
   // Nothing is excluded to begin with, so the whole ready batch is preselected.
@@ -34,22 +32,18 @@ export default function BulkPublicSubmitBar({ tracks, onSubmitted }) {
   const submit = async () => {
     const ids = chosen.map((t) => t.id);
     if (ids.length === 0) return;
-    const isAdmin = user?.role === "admin";
     setBusy(true);
     try {
-      // Owner submissions join the admin review queue; an admin's own upload is
-      // already trusted, so it goes live straight away — the upload gate's rule.
+      // Every finished song goes live for everyone, whichever account uploaded it.
       await base44.entities.Track.bulkUpdate(
         ids.map((id) => ({
           id,
-          approval_status: isAdmin ? "approved" : "pending",
-          is_published: isAdmin,
+          approval_status: "approved",
+          is_published: true,
         }))
       );
       toast({
-        title: isAdmin
-          ? `${ids.length} ${ids.length === 1 ? "song is" : "songs are"} live on PUBLIC`
-          : `${ids.length} ${ids.length === 1 ? "song" : "songs"} sent for review`,
+        title: `${ids.length} ${ids.length === 1 ? "song is" : "songs are"} live on PUBLIC`,
       });
       onSubmitted?.(ids);
     } catch {
