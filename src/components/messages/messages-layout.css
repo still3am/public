@@ -344,6 +344,9 @@
 .public-messages-thread>.public-message-send-status{flex:0 0 auto;min-height:20px;margin:0;padding:3px 20px 5px;font-size:11px;text-align:right;color:hsl(var(--muted-foreground));background:hsl(var(--background)/.72)}
 .public-message-draft-label{font-weight:600;color:hsl(var(--foreground))}
 
+/* A failed refresh keeps the conversation on screen and only adds this notice. */
+.public-messages-thread > .public-message-refresh-error{flex:0 0 auto;margin:0;padding:8px clamp(12px,3vw,32px);font-size:12px;text-align:left;color:hsl(var(--destructive));background:hsl(var(--background)/.75);border-bottom:1px solid hsl(var(--border))}
+
 .public-message-history-tools{display:grid;place-items:center;gap:8px;flex:0 0 auto;padding:8px 0 20px;overflow-anchor:none}
 .public-message-history-tools>button{min-height:40px;padding:8px 16px;border:1px solid hsl(var(--border));border-radius:20px;background:hsl(var(--background)/.85);color:hsl(var(--foreground));font-size:12px}
 .public-message-history-tools>button:disabled{opacity:.55}.public-message-history-tools>p{max-width:40ch;text-align:center;font-size:12px;color:hsl(var(--destructive))}

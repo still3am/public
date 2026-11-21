@@ -283,6 +283,10 @@ function MessagesPage({ user }) {
       setInbox((previous) => previous?.map((chat) => chat.id === chatId ? { ...chat, unread: false } : chat) ?? null);
     } catch (error) {
       if (version === readVersion.current && currentChat.current === chatId) {
+        // A failed refresh must never empty the screen: keep showing the last
+        // known conversation so the chat stays readable while the service is down.
+        const cachedSnapshot = threadCache.current.get(chatId);
+        if (cachedSnapshot) setThread((previous) => previous?.chat?.id === chatId ? previous : cachedSnapshot);
         setReadError({ id: chatId, message: error.message });
         if ([401, 403, 404].includes(error.status)) {threadCache.current.delete(chatId);setThread(null);setChatDetailsOpen(false);setShowChatColorEditor(false);setShowChatMarketplace(false);setInbox((previous) => previous?.filter((chat) => chat.id !== chatId) ?? null);}
       }
@@ -708,7 +712,7 @@ function MessagesPage({ user }) {
         <header className="public-messages-thread-header">
           {reply && <button type="button" className="public-message-close-reply" aria-label="Cancel reply" disabled={busy} onClick={() => setReply(null)}><X size={23} /></button>}
           <button data-navigation-circle="" className="public-messages-back" onClick={() => setParams({})} aria-label="Back to inbox"><ChevronLeft size={23} /></button>
-          {readError?.id === id ? <p role="alert" className="public-messages-list-empty">{readError.message} <button type="button" className="underline" onClick={() => loadThread(id)}>Retry</button></p> : !thread && <p role="status" className="public-messages-list-empty">Loading conversation…</p>}
+          {readError?.id === id && !thread ? <p role="alert" className="public-messages-list-empty">{readError.message} <button type="button" className="underline" onClick={() => loadThread(id)}>Retry</button></p> : !thread && <p role="status" className="public-messages-list-empty">Loading conversation…</p>}
         {thread && currentPeer && <button type="button" className="public-messages-peer" aria-label={"Conversation details for " + peerName(thread.chat)} onClick={() => {
             setDetailsTab('info');
             setBackgroundError('');
@@ -822,6 +826,7 @@ function MessagesPage({ user }) {
           onClose={() => setShowChatMarketplace(false)}
           onSelectBackground={chooseMarketBackground} />
         }
+        {readError?.id === id && thread && <p role="alert" className="public-message-refresh-error">Couldn’t refresh this conversation. <button type="button" className="underline" onClick={() => loadThread(id)}>Retry</button></p>}
         {thread && <>
           <div ref={scroll} className="public-messages-history" aria-label="Conversation messages" onWheel={() => {jumpingToLatest.current = false;}} onTouchStart={() => {jumpingToLatest.current = false;}} onScroll={() => {
             const node = scroll.current;
