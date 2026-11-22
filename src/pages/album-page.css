@@ -1,0 +1,21 @@
+/* Album pages reuse the track page's release layout; these rules only place the
+   tracklist beside the album facts and keep the song rows on hairline dividers. */
+.album-page .track-detail-columns>.album-tracklist{grid-column:1;grid-row:1;min-width:0;width:100%;max-width:none;margin:0;padding:0}
+.album-page .track-detail-columns>.album-credits{grid-column:2;grid-row:1;min-width:0}
+.album-page .album-song-list{margin-top:-4px;border-top:1px solid hsl(var(--border)/.65)}
+.album-page .album-song-list .song-row{border-radius:0;border-bottom:1px solid hsl(var(--border)/.45)}
+.album-page .album-song-list .song-row:last-child{border-bottom:0}
+.album-page .album-song-list .song-row:hover{background:hsl(var(--foreground)/.03)}
+.album-page .album-song-count{margin-top:14px;font-size:12px;line-height:1.6;color:hsl(var(--muted-foreground))}
+/* The save-to-library control sits on the dark hero beside the shuffle pill. */
+.album-page .release-header-full .release-play-controls>.release-add-button:not(.release-shuffle-button){border:1px solid #ffffff45;background:#ffffff18;color:#fff}
+.album-page .release-header-full .release-play-controls>.release-add-button:not(.release-shuffle-button):hover{background:#ffffff2b}
+.album-page .release-header-full .release-play-controls>.release-add-button:not(.release-shuffle-button)[aria-pressed="true"]{border-color:#ffffffbf;background:#ffffff30}
+@media(max-width:1099px){
+ .album-page .track-detail-columns>.album-tracklist{grid-column:1;grid-row:auto}
+ .album-page .track-detail-columns>.album-credits{grid-column:1;grid-row:auto}
+}
+@media(max-width:767px){
+ .album-page .album-song-list .song-row{padding-inline:0}
+ .album-page .album-song-count{text-align:center}
+}
