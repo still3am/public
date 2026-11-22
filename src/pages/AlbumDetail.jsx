@@ -64,7 +64,7 @@ export default function AlbumDetail(){
      <div className="track-release-info">
       <h1>{album.title}</h1>
       <div className="release-artist"><ArtistLinks artist={album.artist} maxShown={8} linkClassName="hover:underline"/></div>
-      <p className="release-subtitle">{[genre,album.year||null,minutes?minutes+' minutes':null].filter(Boolean).join(' · ')}</p>
+      <p className="release-subtitle">{[genre,album.year||null].filter(Boolean).join(' · ')}</p>
       <div className="release-play-controls">
        <button type="button" className="release-play-button" disabled={busy} aria-label={(playing?'Pause ':'Play ')+album.title} onClick={()=>play()}>{playing?<Pause size={22} fill="currentColor"/>:<Play size={22} fill="currentColor"/>}{playing?'Pause':'Play'}</button>
        <button type="button" className="release-add-button release-shuffle-button" aria-label="Shuffle album" disabled={busy} onClick={()=>play(true)}><Shuffle size={20}/><span>Shuffle</span></button>

@@ -1,21 +1,52 @@
-/* Album pages reuse the track page's release layout; these rules only place the
-   tracklist beside the album facts and keep the song rows on hairline dividers. */
-.album-page .track-detail-columns>.album-tracklist{grid-column:1;grid-row:1;min-width:0;width:100%;max-width:none;margin:0;padding:0}
-.album-page .track-detail-columns>.album-credits{grid-column:2;grid-row:1;min-width:0}
-.album-page .album-song-list{margin-top:-4px;border-top:1px solid hsl(var(--border)/.65)}
-.album-page .album-song-list .song-row{border-radius:0;border-bottom:1px solid hsl(var(--border)/.45)}
+/* Album pages reuse the track page's release layout. These rules place the
+   tracklist beside the album facts, strip the card box those columns otherwise
+   inherit, and keep the hero controls inside narrow screens. */
+
+/* ---- Body columns: only the divider, no card box ---- */
+.public-app .artwork-content .album-page.track-artist-layout .track-detail-columns{grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);align-items:start;gap:40px;margin-bottom:44px}
+.public-app .artwork-content .album-page.track-artist-layout .track-detail-columns>.album-tracklist,
+.public-app .artwork-content .album-page.track-artist-layout .track-detail-columns>.album-credits{
+ width:100%;min-width:0;max-width:none;margin:0;padding:0;border:0;border-radius:0;background:none;box-sizing:border-box;
+}
+.public-app .artwork-content .album-page.track-artist-layout .track-detail-columns>.album-tracklist{grid-column:1;grid-row:1}
+.public-app .artwork-content .album-page.track-artist-layout .track-detail-columns>.album-credits{grid-column:2;grid-row:1;padding-left:32px;border-left:1px solid hsl(var(--border)/.65)}
+
+/* ---- Tracklist ---- */
+.album-page .album-tracklist>.track-details-title,
+.album-page .album-credits>.track-details-title{margin:0 0 18px}
+.album-page .album-song-list{margin:0;border-top:1px solid hsl(var(--border)/.65)}
+.album-page .album-song-list .song-row{margin:0;padding:12px 0;border-radius:0;border-bottom:1px solid hsl(var(--border)/.45)}
 .album-page .album-song-list .song-row:last-child{border-bottom:0}
 .album-page .album-song-list .song-row:hover{background:hsl(var(--foreground)/.03)}
-.album-page .album-song-count{margin-top:14px;font-size:12px;line-height:1.6;color:hsl(var(--muted-foreground))}
+.album-page .album-song-count{margin:14px 0 0;font-size:12px;line-height:1.6;color:hsl(var(--muted-foreground))}
+.album-page .album-credits .catalog-song-facts{margin:0}
+
+/* ---- Hero controls ---- */
 /* The save-to-library control sits on the dark hero beside the shuffle pill. */
 .album-page .release-header-full .release-play-controls>.release-add-button:not(.release-shuffle-button){border:1px solid #ffffff45;background:#ffffff18;color:#fff}
 .album-page .release-header-full .release-play-controls>.release-add-button:not(.release-shuffle-button):hover{background:#ffffff2b}
 .album-page .release-header-full .release-play-controls>.release-add-button:not(.release-shuffle-button)[aria-pressed="true"]{border-color:#ffffffbf;background:#ffffff30}
+
+/* ---- Tablet: one column, divider turns horizontal ---- */
 @media(max-width:1099px){
- .album-page .track-detail-columns>.album-tracklist{grid-column:1;grid-row:auto}
- .album-page .track-detail-columns>.album-credits{grid-column:1;grid-row:auto}
+ .public-app .artwork-content .album-page.track-artist-layout .track-detail-columns{grid-template-columns:minmax(0,1fr);gap:30px}
+ .public-app .artwork-content .album-page.track-artist-layout .track-detail-columns>.album-tracklist{grid-column:1;grid-row:auto}
+ .public-app .artwork-content .album-page.track-artist-layout .track-detail-columns>.album-credits{grid-column:1;grid-row:auto;padding:28px 0 0;border-left:0;border-top:1px solid hsl(var(--border)/.65)}
 }
+
+/* ---- Phone ---- */
 @media(max-width:767px){
- .album-page .album-song-list .song-row{padding-inline:0}
- .album-page .album-song-count{text-align:center}
+ .public-app .artwork-content .album-page.track-artist-layout .track-detail-columns{gap:26px;margin-bottom:28px}
+ .public-app .artwork-content .album-page.track-artist-layout .track-detail-columns>.album-credits{padding-top:22px}
+ .album-page .album-tracklist>.track-details-title,
+ .album-page .album-credits>.track-details-title{margin-bottom:12px}
+ .album-page .album-song-list .song-row{padding:10px 0;gap:10px}
+ .album-page .album-song-count{margin-top:12px;text-align:left}
+ .album-page .release-header-full .release-play-controls{flex-wrap:wrap;row-gap:10px}
+}
+@media(max-width:479px){
+ .album-page .release-header-full .release-play-controls{gap:8px}
+ .album-page .release-header-full .release-play-button,
+ .album-page .release-header-full .release-shuffle-button{min-width:104px;padding-inline:14px}
+ .album-page .release-header-full .release-play-controls>.release-add-button:not(.release-shuffle-button){width:46px;min-width:46px;height:46px}
 }
