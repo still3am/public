@@ -25,6 +25,32 @@
       "default": "",
       "description": "ISO timestamp of when catalog_count was measured"
     },
+    "chart_week": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "default": [],
+      "description": "Last 7 day chart rows, ranked in the app and shared with every visitor"
+    },
+    "chart_week_at": {
+      "type": "string",
+      "default": "",
+      "description": "ISO timestamp of when chart_week was ranked"
+    },
+    "chart_month": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      },
+      "default": [],
+      "description": "Last 30 day chart rows, ranked in the app and shared with every visitor"
+    },
+    "chart_month_at": {
+      "type": "string",
+      "default": "",
+      "description": "ISO timestamp of when chart_month was ranked"
+    },
     "operator_name": {
       "type": "string",
       "default": ""

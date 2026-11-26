@@ -1,7 +1,8 @@
-import { base44 } from "@/api/base44Client";
 import LoadError from '@/components/LoadError';
 import { useEffect, useState, useCallback, useMemo, useRef } from "react";
 import { getTopTracks } from "@/lib/catalogCache";
+import { getPeriodChart } from "@/lib/periodCharts";
+import { useAuth } from '@/lib/AuthContext';
 import TrackRow from "@/components/TrackRow";
 import CollectionSpotlight from "@/components/CollectionSpotlight";
 import IncrementalList from "@/components/IncrementalList";
@@ -10,10 +11,10 @@ import { Loader2 } from "lucide-react";
 import PullToRefresh from "@/components/PullToRefresh";
 
 export default function TopCharts() {
+  const { user } = useAuth();
   const [period, setPeriod] = useState("all"),[rising, setRising] = useState(false),[positions, setPositions] = useState([]);
   const [tracks, setTracks] = useState([]);
   const [loadError, setLoadError] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(true);
   const [query, setQuery] = useState(""),[genre, setGenre] = useState("");
   const loadVersion = useRef(0);
@@ -26,24 +27,17 @@ export default function TopCharts() {
   useUnpublishedSync(onUnpublished);
 
   async function load(fresh = false) {
-    const request = ++loadVersion.current;setLoading(true);setLoadError(false);setErrorMessage("");
+    const request = ++loadVersion.current;setLoading(true);setLoadError(false);
     try {
       const rows = await getTopTracks(fresh === true);
       let chart = [];
-      if (period !== "all") {
-        const response = await base44.functions.invoke("musicInsights", { action: "charts", period });
-        if (!Array.isArray(response?.data?.rows)) throw Error("Invalid chart");chart = response.data.rows;
-      }
+      if (period !== "all") chart = await getPeriodChart(period, { canCompute: user?.role === "admin", fresh: fresh === true });
       if (request === loadVersion.current) {
         const map = new Map(rows.map((track) => [track.id, track]));
         setTracks(period === "all" ? rows : chart.map((row) => map.get(row.track_id)).filter(Boolean));setPositions(chart);
       }
-    } catch (error) {
-      if (request === loadVersion.current) {
-        const status = error?.status ?? error?.response?.status;
-        setErrorMessage(status === 402 ? "Period charts are temporarily unavailable. The All time chart still works." : "");
-        setLoadError(true);
-      }
+    } catch {
+      if (request === loadVersion.current) setLoadError(true);
     } finally {
       if (request === loadVersion.current) setLoading(false);
     }
@@ -77,7 +71,7 @@ export default function TopCharts() {
         <CollectionSpotlight title="Top Charts" eyebrow="On repeat" description={period === "all" ? "Ranked by total plays on PUBLIC." : "Recorded plays over the last " + (period === "week" ? "7" : "30") + " days. Movement compares with the preceding period."} tracks={visible} />
         
         {period !== "all" && <button className="playlist-action mb-4" aria-pressed={rising} onClick={() => setRising((value) => !value)}>{rising ? "Show full chart" : "Rising songs"}</button>}
-        {loadError && <LoadError message={errorMessage || undefined} onRetry={() => load(true)} />}
+        {loadError && <LoadError onRetry={() => load(true)} />}
         {!tracks.length && !loadError && <p className="py-8 text-muted-foreground" role="status">No recorded plays for this period yet. Try another period.</p>}
         {!!tracks.length && !shown.length && <div className="collection-empty"><h2>{rising && !filtering ? "No rising songs yet" : "No matching songs"}</h2><p>{rising && !filtering ? "Show the full chart to see this period’s rankings." : "Try another title, artist, or genre."}</p></div>}
 
