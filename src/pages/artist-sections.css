@@ -242,10 +242,12 @@
 .public-app .artwork-content .artist-page.artist-editorial.artist-redesigned.artist-sections-v2 .artist-detail-facts.artist-details-plain dd{margin:6px 0 0;font-size:13px;font-weight:550;line-height:1.6;overflow-wrap:anywhere;color:hsl(var(--foreground))}
 @media(max-width:359px){.public-app .artwork-content .artist-page.artist-editorial.artist-redesigned.artist-sections-v2 .artist-detail-facts.artist-details-plain .artist-detail-grid{grid-template-columns:minmax(0,1fr)}}
 
-/* Only the artwork disc behind a similar artist is washed with that artist's colour. */
-.public-app .artwork-content .artist-page.artist-editorial.artist-redesigned.artist-sections-v2 .artist-similar-card{border-color:hsl(var(--border)/.55)}
-.public-app .artwork-content .artist-page.artist-editorial.artist-redesigned.artist-sections-v2 .artist-similar-card .artist-similar-portrait{position:relative;isolation:isolate;padding:14px;border-radius:50%;background:hsl(var(--foreground)/.05);overflow:hidden}
-.public-app .artwork-content .artist-page.artist-editorial.artist-redesigned.artist-sections-v2 .artist-similar-card .artist-similar-portrait::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.55;background:radial-gradient(circle at 50% 25%,var(--similar-tone,#8b8b8b) 0%,transparent 82%);transition:opacity .2s}
-@media(hover:hover){.public-app .artwork-content .artist-page.artist-editorial.artist-redesigned.artist-sections-v2 .artist-similar-card:hover .artist-similar-portrait::before{opacity:.72}}
+/* Similar artist cards drift through a slow gradient made from the artist's own artwork colour. */
+.public-app .artwork-content .artist-page.artist-editorial.artist-redesigned.artist-sections-v2 .artist-similar-card{position:relative;isolation:isolate;overflow:hidden;border-color:hsl(var(--border)/.55)}
+.public-app .artwork-content .artist-page.artist-editorial.artist-redesigned.artist-sections-v2 .artist-similar-card::before{content:"";position:absolute;inset:0;z-index:-1;pointer-events:none;opacity:.45;background-image:radial-gradient(70% 80% at 20% 15%,var(--similar-tone,#8b8b8b) 0%,transparent 62%),radial-gradient(75% 85% at 85% 45%,var(--similar-tone,#8b8b8b) 0%,transparent 66%),radial-gradient(85% 90% at 45% 100%,var(--similar-tone,#8b8b8b) 0%,transparent 70%);background-size:180% 180%;background-position:0% 0%,100% 60%,50% 100%;animation:artist-similar-drift 16s ease-in-out infinite}
+@keyframes artist-similar-drift{
+0%,100%{background-position:0% 0%,100% 60%,50% 100%;opacity:.4}
+50%{background-position:25% 30%,70% 20%,60% 60%;opacity:.62}
+}
 .public-app .artwork-content .artist-page.artist-editorial.artist-redesigned.artist-sections-v2 .artist-similar-card .artist-similar-image{border:1px solid hsl(var(--border)/.5)}
-@media(prefers-reduced-motion:reduce){.public-app .artwork-content .artist-page.artist-editorial.artist-redesigned.artist-sections-v2 .artist-similar-card .artist-similar-portrait::before{transition:none}}
+@media(prefers-reduced-motion:reduce){.public-app .artwork-content .artist-page.artist-editorial.artist-redesigned.artist-sections-v2 .artist-similar-card::before{animation:none;opacity:.5}}
