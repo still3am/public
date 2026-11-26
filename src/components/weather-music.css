@@ -1,97 +1,90 @@
 .home-weather-dialog.weather-experience{--foreground:0 0% 100%;--background:230 35% 10%;--card:230 25% 15%;--muted-foreground:225 15% 75%;--border:225 20% 30%;position:fixed;inset:0;transform:none;width:100vw;max-width:none;height:100dvh;max-height:none;display:block;overflow:hidden;border:0;border-radius:0;padding:0;background:#101525;color:#fff;isolation:isolate;animation:none!important;}
 .weather-experience>button:last-child{display:none;}
 .weather-music-shell{position:relative;height:100%;overflow:hidden;}
-.weather-music-toolbar{position:absolute;inset:0 0 auto;z-index:3;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:calc(env(safe-area-inset-top,0px) + 12px) 20px 12px;background:linear-gradient(#0b102b55,transparent);}
-.weather-music-toolbar>button{width:44px;height:44px;display:grid;place-items:center;border:1px solid #ffffff24;border-radius:50%;background:#ffffff14;backdrop-filter:blur(14px);flex-shrink:0;}
-.weather-music-toolbar h2{font-size:10px;letter-spacing:.2em;font-weight:650;color:#ffffffa0;}
-.weather-music-scroll{position:relative;z-index:1;height:100%;overflow-y:auto;overscroll-behavior:contain;padding:calc(env(safe-area-inset-top,0px) + 76px) 20px calc(env(safe-area-inset-bottom,0px) + 28px);scrollbar-width:thin;scrollbar-color:#ffffff30 transparent;}
-.weather-music-summary{display:flex;align-items:center;justify-content:center;flex-wrap:wrap;gap:4px 10px;text-align:center;max-width:660px;margin:0 auto 24px;min-height:44px;}
-.weather-music-city{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:550;letter-spacing:-.04em;max-width:100%;line-height:1.25;}
-.weather-music-city svg{flex-shrink:0;opacity:.6;}
-.weather-music-degrees{font-size:14px;line-height:1.4;font-weight:600;letter-spacing:-.02em;}
-.weather-music-summary>p{font-size:12px;color:#ffffffa8;}
-.weather-music-summary>p>span{color:#ffffff70;font-size:11px;}
-.weather-music-summary .weather-music-unset{margin:20px auto 0;max-width:220px;line-height:1.7;color:#ffffff90;}
+
+/* ---- Toolbar ---- */
+.weather-music-toolbar{position:absolute;inset:0 0 auto;z-index:3;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:calc(env(safe-area-inset-top,0px) + 12px) 20px 12px;background:linear-gradient(#10101c88,transparent);}
+.weather-experience .weather-music-toolbar>button{position:relative;box-sizing:border-box;display:grid;place-items:center;flex:0 0 36px;width:36px;min-width:36px;max-width:36px;height:36px;min-height:36px;max-height:36px;aspect-ratio:1;padding:0;border:1px solid #ffffff24;border-radius:50%;background:#ffffff14;backdrop-filter:blur(14px);}
+.weather-music-toolbar>button::after{content:"";position:absolute;inset:-4px;border-radius:50%;}
+.weather-music-toolbar>button>svg{width:18px;height:18px;}
+.weather-music-toolbar h2{font-size:10px;letter-spacing:.16em;font-weight:650;color:#ffffffe0;white-space:nowrap;}
+
+/* ---- Scroll surface ---- */
+.weather-music-scroll{position:relative;z-index:1;height:100%;overflow-y:auto;overscroll-behavior:contain;padding:calc(env(safe-area-inset-top,0px) + 80px) 20px calc(env(safe-area-inset-bottom,0px) + 28px);scrollbar-width:thin;scrollbar-color:#ffffff30 transparent;}
+
+/* ---- Weather header: city overline, temperature as the number ---- */
+.weather-music-summary{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:8px 16px;max-width:660px;margin:0 auto 26px;min-height:44px;text-align:left;}
+.weather-music-city{display:inline-flex;align-items:center;gap:7px;min-height:44px;max-width:100%;font-size:11px;font-weight:650;letter-spacing:.16em;text-transform:uppercase;line-height:1.3;color:#ffffffc4;overflow-wrap:anywhere;}
+.weather-music-city svg{flex-shrink:0;opacity:.7;}
+.atmosphere-weather-read{display:flex;align-items:baseline;gap:10px;min-width:0;}
+.weather-music-degrees{font-size:40px;line-height:1;font-weight:600;letter-spacing:-.045em;color:#fff;font-variant-numeric:tabular-nums;}
+.weather-music-degrees sup{font-size:14px;font-weight:600;letter-spacing:0;vertical-align:super;margin-left:1px;color:#ffffffa8;}
+.atmosphere-weather-read>p{font-size:12px;line-height:1.4;color:#ffffffa8;}
+.weather-music-summary .weather-music-unset{width:100%;max-width:none;margin:0;text-align:left;font-size:14px;line-height:1.6;color:#ffffffa0;}
+
+/* ---- Content ---- */
 .weather-music-content,.weather-music-settings,.weather-music-notice{max-width:660px;margin-inline:auto;}
-.weather-music-heading{text-align:center;margin:0 auto 24px;max-width:440px;}
-.weather-music-heading>p,.weather-music-featured>div>p{font-size:9px;font-weight:650;letter-spacing:.19em;color:#ffffff90;margin-bottom:9px;}
-.weather-music-heading h2{font-size:clamp(30px,8.5vw,42px);line-height:1.05;letter-spacing:-.045em;font-weight:700;margin-bottom:10px;}
-.weather-music-heading>span{font-size:13px;line-height:1.6;color:#ffffff9c;}
-.weather-music-artwork{width:min(100%,340px);margin-inline:auto;aspect-ratio:1;position:relative;overflow:hidden;border:1px solid #ffffff20;border-radius:22px;background:#ffffff0c;box-shadow:0 28px 70px #0003;}
+.weather-music-heading{text-align:left;margin:0 0 20px;max-width:560px;}
+.weather-music-heading>p,.weather-music-featured>div>p{font-size:9px;font-weight:650;letter-spacing:.19em;color:#ffffffb8;margin-bottom:9px;}
+.weather-music-heading h2{font-size:clamp(32px,8.5vw,44px);line-height:1.03;letter-spacing:-.05em;font-weight:700;margin-bottom:10px;}
+.weather-music-heading>span{display:block;font-size:13px;line-height:1.6;color:#ffffff9c;max-width:34ch;}
+.atmosphere-hero,.atmosphere-sound{min-width:0;}
+
+/* ---- Artwork ---- */
+.weather-music-artwork{position:relative;width:100%;max-width:420px;aspect-ratio:1;overflow:hidden;border:1px solid #ffffff20;border-radius:24px;background:#ffffff0c;box-shadow:0 28px 70px #0003;}
 .weather-music-artwork>img{display:block;width:100%;height:100%;object-fit:cover;}
 .weather-music-art-placeholder{width:100%;height:100%;display:grid;place-items:center;color:#ffffff66;background:linear-gradient(140deg,#ffffff15,#ffffff03);}
 .weather-music-art-shade{position:absolute;inset:20% 0 0;background:linear-gradient(transparent,#0008 70%,#000c);pointer-events:none;}
-.weather-music-featured{position:absolute;inset:auto 20px 20px;display:flex;align-items:flex-end;gap:16px;}
+.weather-music-featured{position:absolute;inset:auto 18px 18px;display:flex;align-items:flex-end;gap:12px;}
 .weather-music-featured>div{min-width:0;flex:1;}
-.weather-music-featured h3{font-size:24px;line-height:1.12;letter-spacing:-.035em;font-weight:700;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.weather-music-featured h3{font-size:22px;line-height:1.12;letter-spacing:-.035em;font-weight:700;overflow-wrap:anywhere;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.weather-music-featured>div>p{color:#ffffffbf;}
 .weather-music-featured>div>span{font-size:13px;color:#ffffffb0;display:block;margin-top:8px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.weather-music-featured>button{display:grid;place-items:center;width:52px;height:52px;border-radius:50%;background:white;color:#121421;flex-shrink:0;box-shadow:0 3px 18px #0002;}
-.weather-music-play-actions{display:flex;gap:10px;max-width:340px;margin:18px auto 34px;}
-.weather-music-play{display:flex;align-items:center;justify-content:center;gap:9px;min-height:48px;flex:1;border-radius:999px;background:#fff;color:#111524;font-size:13px;font-weight:650;}
-.weather-music-shuffle{width:48px;height:48px;display:grid;place-items:center;border-radius:50%;border:1px solid #ffffff2b;background:#ffffff0a;}
-.weather-music-track-list{padding:20px 16px 12px;border:1px solid #ffffff18;background:#11101c88;border-radius:24px;}.weather-music-track-list>h3{font-size:21px;font-weight:700;letter-spacing:-.035em;margin-bottom:12px;}
-.weather-music-track-list .song-row{border-bottom:1px solid #ffffff10;border-radius:0;padding-inline:0;}
-.weather-music-selection-note{color:#ffffff60;font-size:10px;line-height:1.6;margin-top:18px;}
-.weather-music-status{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:10px 16px;color:#ffffff60;font-size:9px;line-height:1.7;margin:30px auto 0;}
+.weather-music-featured>button{display:grid;place-items:center;width:46px;height:46px;flex-shrink:0;border-radius:50%;background:#fff;color:#121421;box-shadow:0 3px 18px #0002;}
+
+/* ---- Transport ---- */
+.weather-music-play-actions{display:flex;gap:10px;max-width:420px;margin:14px 0 30px;}
+.weather-music-play{display:flex;align-items:center;justify-content:center;gap:9px;min-width:0;min-height:50px;flex:1;border-radius:999px;background:#fff;color:#111524;font-size:13px;font-weight:650;}
+.weather-music-shuffle{display:grid;place-items:center;width:50px;height:50px;flex-shrink:0;border-radius:50%;border:1px solid #ffffff2b;background:#ffffff0a;}
+
+/* ---- Soundtrack: editorial rows, no card ---- */
+.weather-music-track-list{padding:0;border:0;border-radius:0;background:none;}
+.weather-music-track-list>h3{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:0 0 6px;padding-bottom:11px;border-bottom:1px solid #ffffff2b;font-size:15px;font-weight:650;letter-spacing:-.01em;}
+.weather-music-track-list>h3>span{flex-shrink:0;font-size:9px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#ffffff8c;}
+.weather-music-track-list .song-row{padding-block:10px;padding-inline:0;border-radius:0;border-bottom:1px solid #ffffff14;}
+.weather-music-track-list .song-row:hover{background:#ffffff08;}
+
+.weather-music-loading{display:grid;justify-items:center;gap:12px;padding:44px 0;color:#ffffff90;font-size:12px;}
+.weather-music-notice{padding:15px 18px;border:1px solid #ffffff20;border-radius:16px;background:#ffffff0a;font-size:12px;line-height:1.6;margin-bottom:22px;}
+.weather-music-notice button{text-decoration:underline;text-underline-offset:3px;margin-left:5px;min-height:32px;}
+.weather-music-status{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:10px 16px;max-width:660px;margin:30px auto 0;color:#ffffff9c;font-size:10px;line-height:1.7;}
 .weather-music-status>button{display:flex;align-items:center;gap:5px;min-height:32px;}
 .weather-music-status>a{text-decoration:underline;text-underline-offset:3px;}
-.weather-music-settings{padding:20px;border:1px solid #ffffff20;border-radius:22px;background:#ffffff0a;backdrop-filter:blur(20px);margin-bottom:30px;}
-.weather-music-preferences{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:18px;}
-.weather-music-preferences>span{font-size:9px;letter-spacing:.17em;color:#ffffff80;}
+.weather-music-selection-note{color:#ffffff9c;font-size:10px;line-height:1.6;margin-top:18px;text-align:center;}
+.weather-experience button:disabled{opacity:.5;}
+
+/* ---- Atmosphere gradient: a flowing mesh, never weather illustrations ---- */
+.atmosphere-gradient{position:absolute!important;inset:0;z-index:0;}
+.atmosphere-gradient-shade{position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,#090b1830 0%,#090b180a 20%,#090b186b 55%,#090b18dc 100%);}
+.atmosphere-gradient-shade--brand{background:linear-gradient(180deg,#0009,#0007 45%,#000c);}
+
+/* ---- Settings (city + unit) ---- */
+.weather-experience .weather-music-settings{max-width:460px;border:0;background:transparent;backdrop-filter:none;padding:8px 0 0;margin:0 auto 30px;scroll-margin-top:80px;}
+.weather-experience .weather-music-settings input{min-width:0;font-size:16px;}
+.weather-music-preferences{display:flex;justify-content:space-between;align-items:center;gap:12px;}
 .weather-music-preferences>div{display:flex;padding:3px;border:1px solid #ffffff26;border-radius:999px;}
 .weather-music-preferences button{width:38px;min-height:32px;border-radius:999px;font-size:11px;}
 .weather-music-preferences button[aria-pressed=true]{background:#fff;color:#111524;}
+.weather-experience .weather-music-preferences{margin:20px 0 0;padding:16px 0;border-top:1px solid #ffffff1c;}
+.weather-experience .weather-music-preferences>span{font-size:13px;letter-spacing:0;color:#ffffffc0;}
+.weather-experience .weather-music-preferences button{min-height:38px;width:48px;font-size:13px;}
+.weather-music-done{display:block;margin:16px 0 0 auto;font-size:12px;min-height:36px;padding-inline:16px;border-radius:999px;background:#ffffff14;}
+.weather-experience .weather-music-done{width:100%;min-height:48px;margin:12px 0 20px;background:white;color:#161827;font-weight:650;font-size:14px;}
 .weather-music-settings .home-weather-footer{font-size:9px;}
 .weather-music-settings .home-weather-search>input{background:#0002;border-color:#ffffff25;}
 .weather-music-settings .home-weather-search>button{background:#fff;color:#111524;}
-.weather-music-done{display:block;margin:16px 0 0 auto;font-size:12px;min-height:36px;padding-inline:16px;border-radius:999px;background:#ffffff14;}
-.weather-music-notice{padding:15px 18px;border:1px solid #ffffff20;border-radius:16px;background:#ffffff0a;font-size:12px;line-height:1.6;margin-bottom:22px;}
-.weather-music-notice button{text-decoration:underline;text-underline-offset:3px;margin-left:5px;min-height:32px;}
-.weather-music-loading{display:grid;justify-items:center;gap:12px;padding:44px 0;color:#ffffff90;font-size:12px;}
-.weather-experience button:disabled{opacity:.5;}
 
-/* A shared flowing mesh, with no literal weather illustrations or particles. */
-.atmosphere-gradient{position:absolute!important;inset:0;z-index:0;}
-.atmosphere-gradient-shade{position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,#090b1830 0%,#090b180a 20%,#090b186b 55%,#090b18dc 100%);}
-.weather-music-toolbar{background:linear-gradient(#10101c88,transparent);}
-.weather-music-toolbar h2{font-size:10px;letter-spacing:.15em;color:#ffffffe0;white-space:nowrap;}
-.weather-experience .weather-music-toolbar>button{position:relative;box-sizing:border-box;flex:0 0 36px;width:36px;min-width:36px;max-width:36px;height:36px;min-height:36px;max-height:36px;aspect-ratio:1;padding:0;border-radius:50%;}
-.weather-music-toolbar>button::after{content:"";position:absolute;inset:-4px;border-radius:50%;}
-.weather-music-toolbar>button>svg{width:18px;height:18px;}
-.weather-music-summary .weather-music-unset{width:100%;margin:6px auto;}
-.weather-music-city{min-height:44px;min-width:0;max-width:100%;overflow-wrap:anywhere;}
-.weather-music-city svg{width:13px;}
-.weather-music-degrees{padding-left:10px;border-left:1px solid #ffffff40;}
-.weather-music-heading>span{display:block;max-width:300px;margin-inline:auto;}
-.weather-music-heading>p{color:#ffffffb8;}
-.weather-music-featured>div>p{color:#ffffffbf;}
-.weather-music-featured{inset:auto 18px 18px;gap:12px;}
-.weather-music-featured h3{font-size:22px;}
-.weather-music-featured>button{width:44px;height:44px;}
-.weather-music-play{min-width:0;min-height:48px;font-size:13px;}
-.weather-music-shuffle{flex-shrink:0;}
-.weather-music-status{color:#ffffff9c;font-size:10px;}
-.weather-music-selection-note{color:#ffffff9c;text-align:center;}
-.weather-music-settings{scroll-margin-top:80px;}
-.weather-music-settings input{min-width:0;font-size:16px;}
-.weather-experience button:focus-visible,.weather-experience a:focus-visible{outline:2px solid white;outline-offset:3px;}
-@media(max-width:359px){.weather-music-scroll{padding-inline:16px;}.weather-music-toolbar{padding-inline:16px;}.weather-music-toolbar h2{font-size:9px;letter-spacing:.1em;}.weather-music-summary{gap:2px 8px;}.weather-music-summary>p{font-size:11px;}}
-@media(min-width:768px){
- .home-weather-dialog.weather-experience{inset:auto;left:50%;top:50%;transform:translate(-50%,-50%);width:min(960px,94vw);height:92dvh;max-height:1000px;border:1px solid #ffffff20;border-radius:28px;}
- .weather-music-scroll{padding-inline:48px;padding-top:88px;}
- .weather-music-toolbar{padding:16px 24px;}
- .weather-music-summary{margin-bottom:28px;}
- .weather-music-content{max-width:660px;}
- .weather-music-heading{margin-bottom:30px;}
- .weather-music-heading h2{font-size:44px;}
- .weather-music-artwork{width:min(100%,420px);}
- .weather-music-play-actions{max-width:420px;}
-}
-@media(prefers-reduced-motion:reduce){.atmosphere-gradient canvas{transition:none!important;}}
-
-
-/* Focused location settings, sized for one-handed mobile use. */
-.weather-experience .weather-music-settings{max-width:460px;border:0;background:transparent;backdrop-filter:none;padding:8px 0 0;margin:0 auto;}
+/* ---- City picker ---- */
 .atmosphere-picker-heading h3{font-size:30px;line-height:1.15;font-weight:700;letter-spacing:-.045em;}
 .atmosphere-picker-heading p{font-size:13px;line-height:1.6;color:#ffffffaa;margin-top:8px;margin-bottom:24px;}
 .atmosphere-selected-city{display:flex;align-items:center;gap:13px;border:1px solid #ffffff28;border-radius:20px;background:#ffffff0c;padding:16px;margin-bottom:22px;}
@@ -120,9 +113,34 @@
 .atmosphere-data-details summary{cursor:pointer;min-height:32px;padding-block:6px;}
 .atmosphere-data-details p{margin:4px 0 12px;}.atmosphere-data-details a{text-decoration:underline;text-underline-offset:3px;}
 .atmosphere-remove-city{font-size:12px;color:#ffffffa0;text-decoration:underline;text-underline-offset:4px;min-height:44px;}
-.weather-experience .weather-music-preferences{margin:20px 0 0;padding:16px 0;border-top:1px solid #ffffff1c;}
-.weather-experience .weather-music-preferences>span{font-size:13px;letter-spacing:0;color:#ffffffc0;}
-.weather-experience .weather-music-preferences button{min-height:38px;width:48px;font-size:13px;}
-.weather-experience .weather-music-done{width:100%;min-height:48px;margin:12px 0 20px;background:white;color:#161827;font-weight:650;font-size:14px;}
-@media(max-width:359px){.atmosphere-picker-heading h3{font-size:27px;}.weather-experience .atmosphere-city-search{padding-left:10px;}.weather-experience .atmosphere-city-search>button{padding-inline:9px;}}
-.atmosphere-gradient-shade--brand{background:linear-gradient(180deg,#0009,#0007 45%,#000c);}
+
+.weather-experience button:focus-visible,.weather-experience a:focus-visible{outline:2px solid white;outline-offset:3px;}
+
+@media(max-width:359px){
+ .weather-music-scroll{padding-inline:16px;}
+ .weather-music-toolbar{padding-inline:16px;}
+ .weather-music-toolbar h2{font-size:9px;letter-spacing:.1em;}
+ .weather-music-degrees{font-size:34px;}
+ .atmosphere-picker-heading h3{font-size:27px;}
+ .weather-experience .atmosphere-city-search{padding-left:10px;}
+ .weather-experience .atmosphere-city-search>button{padding-inline:9px;}
+}
+
+/* ---- Desktop: framed dialog, artwork left and soundtrack right ---- */
+@media(min-width:768px){
+ .home-weather-dialog.weather-experience{inset:auto;left:50%;top:50%;transform:translate(-50%,-50%);width:min(980px,94vw);height:92dvh;max-height:1000px;border:1px solid #ffffff20;border-radius:28px;}
+ .weather-music-scroll{padding-inline:48px;padding-top:92px;}
+ .weather-music-toolbar{padding:16px 24px;}
+ .weather-music-summary{max-width:880px;margin-bottom:30px;}
+ .weather-music-status{max-width:880px;}
+}
+@media(min-width:900px){
+ .weather-music-content{max-width:880px;display:grid;grid-template-columns:minmax(0,340px) minmax(0,1fr);gap:0 48px;align-items:start;}
+ .weather-music-heading{grid-column:1/-1;max-width:none;margin-bottom:26px;}
+ .weather-music-heading h2{font-size:48px;}
+ .weather-music-heading>span{max-width:44ch;font-size:14px;}
+ .atmosphere-hero{grid-column:1;grid-row:2;}
+ .atmosphere-sound{grid-column:2;grid-row:2;padding-top:2px;}
+ .weather-music-content>.weather-music-loading,.weather-music-content>.weather-music-notice{grid-column:1/-1;}
+}
+@media(prefers-reduced-motion:reduce){.atmosphere-gradient canvas{transition:none!important;}}
