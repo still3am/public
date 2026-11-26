@@ -17,16 +17,21 @@
 .atmos-scroll{position:relative;z-index:1;height:100%;overflow-y:auto;overscroll-behavior:contain;padding:calc(env(safe-area-inset-top,0px) + 78px) 20px calc(env(safe-area-inset-bottom,0px) + 28px);scrollbar-width:thin;scrollbar-color:#ffffff30 transparent;}
 
 /* ---- Composition: stacked on phones ---- */
-.atmos-grid{display:flex;flex-direction:column;gap:20px;max-width:660px;margin-inline:auto;}
+.atmos-grid{display:flex;flex-direction:column;gap:18px;max-width:660px;margin-inline:auto;}
 
 /* Weather */
 .atmos-weather{min-width:0;}
-.atmos-city{display:inline-flex;align-items:center;gap:7px;max-width:100%;min-height:32px;font-size:10px;font-weight:650;letter-spacing:.18em;text-transform:uppercase;line-height:1.4;color:#ffffffc8;overflow-wrap:anywhere;}
-.atmos-city svg{flex-shrink:0;opacity:.75;}
-.atmos-read{display:flex;align-items:flex-end;flex-wrap:wrap;gap:4px 14px;margin-top:2px;}
+.atmos-city{display:inline-flex;align-items:center;gap:6px;max-width:100%;min-height:30px;padding:5px 11px 5px 9px;border:1px solid #ffffff26;border-radius:999px;background:#ffffff10;font-size:10px;font-weight:650;letter-spacing:.16em;text-transform:uppercase;line-height:1.4;color:#ffffffd4;overflow-wrap:anywhere;transition:background .18s,border-color .18s;}
+.atmos-city:hover{background:#ffffff1c;border-color:#ffffff38;}
+.atmos-city>span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.atmos-city svg{flex-shrink:0;opacity:.8;}
+.atmos-city .atmos-city-caret{opacity:.55;transition:transform .18s;}
+.atmos-city[aria-expanded="true"] .atmos-city-caret{transform:rotate(180deg);}
+.atmos-read{display:flex;align-items:flex-end;flex-wrap:wrap;gap:4px 14px;margin-top:12px;}
 .atmos-temp{font-size:clamp(44px,13vw,56px);line-height:.92;font-weight:600;letter-spacing:-.055em;color:#fff;font-variant-numeric:tabular-nums;}
 .atmos-temp sup{font-size:14px;font-weight:600;letter-spacing:0;vertical-align:super;margin-left:1px;color:#ffffffa8;}
-.atmos-condition{font-size:13px;line-height:1.5;color:#ffffffbc;padding-bottom:5px;}
+.atmos-condition{display:flex;align-items:center;gap:8px;padding-bottom:6px;font-size:13px;line-height:1.5;color:#ffffffbc;}
+.atmos-condition svg{flex-shrink:0;opacity:.85;}
 .atmos-unset{font-size:14px;line-height:1.6;color:#ffffffa8;margin-top:8px;max-width:30ch;}
 
 /* Title */
@@ -59,11 +64,25 @@
 .atmos-list .song-row{padding-block:10px;padding-inline:0;border-radius:0;border-bottom:1px solid #ffffff14;}
 .atmos-list .song-row:hover{background:#ffffff08;}
 
+/* Loading and empty states, in the same editorial rhythm as the rows. */
+.atmos-skeleton{display:flex;flex-direction:column;gap:10px;}
+.atmos-skeleton>span{font-size:9px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:#ffffff8c;margin-bottom:2px;}
+.atmos-skeleton-row{display:flex;align-items:center;gap:12px;padding-block:8px;border-bottom:1px solid #ffffff12;}
+.atmos-skeleton-art{width:44px;height:44px;flex-shrink:0;border-radius:9px;background:#ffffff14;animation:atmosPulse 1.6s ease-in-out infinite;}
+.atmos-skeleton-row>div{display:flex;flex:1;min-width:0;flex-direction:column;gap:8px;}
+.atmos-skeleton-row>div>i{display:block;height:9px;border-radius:99px;background:#ffffff12;animation:atmosPulse 1.6s ease-in-out infinite;}
+.atmos-skeleton-row>div>i:first-child{width:62%;}
+.atmos-skeleton-row>div>i:last-child{width:38%;height:8px;}
+@keyframes atmosPulse{0%,100%{opacity:.45}50%{opacity:.9}}
+.atmos-empty{display:flex;align-items:center;gap:12px;padding:20px 18px;border:1px dashed #ffffff26;border-radius:18px;color:#ffffffa8;font-size:12px;line-height:1.6;}
+.atmos-empty svg{flex-shrink:0;opacity:.7;}
+.atmos-empty p{margin:0;}
+
 /* ---- Notices, loading, footer ---- */
 .weather-music-loading{display:grid;justify-items:center;gap:12px;padding:44px 0;color:#ffffff90;font-size:12px;}
 .weather-music-notice{max-width:660px;margin:22px auto 0;padding:15px 18px;border:1px solid #ffffff20;border-radius:16px;background:#ffffff0a;font-size:12px;line-height:1.6;}
 .weather-music-notice button{text-decoration:underline;text-underline-offset:3px;margin-left:5px;min-height:32px;}
-.weather-music-status{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:10px 16px;max-width:660px;margin:30px auto 0;color:#ffffff9c;font-size:10px;line-height:1.7;}
+.weather-music-status{display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:10px 16px;max-width:660px;margin:30px auto 0;padding-top:16px;border-top:1px solid #ffffff14;color:#ffffff9c;font-size:10px;line-height:1.7;}
 .weather-music-status>button{display:flex;align-items:center;gap:5px;min-height:32px;}
 .weather-experience button:disabled{opacity:.5;}
 
@@ -137,13 +156,14 @@
 
 /* ---- Two-pane editorial layout: weather + artwork left, title + soundtrack right ---- */
 @media(min-width:1000px){
- .atmos-grid{display:grid;max-width:900px;grid-template-columns:minmax(0,340px) minmax(0,1fr);grid-template-areas:"weather title" "art list" "transport list";column-gap:56px;row-gap:26px;align-items:start;}
+ .atmos-grid{display:grid;max-width:900px;grid-template-columns:minmax(0,340px) minmax(0,1fr);grid-template-areas:"title title" "weather list" "art list" "transport list";column-gap:56px;row-gap:24px;align-items:start;}
+ .atmos-title{grid-area:title;margin-bottom:4px;}
+ .atmos-title h2{font-size:56px;line-height:.98;max-width:20ch;}
+ .atmos-title>span{font-size:14px;max-width:52ch;}
  .atmos-weather{grid-area:weather;}
- .atmos-title{grid-area:title;padding-top:2px;}
- .atmos-title h2{font-size:52px;line-height:.98;}
- .atmos-title>span{font-size:14px;max-width:42ch;}
  .atmos-art{grid-area:art;border-radius:26px;}
  .atmos-transport{grid-area:transport;}
  .atmos-list{grid-area:list;}
+ .atmos-weather .atmos-read{margin-top:8px;}
 }
 @media(prefers-reduced-motion:reduce){.atmosphere-gradient canvas{transition:none!important;}}

@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { ChevronLeft, MapPin, RefreshCw, Play, Pause, Shuffle, Music2, Loader2 } from 'lucide-react';
+import { ChevronLeft, ChevronDown, MapPin, RefreshCw, Play, Pause, Shuffle, Music2, Loader2, Sun, Moon, CloudSun, CloudMoon, Cloud, CloudFog, CloudDrizzle, CloudRain, CloudSnow, CloudLightning } from 'lucide-react';
+const CONDITION_ICONS = { sun: Sun, moon: Moon, partly: CloudSun, 'night-cloud': CloudMoon, cloud: Cloud, fog: CloudFog, drizzle: CloudDrizzle, rain: CloudRain, snow: CloudSnow, storm: CloudLightning };
 import { DialogClose, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { usePlayer } from '@/context/PlayerContext';
 import { getPublishedTracks } from '@/lib/catalogCache';
@@ -27,6 +28,7 @@ export default function WeatherMusic({ weather, city, unit, loading, error, onRe
   const featured = tracks[0],cover = useCoverUrl(featured?.cover_art_url),condition = weather ? weatherCondition(weather.code, weather.isDay) : null;
   useEffect(() => setArtFailed(false), [cover]);
   const playing = player.isPlaying && tracks.some((track) => track.id === player.currentTrack?.id);
+  const ConditionIcon = condition ? CONDITION_ICONS[condition.icon] || CloudSun : null;
   const toggleSettings = () => setConfiguring((value) => city ? !value : true);
   async function play(shuffle = false) {
     if (lock.current || !tracks.length) return;lock.current = true;setStarting(true);
@@ -62,24 +64,24 @@ export default function WeatherMusic({ weather, city, unit, loading, error, onRe
    <>
    <div className="atmos-grid">
     <div className="atmos-weather" aria-busy={loading}>
-     <button type="button" className="atmos-city" onClick={toggleSettings}><MapPin size={12} />{city ? city.label.split(',')[0] : 'Your city'}</button>
+     <button type="button" className="atmos-city" onClick={toggleSettings} aria-expanded={configuring}><MapPin size={12} /><span>{city ? city.label.split(',')[0] : 'Your city'}</span><ChevronDown size={12} className="atmos-city-caret" /></button>
      {weather ?
-      <div className="atmos-read"><strong className="atmos-temp">{weatherTemperature(weather.temperature, unit).replace(/[FC]$/, '')}<sup>°{unit}</sup></strong><span className="atmos-condition">{condition.label}</span></div> :
+      <div className="atmos-read"><strong className="atmos-temp">{weatherTemperature(weather.temperature, unit).replace(/[FC]$/, '')}<sup>°{unit}</sup></strong>{ConditionIcon && <div className="atmos-condition"><ConditionIcon size={18} strokeWidth={1.6} /><span>{condition.label}</span></div>}</div> :
       <p className="atmos-unset">{loading ? 'Finding the atmosphere…' : 'Choose a city. Find your soundtrack.'}</p>}
     </div>
 
     <div className="atmos-title"><p>THE SOUND OF RIGHT NOW</p><h2>{atmosphere.title}</h2><span>{atmosphere.subtitle}</span></div>
 
     {featured && <>
-     <div className="atmos-art">{cover && !artFailed ? <img src={cover} alt={featured.title + ' artwork'} onError={() => setArtFailed(true)} /> : <div className="atmos-art-placeholder"><Music2 size={64} /></div>}<div className="atmos-art-shade" /><div className="atmos-featured"><div><p>IN THIS ATMOSPHERE</p><h3>{featured.title}</h3><span>{featured.artist || featured.uploader_name}</span></div><button type="button" disabled={starting} onClick={playFeatured} aria-label={player.currentTrack?.id === featured.id && player.isPlaying ? 'Pause ' + featured.title : 'Play ' + featured.title}>{player.currentTrack?.id === featured.id && player.isPlaying ? <Pause size={24} fill="currentColor" /> : <Play size={24} fill="currentColor" />}</button></div></div>
+     <div className="atmos-art">{cover && !artFailed ? <img src={cover} alt={featured.title + ' artwork'} onError={() => setArtFailed(true)} /> : <div className="atmos-art-placeholder"><Music2 size={64} /></div>}<div className="atmos-art-shade" /><div className="atmos-featured"><div><p>FEATURED</p><h3>{featured.title}</h3><span>{featured.artist || featured.uploader_name}</span></div><button type="button" disabled={starting} onClick={playFeatured} aria-label={player.currentTrack?.id === featured.id && player.isPlaying ? 'Pause ' + featured.title : 'Play ' + featured.title}>{player.currentTrack?.id === featured.id && player.isPlaying ? <Pause size={24} fill="currentColor" /> : <Play size={24} fill="currentColor" />}</button></div></div>
      <div className="atmos-transport"><button type="button" className="atmos-play" disabled={starting} onClick={() => play()}>{starting ? <Loader2 size={18} className="animate-spin" /> : playing ? <Pause size={18} fill="currentColor" /> : <Play size={18} fill="currentColor" />}{playing ? 'Pause atmosphere' : 'Play atmosphere'}</button><button type="button" className="atmos-shuffle" aria-label="Shuffle this atmosphere" disabled={starting} onClick={() => play(true)}><Shuffle size={20} /></button></div>
     </>}
 
     <div className="atmos-list">
      {musicLoading && !tracks.length ?
-      <div className="weather-music-loading"><Loader2 size={24} className="animate-spin" /><p>Finding the music…</p></div> :
+      <div className="atmos-skeleton" role="status" aria-label="Finding the music"><span>Finding the music…</span>{[0, 1, 2, 3].map((row) => <div key={row} className="atmos-skeleton-row"><i className="atmos-skeleton-art" /><div><i /><i /></div></div>)}</div> :
       featured ? <><h3>Soundtrack<span>{tracks.length} {tracks.length === 1 ? 'song' : 'songs'}</span></h3>{tracks.map((track, index) => <TrackRow key={track.id} track={track} index={index} queue={tracks} queueIndex={index} />)}</> :
-      !musicError && <div className="weather-music-notice">No playable songs are available for this atmosphere yet.</div>}
+      !musicError && <div className="atmos-empty"><Music2 size={24} /><p>No playable songs are available for this atmosphere yet.</p></div>}
      {musicError && <div className="weather-music-notice" role="alert">Music could not refresh. <button onClick={() => setRetry((value) => value + 1)}>Retry music</button></div>}
     </div>
    </div>
