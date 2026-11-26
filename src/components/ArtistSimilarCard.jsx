@@ -17,7 +17,11 @@ export default function ArtistSimilarCard({ artist }) {
     <Link
       className="artist-similar-card"
       to={"/records/" + encodeURIComponent(artist.id)}
-      style={tone ? { "--similar-tone": tone } : undefined}
+      style={tone ? {
+        "--similar-tone-a": colors[0],
+        "--similar-tone-b": colors[1] || colors[0],
+        "--similar-tone-c": colors[2] || colors[1] || colors[0],
+      } : undefined}
     >
       <div className="artist-similar-portrait">
         {url && !failed ? (
