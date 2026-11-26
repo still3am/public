@@ -9,6 +9,9 @@ import EmptyState from "@/components/EmptyState";
 import { Music, Loader2 } from "lucide-react";
 import PullToRefresh from "@/components/PullToRefresh";
 
+// The page shows the newest 100 releases, not the whole catalogue.
+const RECENT_LIMIT = 100;
+
 export default function RecentlyAdded() {
   const [tracks, setTracks] = useState([]);
   const [loadError, setLoadError] = useState(false);
@@ -26,7 +29,7 @@ export default function RecentlyAdded() {
   async function load(fresh = false) {
     const request = ++loadVersion.current;setLoading(true);setLoadError(false);
     try {
-      const rows = await getPublishedTracks(fresh === true);if (request === loadVersion.current) setTracks(rows);
+      const rows = await getPublishedTracks(fresh === true);if (request === loadVersion.current) setTracks(rows.slice(0, RECENT_LIMIT));
     } catch {
       if (request === loadVersion.current) setLoadError(true);
     } finally {
