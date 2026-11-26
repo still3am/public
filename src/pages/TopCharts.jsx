@@ -10,6 +10,9 @@ import { useUnpublishedSync } from "@/hooks/useUnpublishedSync";
 import { Loader2 } from "lucide-react";
 import PullToRefresh from "@/components/PullToRefresh";
 
+// The charts are a top 100, not the whole catalogue.
+const TOP_LIMIT = 100;
+
 export default function TopCharts() {
   const { user } = useAuth();
   const [period, setPeriod] = useState("all"),[rising, setRising] = useState(false),[positions, setPositions] = useState([]);
@@ -34,7 +37,8 @@ export default function TopCharts() {
       if (period !== "all") chart = await getPeriodChart(period, { canCompute: user?.role === "admin", fresh: fresh === true });
       if (request === loadVersion.current) {
         const map = new Map(rows.map((track) => [track.id, track]));
-        setTracks(period === "all" ? rows : chart.map((row) => map.get(row.track_id)).filter(Boolean));setPositions(chart);
+        const top = chart.slice(0, TOP_LIMIT);
+        setTracks(period === "all" ? rows.slice(0, TOP_LIMIT) : top.map((row) => map.get(row.track_id)).filter(Boolean));setPositions(top);
       }
     } catch {
       if (request === loadVersion.current) setLoadError(true);
@@ -69,7 +73,7 @@ export default function TopCharts() {
       <div className="collection-page collection-refined charts-refined">
         <div className="view-switch mb-5" aria-label="Chart period" role="group">{[["all", "All time"], ["week", "Last 7 days"], ["month", "Last 30 days"]].map(([id, label]) => <button key={id} aria-pressed={period === id} onClick={() => {if (period === id) return;setTracks([]);setPositions([]);setPeriod(id);setRising(false);setGenre("");}}>{label}</button>)}</div>
 
-        <CollectionSpotlight title="Top Charts" description={period === "all" ? "Ranked by total plays on PUBLIC." : "Recorded plays over the last " + (period === "week" ? "7" : "30") + " days. Movement compares with the preceding period."} tracks={visible} />
+        <CollectionSpotlight title="Top Charts" description={period === "all" ? "The 100 songs the PUBLIC community keeps coming back to." : "The 100 songs PUBLIC played most in the last " + (period === "week" ? "7" : "30") + " days."} tracks={visible} />
 
         {period !== "all" && <button className="playlist-action mb-4" aria-pressed={rising} onClick={() => setRising((value) => !value)}>{rising ? "Show full chart" : "Rising songs (" + risingCount + ")"}</button>}
         {loadError && <LoadError onRetry={() => load(true)} />}
