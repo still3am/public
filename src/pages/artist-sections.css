@@ -242,14 +242,12 @@
 .public-app .artwork-content .artist-page.artist-editorial.artist-redesigned.artist-sections-v2 .artist-detail-facts.artist-details-plain dd{margin:6px 0 0;font-size:13px;font-weight:550;line-height:1.6;overflow-wrap:anywhere;color:hsl(var(--foreground))}
 @media(max-width:359px){.public-app .artwork-content .artist-page.artist-editorial.artist-redesigned.artist-sections-v2 .artist-detail-facts.artist-details-plain .artist-detail-grid{grid-template-columns:minmax(0,1fr)}}
 
-/* Similar artist cards flow through the same drifting colour gradient the profile background uses. */
-.public-app .artwork-content .artist-page.artist-editorial.artist-redesigned.artist-sections-v2 .artist-similar-card{position:relative;overflow:hidden;border-color:hsl(var(--border)/.55)}
-.public-app .artwork-content .artist-page.artist-editorial.artist-redesigned.artist-sections-v2 .artist-similar-tint{position:absolute;inset:-20%;z-index:0;pointer-events:none;opacity:.92;will-change:transform;animation:artist-similar-drift 26s ease-in-out infinite alternate}
-.public-app .artwork-content .artist-page.artist-editorial.artist-redesigned.artist-sections-v2 .artist-similar-card>*:not(.artist-similar-tint){position:relative;z-index:1}
-@keyframes artist-similar-drift{
-0%{transform:scale(1.28) translate(-4%,-3%) rotate(-8deg)}
-50%{transform:scale(1.46) translate(4%,-4%) rotate(6deg)}
-100%{transform:scale(1.34) translate(-2%,5%) rotate(13deg)}
-}
-.public-app .artwork-content .artist-page.artist-editorial.artist-redesigned.artist-sections-v2 .artist-similar-card .artist-similar-image{border:1px solid hsl(var(--border)/.5)}
-@media(prefers-reduced-motion:reduce){.public-app .artwork-content .artist-page.artist-editorial.artist-redesigned.artist-sections-v2 .artist-similar-tint{animation:none;transform:scale(1.34)}}
+/* Profile-style flowing artwork colors, with an independent contrast layer. */
+.public-app .artwork-content .artist-page.artist-editorial.artist-redesigned.artist-sections-v2 .artist-similar-card{position:relative;isolation:isolate;overflow:hidden;border-color:hsl(var(--border)/.55);background:hsl(var(--muted));color:hsl(var(--overlay-foreground))}
+.public-app .artwork-content .artist-page.artist-editorial.artist-redesigned.artist-sections-v2 .artist-similar-card>.artist-similar-gradient{position:absolute;inset:0;z-index:0;width:100%;height:100%;margin:0;border-radius:inherit}
+.public-app .artwork-content .artist-page.artist-editorial.artist-redesigned.artist-sections-v2 .artist-similar-card::after{content:"";position:absolute;inset:0;z-index:1;pointer-events:none;background:linear-gradient(180deg,hsl(var(--overlay)/.04) 25%,hsl(var(--overlay)/.65) 72%,hsl(var(--overlay)/.8) 100%)}
+.public-app .artwork-content .artist-page.artist-editorial.artist-redesigned.artist-sections-v2 .artist-similar-card>:is(.artist-similar-portrait,span,.artist-similar-genre){position:relative;z-index:2}
+.public-app .artwork-content .artist-page.artist-editorial.artist-redesigned.artist-sections-v2 .artist-similar-card>span{color:hsl(var(--overlay-foreground))}
+.public-app .artwork-content .artist-page.artist-editorial.artist-redesigned.artist-sections-v2 .artist-similar-card>.artist-similar-genre{color:hsl(var(--overlay-foreground)/.9)}
+.public-app .artwork-content .artist-page.artist-editorial.artist-redesigned.artist-sections-v2 .artist-similar-card .artist-similar-image{display:block;width:100%;height:100%;overflow:hidden;border:1px solid hsl(var(--overlay-foreground)/.3)}
+.public-app .artwork-content .artist-page.artist-editorial.artist-redesigned.artist-sections-v2 .artist-similar-image img{width:100%;height:100%;border-radius:50%;object-fit:cover}
