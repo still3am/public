@@ -11,18 +11,15 @@ export default function ArtistSimilarCard({ artist }) {
   const [failed, setFailed] = useState(false);
   const { colors } = useCoverPalette(url);
   useEffect(() => setFailed(false), [url]);
-  const tone = colors[0];
+  const [a, b, c] = [colors[0], colors[1] || colors[0], colors[2] || colors[1] || colors[0]];
+  const tint = a ? {
+    backgroundColor: c,
+    backgroundImage: `radial-gradient(60% 64% at 22% 16%, ${a} 0%, transparent 68%), radial-gradient(58% 62% at 82% 34%, ${b} 0%, transparent 70%), radial-gradient(64% 68% at 46% 94%, ${c} 0%, transparent 72%)`,
+  } : undefined;
 
   return (
-    <Link
-      className="artist-similar-card"
-      to={"/records/" + encodeURIComponent(artist.id)}
-      style={tone ? {
-        "--similar-tone-a": colors[0],
-        "--similar-tone-b": colors[1] || colors[0],
-        "--similar-tone-c": colors[2] || colors[1] || colors[0],
-      } : undefined}
-    >
+    <Link className="artist-similar-card" to={"/records/" + encodeURIComponent(artist.id)}>
+      {tint && <span aria-hidden="true" className="artist-similar-tint" style={tint} />}
       <div className="artist-similar-portrait">
         {url && !failed ? (
           <img src={url} alt="" className="artist-similar-image" onError={() => setFailed(true)} />
