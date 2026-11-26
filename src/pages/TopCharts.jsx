@@ -70,7 +70,7 @@ export default function TopCharts() {
       <div className="collection-page collection-refined charts-refined">
         <div className="view-switch mb-5" aria-label="Chart period" role="group">{[["all", "All time"], ["week", "Last 7 days"], ["month", "Last 30 days"]].map(([id, label]) => <button key={id} aria-pressed={period === id} onClick={() => {if (period === id) return;setTracks([]);setPositions([]);setPeriod(id);setRising(false);setGenre("");}}>{label}</button>)}</div>
 
-        <CollectionSpotlight title="Top Charts" tracks={visible} />
+        <CollectionSpotlight title="Top Charts" description={period === "all" ? "Ranked by total plays on PUBLIC." : "Recorded plays over the last " + (period === "week" ? "7" : "30") + " days. Movement compares with the preceding period."} tracks={visible} />
 
         {!filtering && <ChartSummary period={period} positions={positions} tracks={tracks} />}
 
