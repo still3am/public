@@ -72,12 +72,6 @@ export default function TopCharts() {
 
         <CollectionSpotlight title="Top Charts" eyebrow="On repeat" description={period === "all" ? "Ranked by total plays on PUBLIC." : "Recorded plays over the last " + (period === "week" ? "7" : "30") + " days. Movement compares with the preceding period."} tracks={visible} />
 
-        <div className="collection-tools">
-          <input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search this chart" aria-label="Search this chart" />
-          {genres.length > 1 && <select value={genre} onChange={(event) => setGenre(event.target.value)} aria-label="Filter this chart by genre"><option value="">All genres</option>{genres.map((name) => <option key={name} value={name}>{name}</option>)}</select>}
-          {filtering && <button type="button" className="playlist-action" onClick={() => { setQuery(""); setGenre(""); }}>Clear</button>}
-        </div>
-
         {!filtering && <ChartSummary period={period} positions={positions} tracks={tracks} />}
 
         {period !== "all" && <button className="playlist-action mb-4" aria-pressed={rising} onClick={() => setRising((value) => !value)}>{rising ? "Show full chart" : "Rising songs (" + risingCount + ")"}</button>}
