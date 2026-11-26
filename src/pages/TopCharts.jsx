@@ -3,8 +3,7 @@ import { useEffect, useState, useCallback, useMemo, useRef } from "react";
 import { getTopTracks } from "@/lib/catalogCache";
 import { getPeriodChart } from "@/lib/periodCharts";
 import { useAuth } from '@/lib/AuthContext';
-import ChartRow from "@/components/charts/ChartRow";
-import ChartSummary from "@/components/charts/ChartSummary";
+import TrackRow from "@/components/TrackRow";
 import CollectionSpotlight from "@/components/CollectionSpotlight";
 import IncrementalList from "@/components/IncrementalList";
 import { useUnpublishedSync } from "@/hooks/useUnpublishedSync";
@@ -72,15 +71,13 @@ export default function TopCharts() {
 
         <CollectionSpotlight title="Top Charts" description={period === "all" ? "Ranked by total plays on PUBLIC." : "Recorded plays over the last " + (period === "week" ? "7" : "30") + " days. Movement compares with the preceding period."} tracks={visible} />
 
-        {!filtering && <ChartSummary period={period} positions={positions} tracks={tracks} />}
-
         {period !== "all" && <button className="playlist-action mb-4" aria-pressed={rising} onClick={() => setRising((value) => !value)}>{rising ? "Show full chart" : "Rising songs (" + risingCount + ")"}</button>}
         {loadError && <LoadError onRetry={() => load(true)} />}
         {!tracks.length && !loadError && <p className="py-8 text-muted-foreground" role="status">No recorded plays for this period yet. Try another period.</p>}
         {!!tracks.length && !shown.length && <div className="collection-empty"><h2>{rising && !filtering ? "No rising songs yet" : "No matching songs"}</h2><p>{rising && !filtering ? "Show the full chart to see this period’s rankings." : "Try another title, artist, or genre."}</p></div>}
 
         <div className="collection-results-heading"><h2>{filtering ? "Matching tracks" : "The chart"}</h2><span>{shown.length} songs</span></div>
-        <IncrementalList resetKey={JSON.stringify([query, genre, period, rising])} items={shown} className="chart-ranked-list" renderItem={(track, index) => <ChartRow key={track.id} track={track} index={index} queue={shown} rank={ranks.get(track.id)} row={movements.get(track.id)} period={period} />} />
+        <IncrementalList resetKey={JSON.stringify([query, genre, period, rising])} items={shown} className="chart-ranked-list" renderItem={(track, index) => <div key={track.id} className="chart-ranked-row"><span className="chart-position">{ranks.get(track.id)}{period !== "all" && <small className="block text-[10px] leading-tight" aria-label={movements.get(track.id)?.movement === null ? "New this period" : "Position change " + movements.get(track.id)?.movement}>{movements.get(track.id)?.movement === null ? "NEW" : movements.get(track.id)?.movement > 0 ? "↑" + movements.get(track.id).movement : movements.get(track.id)?.movement < 0 ? "↓" + Math.abs(movements.get(track.id).movement) : "—"}</small>}</span><div className="min-w-0 flex-1"><TrackRow track={track} queue={shown} queueIndex={index} showArt /></div></div>} />
 
       </div>
     </PullToRefresh>);
