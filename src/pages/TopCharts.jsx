@@ -3,7 +3,8 @@ import { useEffect, useState, useCallback, useMemo, useRef } from "react";
 import { getTopTracks } from "@/lib/catalogCache";
 import { getPeriodChart } from "@/lib/periodCharts";
 import { useAuth } from '@/lib/AuthContext';
-import TrackRow from "@/components/TrackRow";
+import ChartRow from "@/components/charts/ChartRow";
+import ChartSummary from "@/components/charts/ChartSummary";
 import CollectionSpotlight from "@/components/CollectionSpotlight";
 import IncrementalList from "@/components/IncrementalList";
 import { useUnpublishedSync } from "@/hooks/useUnpublishedSync";
@@ -61,6 +62,7 @@ export default function TopCharts() {
   const filtering = !!query.trim() || !!genre;
   const ranks = new Map(tracks.map((track, index) => [track.id, index + 1]));
   const movements = new Map(positions.map((row) => [row.track_id, row]));
+  const risingCount = period === "all" ? 0 : visible.filter((track) => (movements.get(track.id)?.growth || 0) > 0).length;
   const shown = rising && period !== "all" ? visible.filter((track) => (movements.get(track.id)?.growth || 0) > 0).sort((a, b) => movements.get(b.id).growth - movements.get(a.id).growth) : visible;
 
   return (
@@ -69,14 +71,22 @@ export default function TopCharts() {
         <div className="view-switch mb-5" aria-label="Chart period" role="group">{[["all", "All time"], ["week", "Last 7 days"], ["month", "Last 30 days"]].map(([id, label]) => <button key={id} aria-pressed={period === id} onClick={() => {if (period === id) return;setTracks([]);setPositions([]);setPeriod(id);setRising(false);setGenre("");}}>{label}</button>)}</div>
 
         <CollectionSpotlight title="Top Charts" eyebrow="On repeat" description={period === "all" ? "Ranked by total plays on PUBLIC." : "Recorded plays over the last " + (period === "week" ? "7" : "30") + " days. Movement compares with the preceding period."} tracks={visible} />
-        
-        {period !== "all" && <button className="playlist-action mb-4" aria-pressed={rising} onClick={() => setRising((value) => !value)}>{rising ? "Show full chart" : "Rising songs"}</button>}
+
+        <div className="collection-tools">
+          <input type="search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search this chart" aria-label="Search this chart" />
+          {genres.length > 1 && <select value={genre} onChange={(event) => setGenre(event.target.value)} aria-label="Filter this chart by genre"><option value="">All genres</option>{genres.map((name) => <option key={name} value={name}>{name}</option>)}</select>}
+          {filtering && <button type="button" className="playlist-action" onClick={() => { setQuery(""); setGenre(""); }}>Clear</button>}
+        </div>
+
+        {!filtering && <ChartSummary period={period} positions={positions} tracks={tracks} />}
+
+        {period !== "all" && <button className="playlist-action mb-4" aria-pressed={rising} onClick={() => setRising((value) => !value)}>{rising ? "Show full chart" : "Rising songs (" + risingCount + ")"}</button>}
         {loadError && <LoadError onRetry={() => load(true)} />}
         {!tracks.length && !loadError && <p className="py-8 text-muted-foreground" role="status">No recorded plays for this period yet. Try another period.</p>}
         {!!tracks.length && !shown.length && <div className="collection-empty"><h2>{rising && !filtering ? "No rising songs yet" : "No matching songs"}</h2><p>{rising && !filtering ? "Show the full chart to see this period’s rankings." : "Try another title, artist, or genre."}</p></div>}
 
         <div className="collection-results-heading"><h2>{filtering ? "Matching tracks" : "The chart"}</h2><span>{shown.length} songs</span></div>
-        <IncrementalList resetKey={JSON.stringify([query, genre, period, rising])} items={shown} className="chart-ranked-list" renderItem={(track, index) => <div key={track.id} className="chart-ranked-row"><span className="chart-position">{ranks.get(track.id)}{period !== "all" && <small className="block text-[10px] leading-tight" aria-label={movements.get(track.id)?.movement === null ? "New this period" : "Position change " + movements.get(track.id)?.movement}>{movements.get(track.id)?.movement === null ? "NEW" : movements.get(track.id)?.movement > 0 ? "↑" + movements.get(track.id).movement : movements.get(track.id)?.movement < 0 ? "↓" + Math.abs(movements.get(track.id).movement) : "—"}</small>}</span><div className="min-w-0 flex-1"><TrackRow track={track} queue={shown} queueIndex={index} showArt /></div></div>} />
+        <IncrementalList resetKey={JSON.stringify([query, genre, period, rising])} items={shown} className="chart-ranked-list" renderItem={(track, index) => <ChartRow key={track.id} track={track} index={index} queue={shown} rank={ranks.get(track.id)} row={movements.get(track.id)} period={period} />} />
 
       </div>
     </PullToRefresh>);
