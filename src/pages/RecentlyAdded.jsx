@@ -55,7 +55,7 @@ export default function RecentlyAdded() {
   return (
     <PullToRefresh onRefresh={() => load(true)}>
     <div className="collection-page collection-refined recent-refined">
-        <CollectionSpotlight title="Recently Added" eyebrow="Fresh on PUBLIC" description="The latest music added by the PUBLIC community." tracks={visible} />
+        <CollectionSpotlight title="Recently Added" description="The latest music added by the PUBLIC community." tracks={visible} />
         
         {loadError && <LoadError message="The latest songs could not refresh." onRetry={() => load(true)} />}
         {!visible.length && <div className="collection-empty"><h2>No matching songs</h2><p>Try another title, artist, or genre.</p></div>}
