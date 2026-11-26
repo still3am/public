@@ -2,6 +2,7 @@ import { useColorPalette } from "@/hooks/useColorPalette";
 import ArtistCatalogInfo from '@/components/ArtistCatalogInfo';
 import ArtistAliases from "@/components/ArtistAliases";
 import ArtistAlbums from "@/components/ArtistAlbums";
+import ArtistSimilarCard from "@/components/ArtistSimilarCard";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { shareLink } from "@/lib/shareLink";
 import "./artist-editorial.css";
@@ -368,7 +369,7 @@ export default function PublicRecords({ id: propId, fallbackArtist = null }) {
         {similarArtists.length > 0 && <section className="artist-similar">
           <SectionTitle icon={Users}>Similar Artists</SectionTitle>
           {similarArtists.length > 0 && <ScrollShelf className="artist-similar-list" label="Similar artists" dragScroll>
-            {similarArtists.map((candidate) => <Link className="artist-similar-card" key={candidate.id} to={"/records/" + encodeURIComponent(candidate.id)}><div className="artist-similar-portrait"><ArtistArtwork source={candidate.image} className="artist-similar-image" /></div><span>{candidate.name}</span>{candidate.genre && <small className="artist-similar-genre">{candidate.genre}</small>}</Link>)}
+            {similarArtists.map((candidate) => <ArtistSimilarCard key={candidate.id} artist={candidate} />)}
           </ScrollShelf>}
         </section>}
         {id && <SafetyControls type="artist" id={id} label="artist page" />}
